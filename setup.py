@@ -39,6 +39,6 @@ setup(
         "Programming Language :: Python :: 3.4",
     ],
     extras_require={
-        ':python_version == "3.3"': ['asyncio']
+        ':python_version == "3.3"': ['asyncio', 'singledispatch']
     }
 )
