@@ -4,8 +4,8 @@ aiofiles: file support for asyncio
 .. image:: https://img.shields.io/pypi/v/aiofiles.svg
     :target: https://pypi.python.org/pypi/aiofiles
 
-aiofiles is an Apache2 licensed library, written in Python, for reading files
-in asyncio applications.
+aiofiles is an Apache2 licensed library, written in Python, for handling local
+disk files in asyncio applications.
 
 Ordinary local file IO is blocking, and cannot easily and portably made
 asynchronous. This means doing file IO may interfere with asyncio applications,

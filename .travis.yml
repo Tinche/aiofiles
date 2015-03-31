@@ -1,0 +1,9 @@
+language: python
+python: 3.3
+env:
+  - TOX_ENV=py33
+  - TOX_ENV=py34
+install:
+  - pip install tox
+script:
+  - tox -e $TOX_ENV
