@@ -76,4 +76,4 @@ def test_slow_file(monkeypatch):
     spam_task.cancel()
 
     assert actual_contents == contents
-    assert counter > 50
+    assert counter > 40

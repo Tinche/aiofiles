@@ -1,10 +1,12 @@
 """Handle files using a thread pool executor."""
 import asyncio
-from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
-from .text import AsyncTextIOWrapper
 from io import (FileIO, TextIOBase, BufferedReader, BufferedWriter,
                 BufferedRandom)
-import functools
+from functools import partial
+
+from .._compat import singledispatch
+from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
+from .text import AsyncTextIOWrapper
 
 _sync_open = open
 
@@ -17,15 +19,15 @@ def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
     """Open an asyncio file."""
     if loop is None:
         loop = asyncio.get_event_loop()
-    cb = functools.partial(_sync_open, file, mode=mode, buffering=buffering,
-                           encoding=encoding, errors=errors, newline=newline,
-                           closefd=closefd, opener=opener)
+    cb = partial(_sync_open, file, mode=mode, buffering=buffering,
+                 encoding=encoding, errors=errors, newline=newline,
+                 closefd=closefd, opener=opener)
     f = yield from loop.run_in_executor(executor, cb)
 
     return wrap(f, loop, executor)
 
 
-@functools.singledispatch
+@singledispatch
 def wrap(file, loop=None, executor=None):
     raise TypeError('Unsupported io type: {}.'.format(file))
 
