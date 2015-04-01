@@ -98,7 +98,7 @@ strip newline characters.
     f = yield from aiofiles.open('filename')
     try:
         while True:
-            line = f.readline()
+            line = yield from f.readline()
             if not line:
                 break
             line = line.strip()
