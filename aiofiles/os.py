@@ -17,7 +17,7 @@ def stat(path, *, dir_fd=None, follow_symlinks=True, loop=None, executor=None):
 if 'posix' in sys.builtin_module_names:
     @asyncio.coroutine
     @wraps(os.sendfile)
-    def sendfile(out, in_fd, offset, nbytes, loop=None, executor=None):
+    def sendfile(out, in_fd, offset, nbytes, *, loop=None, executor=None):
         if loop is None:
             loop = asyncio.get_event_loop()
         fun = partial(os.sendfile, out, in_fd, offset, nbytes)
