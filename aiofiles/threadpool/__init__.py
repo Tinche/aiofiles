@@ -24,7 +24,7 @@ def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
                  closefd=closefd, opener=opener)
     f = yield from loop.run_in_executor(executor, cb)
 
-    return wrap(f, loop, executor)
+    return wrap(f, loop=loop, executor=executor)
 
 
 @singledispatch
@@ -34,18 +34,18 @@ def wrap(file, *, loop=None, executor=None):
 
 @wrap.register(TextIOBase)
 def _(file, *, loop=None, executor=None):
-    return AsyncTextIOWrapper(file, loop, executor)
+    return AsyncTextIOWrapper(file, loop=loop, executor=executor)
 
 
 @wrap.register(BufferedWriter)
 def _(file, *, loop=None, executor=None):
-    return AsyncBufferedIOBase(file, loop, executor)
+    return AsyncBufferedIOBase(file, loop=loop, executor=executor)
 
 
 @wrap.register(BufferedReader)
 @wrap.register(BufferedRandom)
 def _(file, *, loop=None, executor=None):
-    return AsyncBufferedReader(file, loop, executor)
+    return AsyncBufferedReader(file, loop=loop, executor=executor)
 
 
 @wrap.register(FileIO)
