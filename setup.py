@@ -1,7 +1,7 @@
 import codecs
 import os
 import re
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.rst') as f:
     readme = f.read()
@@ -24,7 +24,7 @@ def find_version(*file_paths):
 setup(
     name='aiofiles',
     version=find_version('aiofiles', '__init__.py'),
-    packages=['aiofiles'],
+    packages=find_packages(),
     url='',
     license='Apache 2.0',
     author='Tin Tvrtkovic',
