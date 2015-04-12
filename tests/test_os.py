@@ -44,7 +44,7 @@ def test_sendfile_file(tmpdir):
 
 
 @pytest.mark.asyncio
-def test_sendfile_socket(tmpdir):
+def test_sendfile_socket(unused_tcp_port):
     """Test the sendfile functionality, file-to-socket."""
     filename = join(dirname(__file__), 'resources', 'test_file1.txt')
 
@@ -64,9 +64,10 @@ def test_sendfile_socket(tmpdir):
             yield from writer.drain()
             writer.close()
 
-    server = yield from asyncio.start_server(serve_file, port=30000)
+    server = yield from asyncio.start_server(serve_file, port=unused_tcp_port)
 
-    reader, writer = yield from asyncio.open_connection('127.0.0.1', 30000)
+    reader, writer = yield from asyncio.open_connection('127.0.0.1',
+                                                        unused_tcp_port)
     actual_contents = yield from reader.read()
     writer.close()
 

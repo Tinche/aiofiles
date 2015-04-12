@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-def test_serve_small_bin_file_sync(event_loop, tmpdir):
+def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file.
 
     The file is read into memory synchronously, so this test doesn't actually
@@ -24,12 +24,11 @@ def test_serve_small_bin_file_sync(event_loop, tmpdir):
             writer.write(f.read())
         writer.close()
 
-    port = 30000  # Random high port, hopefully unused.
-    server = yield from asyncio.start_server(serve_file, port=port,
+    server = yield from asyncio.start_server(serve_file, port=unused_tcp_port,
                                              loop=event_loop)
 
     reader, _ = yield from asyncio.open_connection(host='localhost',
-                                                   port=port,
+                                                   port=unused_tcp_port,
                                                    loop=event_loop)
     payload = yield from reader.read()
 
@@ -40,7 +39,7 @@ def test_serve_small_bin_file_sync(event_loop, tmpdir):
 
 
 @pytest.mark.asyncio
-def test_serve_small_bin_file(event_loop, tmpdir):
+def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file."""
     # First we'll write a small file.
     filename = 'test.bin'
@@ -56,12 +55,11 @@ def test_serve_small_bin_file(event_loop, tmpdir):
         yield from f.close()
         writer.close()
 
-    port = 30000  # Random high port, hopefully unused.
-    server = yield from asyncio.start_server(serve_file, port=port,
+    server = yield from asyncio.start_server(serve_file, port=unused_tcp_port,
                                              loop=event_loop)
 
     reader, _ = yield from asyncio.open_connection(host='localhost',
-                                                   port=port,
+                                                   port=unused_tcp_port,
                                                    loop=event_loop)
     payload = yield from reader.read()
 

@@ -25,7 +25,7 @@ setup(
     name='aiofiles',
     version=find_version('aiofiles', '__init__.py'),
     packages=find_packages(),
-    url='',
+    url='https://github.com/Tinche/aiofiles',
     license='Apache 2.0',
     author='Tin Tvrtkovic',
     author_email='tinchester@gmail.com',

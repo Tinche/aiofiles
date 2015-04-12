@@ -8,7 +8,7 @@ import pytest
 import aiofiles.threadpool
 
 @pytest.mark.asyncio
-def test_slow_file(monkeypatch):
+def test_slow_file(monkeypatch, unused_tcp_port):
     """Monkey patch open and file.read(), and assert the loop still works."""
     filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
 
@@ -55,12 +55,14 @@ def test_slow_file(monkeypatch):
             yield from asyncio.sleep(0.01)
 
 
-    file_server = yield from asyncio.start_server(serve_file, port=30000)
+    file_server = yield from asyncio.start_server(serve_file,
+                                                  port=unused_tcp_port)
     spam_server = yield from asyncio.start_server(return_one, port=30001)
 
     spam_task = asyncio.async(spam_client())
 
-    reader, writer = yield from asyncio.open_connection('127.0.0.1', port=30000)
+    reader, writer = yield from asyncio.open_connection('127.0.0.1',
+                                                        port=unused_tcp_port)
 
     actual_contents = yield from reader.read()
     writer.close()
