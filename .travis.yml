@@ -3,6 +3,7 @@ python: 3.3
 env:
   - TOX_ENV=py33
   - TOX_ENV=py34
+  - TOX_ENV=py35
 install:
   - pip install tox
 script:
