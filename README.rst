@@ -19,6 +19,15 @@ a separate thread pool.
 
 .. code-block:: python
 
+    async with aiofiles.open('filename', mode='r') as f:
+        contents = await f.read()
+    print(contents)
+    'My file contents'
+
+Or, using the old syntax:
+
+.. code-block:: python
+
     f = yield from aiofiles.open('filename', mode='r')
     try:
         contents = yield from f.read()
@@ -32,6 +41,7 @@ Features
 
 - a file API very similar to Python's standard, blocking API
 - support for buffered and unbuffered binary files, and buffered text files
+- support for async/await (PEP 492) constructs
 
 
 Installation
@@ -84,14 +94,24 @@ several useful ``os`` functions that deal with files:
 Limitations and Differences from the Builtin File API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The closing of a file may block, and yielding from a coroutine while exiting
-from a context manager isn't possible, so aiofiles file objects can't be used
-as context managers. Use the ``try/finally`` construct from the introductory
+When using Python 3.5 or greater, aiofiles file objects can be used as
+asynchronous context managers. Asynchronous iteration is also supported.
+
+.. code-block:: python
+
+    async with aiofiles.open('filename') as f:
+        async for line in f:
+            ...
+
+When using Python 3.3 or 3.4, be aware that the closing of a file may block,
+and yielding from a coroutine while exiting from a context manager isn't
+possible, so aiofiles file objects can't be used as (ordinary, non-async)
+context managers. Use the ``try/finally`` construct from the introductory
 section to ensure files are closed.
 
-Iteration is also unsupported. To iterate over a file, call ``readline``
-repeatedly until an empty result is returned. Keep in mind ``readline`` doesn't
-strip newline characters.
+When using Python 3.3 or 3.4, iteration is also unsupported. To iterate over a
+file, call ``readline`` repeatedly until an empty result is returned. Keep in
+mind ``readline`` doesn't strip newline characters.
 
 .. code-block:: python
 

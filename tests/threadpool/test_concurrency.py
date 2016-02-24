@@ -54,7 +54,6 @@ def test_slow_file(monkeypatch, unused_tcp_port):
             w.close()
             yield from asyncio.sleep(0.01)
 
-
     file_server = yield from asyncio.start_server(serve_file,
                                                   port=unused_tcp_port)
     spam_server = yield from asyncio.start_server(return_one, port=30001)

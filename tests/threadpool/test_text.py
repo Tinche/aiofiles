@@ -230,5 +230,3 @@ def test_simple_detach(tmpdir):
         yield from file.read()
 
     assert b'0123456789' == raw_file.read(10)
-
-
