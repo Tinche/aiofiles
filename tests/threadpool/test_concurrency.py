@@ -4,6 +4,7 @@ from os.path import join
 import time
 import asyncio
 import pytest
+import builtins
 
 import aiofiles.threadpool
 
@@ -15,11 +16,13 @@ def test_slow_file(monkeypatch, unused_tcp_port):
     with open(filename, mode='rb') as f:
         contents = f.read()
 
+    old_open = open
+
     def new_open(*args, **kwargs):
         time.sleep(1)
-        return open(*args, **kwargs)
+        return old_open(*args, **kwargs)
 
-    monkeypatch.setattr(aiofiles.threadpool, '_sync_open', value=new_open)
+    monkeypatch.setattr(builtins, 'open', value=new_open)
 
     @asyncio.coroutine
     def serve_file(_, writer):
