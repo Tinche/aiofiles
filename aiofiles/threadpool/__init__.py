@@ -1,5 +1,6 @@
 """Handle files using a thread pool executor."""
 import asyncio
+import builtins
 
 from io import (FileIO, TextIOBase, BufferedReader, BufferedWriter,
                 BufferedRandom)
@@ -9,8 +10,6 @@ from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from .text import AsyncTextIOWrapper
 from ..base import AiofilesContextManager
 from .._compat import singledispatch, PY_35
-
-_sync_open = open
 
 __all__ = ('open', )
 
@@ -30,7 +29,7 @@ def _open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None
     """Open an asyncio file."""
     if loop is None:
         loop = asyncio.get_event_loop()
-    cb = partial(_sync_open, file, mode=mode, buffering=buffering,
+    cb = partial(builtins.open, file, mode=mode, buffering=buffering,
                  encoding=encoding, errors=errors, newline=newline,
                  closefd=closefd, opener=opener)
     f = yield from loop.run_in_executor(executor, cb)
