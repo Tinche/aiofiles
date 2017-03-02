@@ -14,7 +14,7 @@ def stat(path, *, dir_fd=None, follow_symlinks=True, loop=None, executor=None):
     return loop.run_in_executor(executor, fun)
 
 
-if 'posix' in sys.builtin_module_names:
+if hasattr(os, "sendfile"):
     @asyncio.coroutine
     @wraps(os.sendfile)
     def sendfile(out, in_fd, offset, nbytes, *, loop=None, executor=None):
