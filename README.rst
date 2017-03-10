@@ -132,6 +132,7 @@ History
 
 0.3.1 (2017-03-10)
 ``````````````````
+
 - Introduced a changelog.
 - ``aiofiles.os.sendfile`` will now work if the standard ``os`` module contains a ``sendfile`` function.
 
