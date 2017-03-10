@@ -126,6 +126,15 @@ mind ``readline`` doesn't strip newline characters.
     finally:
         yield from f.close()
 
+
+History
+~~~~~~~
+
+0.3.1 (2017-03-10)
+------------------
+- Introduced a changelog.
+- ``aiofiles.os.sendfile`` will now work if the standard ``os`` module contains a ``sendfile`` function.
+
 Contributing
 ~~~~~~~~~~~~
 Contributions are very welcome. Tests can be run with ``tox``, please ensure
