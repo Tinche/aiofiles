@@ -3,8 +3,10 @@ aiofiles: file support for asyncio
 
 .. image:: https://img.shields.io/pypi/v/aiofiles.svg
     :target: https://pypi.python.org/pypi/aiofiles
+
 .. image:: https://travis-ci.org/Tinche/aiofiles.svg?branch=master
     :target: https://travis-ci.org/Tinche/aiofiles
+
 .. image:: https://codecov.io/gh/Tinche/aiofiles/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/Tinche/aiofiles
 
