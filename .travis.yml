@@ -4,9 +4,13 @@ matrix:
         - { python: '3.3', env: TOX_ENV=py33}
         - { python: '3.4', env: TOX_ENV=py34}
         - { python: '3.5', env: TOX_ENV=py35}
+before_install:
+  - pip install codecov
 install:
   - pip install tox
 script:
   - tox -e $TOX_ENV
 after_success:
     - pip install coveralls && cd tests && coveralls
+    - tox -e coverage-report
+    - codecov
