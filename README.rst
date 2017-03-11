@@ -128,6 +128,27 @@ mind ``readline`` doesn't strip newline characters.
     finally:
         yield from f.close()
 
+Writing tests for aiofiles
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Real file IO can be mocked by patching `aiofiles.threadpool.sync_open`
+as desired. The return type also needs to be registered with the
+`aiofiles.threadpool.wrap` dispatcher:
+
+.. code-block:: python
+
+    threadpool.wrap.register(mock.MagicMock)(
+        lambda *args, **kwargs: threadpool.AsyncBufferedIOBase(*args, **kwargs))
+
+    async def test_stuff():
+        data = 'data'
+        mock_file = mock.MagicMock()
+
+        with mock.patch('aiofiles.threadpool.sync_open', return_value=mock_file) as mock_open:
+            async with aiofiles.open('filename', 'w') as f:
+                await f.write(data)
+
+            mock_file.write.assert_called_once_with(data)
 
 History
 ~~~~~~~
