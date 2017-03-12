@@ -19,7 +19,7 @@ def test_slow_file(monkeypatch, unused_tcp_port):
         time.sleep(1)
         return open(*args, **kwargs)
 
-    monkeypatch.setattr(aiofiles.threadpool, '_sync_open', value=new_open)
+    monkeypatch.setattr(aiofiles.threadpool, 'sync_open', value=new_open)
 
     @asyncio.coroutine
     def serve_file(_, writer):
