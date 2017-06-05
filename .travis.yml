@@ -1,9 +1,11 @@
 language: python
+cache: pip
 matrix:
     include:
         - { python: '3.3', env: TOX_ENV=py33}
         - { python: '3.4', env: TOX_ENV=py34}
         - { python: '3.5', env: TOX_ENV=py35}
+        - { python: '3.6', env: TOX_ENV=py36}
 before_install:
   - pip install codecov
 install:
