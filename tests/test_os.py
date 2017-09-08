@@ -3,6 +3,7 @@ import aiofiles.os
 import asyncio
 from os.path import join, dirname
 import pytest
+import platform
 
 
 @pytest.mark.asyncio
@@ -15,6 +16,8 @@ def test_stat():
     assert stat_res.st_size == 10
 
 
+@pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
+                    reason = "sendfile() syscall doesn't allow file->file")
 @pytest.mark.asyncio
 def test_sendfile_file(tmpdir):
     """Test the sendfile functionality, file-to-file."""
