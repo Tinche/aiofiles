@@ -4,8 +4,8 @@ from ..base import AsyncBase
 from .._compat import PY_35
 
 
-@delegate_to_executor('close', 'flush', 'isatty', 'read', 'readable',
-                      'readline', 'readlines', 'seek', 'seekable', 'tell',
+@delegate_to_executor('close', 'flush', 'isatty', 'read', 'readline',
+                      'readlines', 'seek', 'seekable', 'tell',
                       'truncate', 'write', 'writable', 'writelines')
 @proxy_method_directly('detach', 'fileno', 'readable')
 @proxy_property_directly('buffer', 'closed', 'encoding', 'errors',
