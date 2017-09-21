@@ -16,7 +16,8 @@ def test_stat():
     assert stat_res.st_size == 10
 
 
-@pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
+@pytest.mark.skipif((platform.system() == 'Linux' and '2.4' < platform.release() < '2.6.33') or
+                    platform.system() == 'Darwin',
                     reason = "sendfile() syscall doesn't allow file->file")
 @pytest.mark.asyncio
 def test_sendfile_file(tmpdir):
