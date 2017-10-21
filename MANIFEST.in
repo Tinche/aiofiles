@@ -1,0 +1,6 @@
+recursive-include aiofiles *.py
+
+include README.rst
+include MANIFEST.in
+include LICENSE
+include setup.py
