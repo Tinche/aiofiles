@@ -153,6 +153,11 @@ as desired. The return type also needs to be registered with the
 History
 ~~~~~~~
 
+0.3.2 (2017-09-23)
+``````````````````
+- The LICENSE is now included in the sdist.
+  `#31 <https://github.com/Tinche/aiofiles/pull/31>`_
+
 0.3.1 (2017-03-10)
 ``````````````````
 
