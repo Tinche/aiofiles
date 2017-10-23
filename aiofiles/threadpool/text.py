@@ -1,7 +1,6 @@
 from .utils import (delegate_to_executor, proxy_property_directly,
                     proxy_method_directly)
 from ..base import AsyncBase
-from .._compat import PY_35
 
 
 @delegate_to_executor('close', 'flush', 'isatty', 'read', 'readable',

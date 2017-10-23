@@ -8,7 +8,7 @@ from functools import partial
 from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from .text import AsyncTextIOWrapper
 from ..base import AiofilesContextManager
-from .._compat import singledispatch, PY_35
+from .._compat import singledispatch
 
 sync_open = open
 
@@ -16,7 +16,7 @@ __all__ = ('open', )
 
 
 def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
-          closefd=True, opener=None, *, loop=None, executor=None):
+         closefd=True, opener=None, *, loop=None, executor=None):
     return AiofilesContextManager(_open(file, mode=mode, buffering=buffering,
                                         encoding=encoding, errors=errors,
                                         newline=newline, closefd=closefd,
