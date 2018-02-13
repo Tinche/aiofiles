@@ -10,7 +10,7 @@ aiofiles: file support for asyncio
 .. image:: https://codecov.io/gh/Tinche/aiofiles/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/Tinche/aiofiles
 
-aiofiles is an Apache2 licensed library, written in Python, for handling local
+**aiofiles** is an Apache2 licensed library, written in Python, for handling local
 disk files in asyncio applications.
 
 Ordinary local file IO is blocking, and cannot easily and portably made
@@ -43,7 +43,7 @@ Features
 
 - a file API very similar to Python's standard, blocking API
 - support for buffered and unbuffered binary files, and buffered text files
-- support for async/await (PEP 492) constructs
+- support for ``async``/``await`` (:PEP:`492`) constructs
 
 
 Installation
@@ -131,9 +131,9 @@ mind ``readline`` doesn't strip newline characters.
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Real file IO can be mocked by patching `aiofiles.threadpool.sync_open`
+Real file IO can be mocked by patching ``aiofiles.threadpool.sync_open``
 as desired. The return type also needs to be registered with the
-`aiofiles.threadpool.wrap` dispatcher:
+``aiofiles.threadpool.wrap`` dispatcher:
 
 .. code-block:: python
 
