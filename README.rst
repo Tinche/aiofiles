@@ -137,7 +137,7 @@ as desired. The return type also needs to be registered with the
 
 .. code-block:: python
 
-    threadpool.wrap.register(mock.MagicMock)(
+    aiofiles.threadpool.wrap.register(mock.MagicMock)(
         lambda *args, **kwargs: threadpool.AsyncBufferedIOBase(*args, **kwargs))
 
     async def test_stuff():
