@@ -58,7 +58,7 @@ def test_slow_file(monkeypatch, unused_tcp_port):
                                                   port=unused_tcp_port)
     spam_server = yield from asyncio.start_server(return_one, port=30001)
 
-    spam_task = asyncio.async(spam_client())
+    spam_task = asyncio.ensure_future(spam_client())
 
     reader, writer = yield from asyncio.open_connection('127.0.0.1',
                                                         port=unused_tcp_port)
