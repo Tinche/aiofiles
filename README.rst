@@ -26,17 +26,13 @@ a separate thread pool.
     print(contents)
     'My file contents'
 
-Or, using the old syntax:
+Asynchronous iteration is also supported.
 
 .. code-block:: python
 
-    f = yield from aiofiles.open('filename', mode='r')
-    try:
-        contents = yield from f.read()
-    finally:
-        yield from f.close()
-    print(contents)
-    'My file contents'
+    async with aiofiles.open('filename') as f:
+        async for line in f:
+            ...
 
 Features
 --------
@@ -92,41 +88,6 @@ several useful ``os`` functions that deal with files:
 
 * ``stat``
 * ``sendfile``
-
-Limitations and Differences from the Builtin File API
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-When using Python 3.5 or greater, aiofiles file objects can be used as
-asynchronous context managers. Asynchronous iteration is also supported.
-
-.. code-block:: python
-
-    async with aiofiles.open('filename') as f:
-        async for line in f:
-            ...
-
-When using Python 3.3 or 3.4, be aware that the closing of a file may block,
-and yielding from a coroutine while exiting from a context manager isn't
-possible, so aiofiles file objects can't be used as (ordinary, non-async)
-context managers. Use the ``try/finally`` construct from the introductory
-section to ensure files are closed.
-
-When using Python 3.3 or 3.4, iteration is also unsupported. To iterate over a
-file, call ``readline`` repeatedly until an empty result is returned. Keep in
-mind ``readline`` doesn't strip newline characters.
-
-.. code-block:: python
-
-    f = yield from aiofiles.open('filename')
-    try:
-        while True:
-            line = yield from f.readline()
-            if not line:
-                break
-            line = line.strip()
-            ...
-    finally:
-        yield from f.close()
 
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
