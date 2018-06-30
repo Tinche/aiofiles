@@ -71,6 +71,11 @@ class _ContextManager(Coroutine):
         return resp
 
     @asyncio.coroutine
+    def __anext__(self):
+        resp = yield from self._coro
+        return resp
+
+    @asyncio.coroutine
     def __aenter__(self):
         self._obj = yield from self._coro
         return self._obj
