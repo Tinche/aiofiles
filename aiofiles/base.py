@@ -9,8 +9,6 @@ class AsyncBase:
         self._loop = loop
         self._executor = executor
 
-
-    @asyncio.coroutine
     def __aiter__(self):
         """We are our own iterator."""
         return self
