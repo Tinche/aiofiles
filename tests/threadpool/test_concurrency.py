@@ -7,6 +7,8 @@ import pytest
 
 import aiofiles.threadpool
 
+
+@asyncio.coroutine
 @pytest.mark.asyncio
 def test_slow_file(monkeypatch, unused_tcp_port):
     """Monkey patch open and file.read(), and assert the loop still works."""

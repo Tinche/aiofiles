@@ -3,12 +3,11 @@ import asyncio
 
 from io import (FileIO, TextIOBase, BufferedReader, BufferedWriter,
                 BufferedRandom)
-from functools import partial
+from functools import partial, singledispatch
 
 from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from .text import AsyncTextIOWrapper
 from ..base import AiofilesContextManager
-from .._compat import singledispatch
 
 sync_open = open
 
