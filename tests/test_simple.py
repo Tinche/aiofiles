@@ -4,6 +4,7 @@ from aiofiles import threadpool
 import pytest
 
 
+@asyncio.coroutine
 @pytest.mark.asyncio
 def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file.
@@ -38,6 +39,7 @@ def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     yield from server.wait_closed()
 
 
+@asyncio.coroutine
 @pytest.mark.asyncio
 def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file."""

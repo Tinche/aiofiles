@@ -6,6 +6,7 @@ import pytest
 import platform
 
 
+@asyncio.coroutine
 @pytest.mark.asyncio
 def test_stat():
     """Test the stat call."""
@@ -16,6 +17,7 @@ def test_stat():
     assert stat_res.st_size == 10
 
 
+@asyncio.coroutine
 @pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
                     reason = "sendfile() syscall doesn't allow file->file")
 @pytest.mark.asyncio
@@ -46,6 +48,7 @@ def test_sendfile_file(tmpdir):
     assert size == actual_size
 
 
+@asyncio.coroutine
 @pytest.mark.asyncio
 def test_sendfile_socket(unused_tcp_port):
     """Test the sendfile functionality, file-to-socket."""
