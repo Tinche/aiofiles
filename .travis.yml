@@ -17,7 +17,7 @@ before_install:
 install:
   - pip install tox
 script:
-  - tox -e $TOX_ENV
+  - tox -e $TOXENV
 after_success:
     - tox -e coverage-report
     - codecov
