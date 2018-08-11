@@ -1,10 +1,17 @@
 language: python
 cache: pip
 matrix:
-    include:
-        - { python: '3.5', env: TOX_ENV=py35}
-        - { python: '3.6', env: TOX_ENV=py36}
-        - { python: '3.7-dev', env: TOX_ENV=py37}
+  include:
+    - python: "3.5"
+      env: TOXENV=py35
+    - python: "3.6"
+      env: TOXENV=py36
+    - python: "pypy3"
+      env: TOXENV=pypy3
+    - python: "3.7"
+      env: TOXENV=py37
+      dist: xenial
+      sudo: true
 before_install:
   - pip install codecov
 install:
