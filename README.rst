@@ -10,6 +10,10 @@ aiofiles: file support for asyncio
 .. image:: https://codecov.io/gh/Tinche/aiofiles/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/Tinche/aiofiles
 
+.. image:: https://img.shields.io/pypi/pyversions/aiofiles.svg
+        :target: https://github.com/Tinche/aiofiles
+        :alt: Supported Python versions
+
 **aiofiles** is an Apache2 licensed library, written in Python, for handling local
 disk files in asyncio applications.
 
