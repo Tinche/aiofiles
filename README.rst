@@ -114,6 +114,11 @@ as desired. The return type also needs to be registered with the
 History
 ~~~~~~~
 
+0.4.0 (2018-08-11)
+``````````````````
+- Python 3.7 support.
+- Removed Python 3.3/3.4 support. If you use these versions, stick to aiofiles 0.3.x.
+
 0.3.2 (2017-09-23)
 ``````````````````
 - The LICENSE is now included in the sdist.
