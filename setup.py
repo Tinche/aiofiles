@@ -31,6 +31,8 @@ setup(
     author_email='tinchester@gmail.com',
     description='File support for asyncio.',
     long_description=readme,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'pytest-asyncio'],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
