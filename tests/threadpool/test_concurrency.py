@@ -79,4 +79,4 @@ def test_slow_file(monkeypatch, unused_tcp_port):
     spam_task.cancel()
 
     assert actual_contents == contents
-    assert counter > 40
+    assert counter > 30
