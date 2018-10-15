@@ -3,4 +3,4 @@ from .threadpool import open
 
 __version__ = "0.5.0.dev0"
 
-__all__ = (open,)
+__all__ = ['open']
