@@ -5,13 +5,12 @@ import os
 
 
 def wrap(func):
-    @asyncio.coroutine
     @wraps(func)
-    def run(*args, loop=None, executor=None, **kwargs):
+    async def run(*args, loop=None, executor=None, **kwargs):
         if loop is None:
             loop = asyncio.get_event_loop()
         pfunc = partial(func, *args, **kwargs)
-        return loop.run_in_executor(executor, pfunc)
+        return await loop.run_in_executor(executor, pfunc)
 
     return run
 
