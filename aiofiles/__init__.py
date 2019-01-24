@@ -1,6 +1,6 @@
 """Utilities for asyncio-friendly file handling."""
-from .threadpool import open
+from .threadpool import open, print
 
 __version__ = "0.5.0.dev0"
 
-__all__ = ['open']
+__all__ = ['open', 'print']

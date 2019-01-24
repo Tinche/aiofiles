@@ -61,3 +61,26 @@ def _(file, *, loop=None, executor=None):
 @wrap.register(FileIO)
 def _(file, *, loop=None, executor=None):
     return AsyncFileIO(file, loop, executor)
+
+
+@asyncio.coroutine
+def print(*objects, sep=None, end=None, file, flush=False):
+    end = '\n' if end is None else end
+    sep = ' ' if sep is None else sep
+
+    if not isinstance(sep, str):
+        raise TypeError("sep must be None or a string, not %.200s", type(sep).__name__)
+
+
+    if not isinstance(end, str):
+        raise TypeError("end must be None or a string, not %.200s", type(end).__name__)
+
+    for i, v in enumerate(objects):
+        if i > 0:
+            yield from file.write(sep)
+        yield from file.write(str(v))
+
+    yield from file.write(end)
+
+    if flush:
+        yield from file.flush()
