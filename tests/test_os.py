@@ -1,7 +1,7 @@
 """Tests for asyncio's os module."""
 import aiofiles.os
 import asyncio
-from os.path import join, dirname
+from os.path import join, dirname, exists
 import pytest
 import platform
 
@@ -16,6 +16,18 @@ def test_stat():
 
     assert stat_res.st_size == 10
 
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_remove():
+    """Test the remove call."""
+    filename = join(dirname(__file__), 'resources', 'test_file2.txt')
+    with open(filename, 'w') as f:
+        f.write('Test file for remove call')
+
+    assert exists(filename)
+    yield from aiofiles.os.remove(filename)
+    assert exists(filename) is False
 
 @asyncio.coroutine
 @pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
