@@ -17,6 +17,7 @@ def wrap(func):
 
 
 stat = wrap(os.stat)
+remove = wrap(os.remove)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)
