@@ -16,6 +16,21 @@ async def test_stat():
     assert stat_res.st_size == 10
 
 
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_remove():
+    """Test the remove call."""
+    filename = join(dirname(__file__), 'resources', 'test_file2.txt')
+    with open(filename, 'w') as f:
+        f.write('Test file for remove call')
+
+    assert exists(filename)
+    yield from aiofiles.os.remove(filename)
+    assert exists(filename) is False
+
+@asyncio.coroutine
+@pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
+                    reason = "sendfile() syscall doesn't allow file->file")
 @pytest.mark.asyncio
 async def test_remove():
     """Test the remove call."""
@@ -67,7 +82,7 @@ async def test_replace():
     await aiofiles.os.replace(old_filename, new_filename)
     assert exists(old_filename) is False and exists(new_filename)
     await aiofiles.os.replace(new_filename, old_filename)
-    assert exists(old_filename) and exists(new_filename) is False    
+    assert exists(old_filename) and exists(new_filename) is False
 
 
 @pytest.mark.skipif(
