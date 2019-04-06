@@ -28,6 +28,30 @@ def test_remove():
     yield from aiofiles.os.remove(filename)
     assert exists(filename) is False
 
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_mkdir_and_rmdir():
+    """Test the mkdir and rmdir call."""
+    directory = join(dirname(__file__), 'resources', 'test_dir')
+    yield from aiofiles.os.mkdir(directory)
+    assert isdir(directory)
+    yield from aiofiles.os.rmdir(directory)
+    assert exists(directory) is False
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_rename():
+    """Test the rename call."""
+    old_filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    new_filename = join(dirname(__file__), 'resources', 'test_file2.txt')
+    yield from aiofiles.os.rename(old_filename, new_filename)
+    assert exists(old_filename) is False and exists(new_filename)
+    yield from aiofiles.os.rename(new_filename, old_filename)
+    assert exists(old_filename) and exists(new_filename) is False
+
+
 @asyncio.coroutine
 @pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
                     reason = "sendfile() syscall doesn't allow file->file")
