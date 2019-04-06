@@ -17,7 +17,10 @@ def wrap(func):
 
 
 stat = wrap(os.stat)
+rename = wrap(os.rename)
 remove = wrap(os.remove)
+mkdir = wrap(os.mkdir)
+rmdir = wrap(os.rmdir)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)
