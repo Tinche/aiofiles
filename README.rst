@@ -92,6 +92,10 @@ several useful ``os`` functions that deal with files:
 
 * ``stat``
 * ``sendfile``
+* ``rename``
+* ``remove``
+* ``mkdir``
+* ``rmdir``
 
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
