@@ -173,3 +173,67 @@ async def test_sendfile_socket(unused_tcp_port):
     server.close()
 
     await server.wait_closed()
+
+
+@pytest.mark.asyncio
+async def test_exists():
+    """Test path.exists call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.exist(filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_isfile():
+    """Test path.isfile call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.isfile(filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_isdir():
+    """Test path.isdir call."""
+    filename = join(dirname(__file__), 'resources')
+    result = await aiofiles.os.path.isdir(filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_getsize():
+    """Test path.getsize call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.getsize(filename)
+    assert result == 10
+
+
+@pytest.mark.asyncio
+async def test_samefile():
+    """Test path.samefile call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.samefile(filename, filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_getmtime():
+    """Test path.getmtime call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.getmtime(filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_getatime():
+    """Test path.getatime call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.getatime(filename)
+    assert result
+
+
+@pytest.mark.asyncio
+async def test_getctime():
+    """Test path. call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.getctime(filename)
+    assert result
