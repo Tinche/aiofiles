@@ -118,3 +118,76 @@ def test_sendfile_socket(unused_tcp_port):
 
     yield from server.wait_closed()
 
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_exists():
+    """Test path.exists call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.exist(filename)
+    print(result)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_isfile():
+    """Test path.isfile call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.isfile(filename)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_isdir():
+    """Test path.isdir call."""
+    filename = join(dirname(__file__), 'resources')
+    result = yield from aiofiles.os.path.isdir(filename)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_getsize():
+    """Test path.getsize call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.getsize(filename)
+    assert result == 10
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_samefile():
+    """Test path.samefile call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.samefile(filename, filename)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_getmtime():
+    """Test path.getmtime call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.getmtime(filename)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_getatime():
+    """Test path.getatime call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.getatime(filename)
+    assert result
+
+
+@asyncio.coroutine
+@pytest.mark.asyncio
+def test_getctime():
+    """Test path. call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = yield from aiofiles.os.path.getctime(filename)
+    assert result
+
