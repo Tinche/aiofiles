@@ -106,6 +106,14 @@ several useful ``os`` functions that deal with files:
 * ``remove``
 * ``mkdir``
 * ``rmdir``
+* ``path.exists``
+* ``path.isfile``
+* ``path.isdir``
+* ``path.getsize``
+* ``path.getatime``
+* ``path.getctime``
+* ``path.samefile``
+* ``path.sameopenfile``
 
 Tempfile
 ~~~~~~~~
