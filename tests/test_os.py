@@ -216,6 +216,14 @@ async def test_samefile():
 
 
 @pytest.mark.asyncio
+async def test_sameopenfile():
+    """Test path.samefile call."""
+    filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    result = await aiofiles.os.path.samefile(filename, filename)
+    assert result
+
+
+@pytest.mark.asyncio
 async def test_getmtime():
     """Test path.getmtime call."""
     filename = join(dirname(__file__), 'resources', 'test_file1.txt')
