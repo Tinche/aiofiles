@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import os
 
 from .base import AiofilesContextManager, AsyncBase
@@ -102,18 +103,24 @@ class AsyncZipFile(AsyncBase):
     """The asyncio executor version of zipfile.ZipFile."""
 
     def open(self, name, mode="r", pwd=None, *, force_zip64=False):
-        return AiofilesContextManager(
-            run_threadpool(
-                self._file.open,
-                name=name,
-                mode=mode,
-                pwd=pwd,
-                loop=self._loop,
-                executor=self._executor,
-                force_zip64=force_zip64,
-                async_wrap=AsyncZipExtFile,
-            )
-        )
+        cb = self._file.open
+        args = {
+            'name': name,
+            'mode': mode,
+            'pwd': pwd,
+            'loop': self._loop,
+            'executor': self._executor,
+            'force_zip64': force_zip64,
+            'async_wrap': AsyncZipExtFile,
+        }
+
+        try:
+            if 'force_zip64' not in inspect.signature(cb).parameters:
+                del args['force_zip64']
+        except (ValueError, TypeError):
+            pass  # just hope that force_zip64 exists
+
+        return AiofilesContextManager(run_threadpool(cb, **args))
 
 
 @delegate_to_executor("writepy")
