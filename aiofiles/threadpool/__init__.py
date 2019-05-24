@@ -16,25 +16,44 @@ __all__ = ('open', )
 
 def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
          closefd=True, opener=None, *, loop=None, executor=None):
-    return AiofilesContextManager(_open(file, mode=mode, buffering=buffering,
-                                        encoding=encoding, errors=errors,
-                                        newline=newline, closefd=closefd,
-                                        opener=opener, loop=loop,
-                                        executor=executor))
+    return AiofilesContextManager(
+        run_threadpool(
+            sync_open, file, mode=mode, buffering=buffering,
+            encoding=encoding, errors=errors, newline=newline, closefd=closefd,
+            opener=opener, loop=loop, executor=executor, async_wrap=wrap,
+        )
+    )
 
 
 @asyncio.coroutine
-def _open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,
-          closefd=True, opener=None, *, loop=None, executor=None):
-    """Open an asyncio file."""
+def run_threadpool(sync_cb, *args, loop=None, executor=None, async_wrap=None,
+                   **kwargs):
+    """
+    Wrap a sync function to run in a threadpool.
+    
+    :param sync_cb: Original, synchronous callable to run (e.g. ``open``).
+    :param args: Remaining arguments to be passed on to the sync callable.
+    :param loop: Loop to run the sync callable in. The default is the current
+        event loop.
+    :param executor: Executor to run the sync callable in. The default is
+        whatever ``loop.run_in_executor`` defaults to (currently
+        ``concurrent.futures.ThreadPoolExecutor``).
+    :param async_wrap: Wrapper callable that handles the returned file (most
+        likely something from ``aiofiles.base.AsyncBase``). Should be able to
+        take the object returned from the original callable, in addition to
+        ``loop`` and ``executor`` parameters. If this parameter is missing, then
+        the return from the original will be returned as-is.
+    :param kwargs: Remaining keyword arguments to be passed on to the sync
+        function.
+    """
     if loop is None:
         loop = asyncio.get_event_loop()
-    cb = partial(sync_open, file, mode=mode, buffering=buffering,
-                 encoding=encoding, errors=errors, newline=newline,
-                 closefd=closefd, opener=opener)
-    f = yield from loop.run_in_executor(executor, cb)
+    cb = partial(sync_cb, *args, **kwargs)
+    ret = yield from loop.run_in_executor(executor, cb)
 
-    return wrap(f, loop=loop, executor=executor)
+    if async_wrap:
+        return async_wrap(ret, loop=loop, executor=executor)
+    return ret
 
 
 @singledispatch
