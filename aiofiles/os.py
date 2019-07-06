@@ -22,7 +22,9 @@ stat = wrap(os.stat)
 rename = wrap(os.rename)
 remove = wrap(os.remove)
 mkdir = wrap(os.mkdir)
+makedirs = wrap(os.makedirs)
 rmdir = wrap(os.rmdir)
+removedirs = wrap(os.removedirs)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)
