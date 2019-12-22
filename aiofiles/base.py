@@ -1,6 +1,11 @@
 """Various base classes."""
 import asyncio
 from collections.abc import Coroutine
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 class AsyncBase:

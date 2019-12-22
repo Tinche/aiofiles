@@ -1,5 +1,6 @@
 """Handle files using a thread pool executor."""
 import asyncio
+import warnings
 
 from io import (FileIO, TextIOBase, BufferedReader, BufferedWriter,
                 BufferedRandom)
@@ -12,6 +13,10 @@ from ..base import AiofilesContextManager
 sync_open = open
 
 __all__ = ('open', )
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 def open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None,

@@ -4,6 +4,11 @@ import asyncio
 from os.path import join, dirname, exists, isdir
 import pytest
 import platform
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 @asyncio.coroutine

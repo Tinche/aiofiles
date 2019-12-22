@@ -2,6 +2,11 @@
 import asyncio
 from aiofiles import threadpool
 import pytest
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 @asyncio.coroutine

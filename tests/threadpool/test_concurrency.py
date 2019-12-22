@@ -4,8 +4,13 @@ from os.path import join
 import time
 import asyncio
 import pytest
+import warnings
 
 import aiofiles.threadpool
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 @asyncio.coroutine

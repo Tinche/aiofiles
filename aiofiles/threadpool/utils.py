@@ -1,5 +1,10 @@
 import asyncio
 import functools
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 def delegate_to_executor(*attrs):

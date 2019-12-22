@@ -2,6 +2,11 @@
 import asyncio
 from functools import partial, wraps
 import os
+import warnings
+
+
+warnings.filterwarnings("ignore", category=DeprecationWarning,
+                        message="\"@coroutine\" decorator is deprecated")
 
 
 def wrap(func):
