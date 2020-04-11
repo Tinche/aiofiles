@@ -122,6 +122,10 @@ as desired. The return type also needs to be registered with the
 History
 ~~~~~~~
 
+0.5.0 (UNRELEASED)
+``````````````````
+- Python 3.8 support.
+
 0.4.0 (2018-08-11)
 ``````````````````
 - Python 3.7 support.
