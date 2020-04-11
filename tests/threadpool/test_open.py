@@ -4,9 +4,9 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'rb'])
-def test_file_not_found(mode):
-    filename = 'non_existent'
+@pytest.mark.parametrize("mode", ["r", "rb"])
+async def test_file_not_found(mode):
+    filename = "non_existent"
 
     try:
         open(filename, mode=mode)
@@ -16,7 +16,7 @@ def test_file_not_found(mode):
     assert expected
 
     try:
-        yield from aioopen(filename, mode=mode)
+        await aioopen(filename, mode=mode)
     except Exception as e:
         actual = e
 

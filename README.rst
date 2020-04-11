@@ -124,7 +124,8 @@ History
 
 0.5.0 (UNRELEASED)
 ``````````````````
-- Python 3.8 support.
+- Python 3.8 support. Code base modernization (using ``async/await`` instead of ``asyncio.coroutine``/``yield from``).
+
 
 0.4.0 (2018-08-11)
 ``````````````````
