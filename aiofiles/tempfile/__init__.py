@@ -4,6 +4,8 @@ __version__ = '0.1.0.dev0'
 
 # Imports
 import asyncio
+from types import coroutine
+
 from tempfile import (TemporaryFile as syncTemporaryFile,
                       NamedTemporaryFile as syncNamedTemporaryFile,
                       SpooledTemporaryFile as syncSpooledTemporaryFile,
@@ -119,7 +121,7 @@ def _temporary_file(file_type=NAMED_TEMPFILE, mode='w+b', buffering=-1,
         return AsyncSpooledTemporaryFile(f, loop=loop, executor=executor)
 
 
-@asyncio.coroutine
+@coroutine
 def _temporary_directory(loop=None, executor=None):
     """Async method to open a temporary directory with async interface"""
     if loop is None:
