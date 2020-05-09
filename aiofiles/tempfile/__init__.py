@@ -75,7 +75,7 @@ def temporary_directory(loop=None, executor=None):
 # =========================================================
 # Internal coroutines to open new temp files/directories
 # =========================================================
-@asyncio.coroutine
+@coroutine
 def _temporary_file(file_type=NAMED_TEMPFILE, mode='w+b', buffering=-1,
                     encoding=None, newline=None, suffix=None, prefix=None,
                     dir=None, delete=True, loop=None, executor=None,
