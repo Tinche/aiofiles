@@ -24,7 +24,7 @@ from .utils import (
     "writelines",
 )
 @proxy_method_directly("detach", "fileno", "readable")
-@proxy_property_directly("closed", "raw")
+@proxy_property_directly("closed", "raw", "name", "mode")
 class AsyncBufferedIOBase(AsyncBase):
     """The asyncio executor version of io.BufferedWriter."""
 
@@ -52,6 +52,6 @@ class AsyncBufferedReader(AsyncBufferedIOBase):
     "writelines",
 )
 @proxy_method_directly("fileno", "readable")
-@proxy_property_directly("closed")
+@proxy_property_directly("closed", "name", "mode")
 class AsyncFileIO(AsyncBase):
     """The asyncio executor version of io.FileIO."""

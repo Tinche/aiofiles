@@ -262,3 +262,27 @@ async def test_simple_iteration_ctx_mgr(mode):
             counter += 1
 
     assert file.closed
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+async def test_name_property(mode):
+    """Test iterating over lines from a file."""
+    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+
+    async with aioopen(filename, mode=mode) as file:
+        assert file.name == filename
+
+    assert file.closed
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+async def test_mode_property(mode):
+    """Test iterating over lines from a file."""
+    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+
+    async with aioopen(filename, mode=mode) as file:
+        assert file.mode == mode
+
+    assert file.closed

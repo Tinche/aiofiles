@@ -308,3 +308,29 @@ async def test_simple_readall(tmpdir):
 
     await file.close()
     assert file.closed
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("mode", ["rb", "rb+", "ab+"])
+@pytest.mark.parametrize("buffering", [-1, 0])
+async def test_name_property(mode, buffering):
+    """Test iterating over lines from a file."""
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
+
+    async with aioopen(filename, mode=mode, buffering=buffering) as file:
+        assert file.name == filename
+
+    assert file.closed
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("mode", ["rb", "rb+", "ab+"])
+@pytest.mark.parametrize("buffering", [-1, 0])
+async def test_mode_property(mode, buffering):
+    """Test iterating over lines from a file."""
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
+
+    async with aioopen(filename, mode=mode, buffering=buffering) as file:
+        assert file.mode == mode
+
+    assert file.closed
