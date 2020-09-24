@@ -1,7 +1,9 @@
 language: python
 cache: pip
 #power_jobs
-arch: ppc64le
+arch: 
+  - ppc64le
+  - AMD64
 matrix:
   include:
     - python: "3.5"
