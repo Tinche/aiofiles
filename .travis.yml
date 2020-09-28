@@ -1,9 +1,5 @@
 language: python
 cache: pip
-#power_jobs
-arch: 
-  - AMD64
-  - ppc64le
 matrix:
   include:
     - python: "3.5"
@@ -20,7 +16,7 @@ matrix:
       env: TOXENV=py38
       dist: xenial
       sudo: true
-#power_jobs    
+#power_jobs
     - python: "3.5"
       env: TOXENV=py35
       arch: ppc64le
@@ -39,7 +35,7 @@ matrix:
       env: TOXENV=py38
       dist: xenial
       sudo: true
-      arch: ppc64le
+      arch: ppc64le  
 before_install:
   - pip install codecov
 install:
