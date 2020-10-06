@@ -32,7 +32,12 @@ matrix:
       env: TOXENV=py38
       dist: xenial
       sudo: true
-      arch: ppc64le  
+      arch: ppc64le
+# Disable version pypy3
+jobs: 
+  exclude:
+    - arch: ppc64le
+      python: pypy3
 before_install:
   - pip install codecov
 install:
