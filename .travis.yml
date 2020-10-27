@@ -16,6 +16,10 @@ matrix:
       env: TOXENV=py38
       dist: xenial
       sudo: true
+    - python: "3.9-dev"
+      env: TOXENV=py39
+      dist: xenial
+      sudo: true
 #power_jobs
     - python: "3.5"
       env: TOXENV=py35
@@ -33,8 +37,13 @@ matrix:
       dist: xenial
       sudo: true
       arch: ppc64le
+    - python: "3.9-dev"
+      env: TOXENV=py39
+      dist: xenial
+      sudo: true
+      arch: ppc64le
 # Disable version pypy3
-jobs: 
+jobs:
   exclude:
     - arch: ppc64le
       python: pypy3
