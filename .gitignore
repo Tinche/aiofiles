@@ -60,3 +60,4 @@ target/
 # IDEA IDE files
 .idea/
 *.iml
+.pytest_cache
