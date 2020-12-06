@@ -109,8 +109,7 @@ def _temporary_file(file_type=NAMED_TEMPFILE, mode='w+b', buffering=-1,
         if type(f) is syncTemporaryFileWrapper:
             # _TemporaryFileWrapper was used (named files)
             result = wrap(f.file, f, loop=loop, executor=executor)
-            # add name and delete properties
-            result.name = f.name
+            # add delete property
             result.delete = f.delete
             return result
         else:
