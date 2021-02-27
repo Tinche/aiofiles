@@ -38,12 +38,21 @@ Asynchronous iteration is also supported.
         async for line in f:
             ...
 
+Asynchronous interface to tempfile module.
+
+.. code-block:: python
+
+    async with aiofiles.tempfile.TemporaryFile('wb') as f:
+        await f.write(b'Hello, World!')
+
+
 Features
 --------
 
 - a file API very similar to Python's standard, blocking API
 - support for buffered and unbuffered binary files, and buffered text files
 - support for ``async``/``await`` (:PEP:`492`) constructs
+- async interface to tempfile module
 
 
 Installation
@@ -96,6 +105,28 @@ several useful ``os`` functions that deal with files:
 * ``remove``
 * ``mkdir``
 * ``rmdir``
+
+Tempfile
+~~~~~~~~
+
+**aiofiles.tempfile** implements the following four classes:
+
+- TemporaryFile
+- NamedTemporaryFile
+- SpooledTemporaryFile
+- TemporaryDirectory
+
+Instances of the above classes return wrapped with a context 
+manager allowing use with async with and async for.
+
+.. code-block:: python
+
+    async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
+        await f.write(b'Line1\n Line2')
+        await f.seek(0)
+        async for line in f:
+            print(line)
+
 
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
