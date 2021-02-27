@@ -109,15 +109,14 @@ several useful ``os`` functions that deal with files:
 Tempfile
 ~~~~~~~~
 
-**aiofiles.tempfile** implements the following four classes:
+**aiofiles.tempfile** implements the following interfaces:
 
 - TemporaryFile
 - NamedTemporaryFile
 - SpooledTemporaryFile
 - TemporaryDirectory
 
-Instances of the above classes return wrapped with a context 
-manager allowing use with async with and async for.
+Results return wrapped with a context manager allowing use with async with and async for.
 
 .. code-block:: python
 
