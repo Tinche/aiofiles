@@ -126,6 +126,9 @@ Results return wrapped with a context manager allowing use with async with and a
         async for line in f:
             print(line)
 
+    async with aiofiles.tempfile.TemporaryDirectory() as d:
+        filename = os.path.join(d, "file.ext")
+
 
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
