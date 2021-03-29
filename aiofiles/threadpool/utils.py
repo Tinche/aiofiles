@@ -1,6 +1,7 @@
 import functools
 from types import coroutine
 
+import anyio
 
 def delegate_to_executor(*attrs):
     def cls_builder(cls):
@@ -33,7 +34,10 @@ def _make_delegate_method(attr_name):
     @coroutine
     def method(self, *args, **kwargs):
         cb = functools.partial(getattr(self._file, attr_name), *args, **kwargs)
-        return (yield from self._loop.run_in_executor(self._executor, cb))
+        if self._loop is not None:
+            return (yield from self._loop.run_in_executor(self._executor, cb))
+        else:
+            return (yield from anyio.run_sync_in_worker_thread(cb))
 
     return method
 

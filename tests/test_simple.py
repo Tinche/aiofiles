@@ -4,7 +4,10 @@ from aiofiles import threadpool
 import pytest
 
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.usefixtures("no_trio_support")
+
+
+@pytest.mark.anyio
 async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file.
 
@@ -34,7 +37,7 @@ async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     await server.wait_closed()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file."""
     # First we'll write a small file.

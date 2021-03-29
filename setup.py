@@ -31,6 +31,7 @@ setup(
     author_email="tinchester@gmail.com",
     description="File support for asyncio.",
     long_description=readme,
+    install_requires=["anyio>=3.0.0rc2"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

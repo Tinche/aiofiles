@@ -11,6 +11,8 @@ from io import (
 )
 from functools import partial, singledispatch
 
+import anyio
+
 from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from .text import AsyncTextIOWrapper
 from ..base import AiofilesContextManager
@@ -63,9 +65,7 @@ def _open(
     loop=None,
     executor=None
 ):
-    """Open an asyncio file."""
-    if loop is None:
-        loop = asyncio.get_event_loop()
+    """Open an async file."""
     cb = partial(
         sync_open,
         file,
@@ -77,9 +77,15 @@ def _open(
         closefd=closefd,
         opener=opener,
     )
-    f = yield from loop.run_in_executor(executor, cb)
 
-    return wrap(f, loop=loop, executor=executor)
+    if executor is not None or loop is not None:
+        if loop is None:
+            loop = asyncio.get_event_loop()
+        f = yield from loop.run_in_executor(executor, cb)
+        return wrap(f, loop=loop, executor=executor)
+    else:
+        f = yield from anyio.run_sync_in_worker_thread(cb)
+        return wrap(f)
 
 
 @singledispatch
