@@ -1,10 +1,5 @@
-""" Async implementation of the tempfile module"""
-
-__version__ = '0.1.1'
-
 # Imports
 import asyncio
-from types import coroutine
 
 from tempfile import (TemporaryFile as syncTemporaryFile,
                       NamedTemporaryFile as syncNamedTemporaryFile,
@@ -69,8 +64,7 @@ def TemporaryDirectory(loop=None, executor=None):
 # =========================================================
 # Internal coroutines to open new temp files/directories
 # =========================================================
-@coroutine
-def _temporary_file(named=True, mode='w+b', buffering=-1,
+async def _temporary_file(named=True, mode='w+b', buffering=-1,
                     encoding=None, newline=None, suffix=None, prefix=None,
                     dir=None, delete=True, loop=None, executor=None,
                     max_size=0):
@@ -87,7 +81,7 @@ def _temporary_file(named=True, mode='w+b', buffering=-1,
                      encoding=encoding, newline=newline, suffix=suffix,
                      prefix=prefix, dir=dir)
 
-    f = yield from loop.run_in_executor(executor, cb)
+    f = await loop.run_in_executor(executor, cb)
 
     # Wrap based on type of underlying IO object
     if type(f) is syncTemporaryFileWrapper:
@@ -101,8 +95,7 @@ def _temporary_file(named=True, mode='w+b', buffering=-1,
         return wrap(f, f, loop=loop, executor=executor)
 
 
-@coroutine
-def _spooled_temporary_file(max_size=0, mode='w+b', buffering=-1,
+async def _spooled_temporary_file(max_size=0, mode='w+b', buffering=-1,
                             encoding=None, newline=None, suffix=None,
                             prefix=None, dir=None, loop=None, executor=None):
     """Open a spooled temporary file with async interface"""
@@ -114,19 +107,18 @@ def _spooled_temporary_file(max_size=0, mode='w+b', buffering=-1,
                  newline=newline, suffix=suffix,
                  prefix=prefix, dir=dir)
 
-    f = yield from loop.run_in_executor(executor, cb)
+    f = await loop.run_in_executor(executor, cb)
 
     # Single interface provided by SpooledTemporaryFile for all modes
     return AsyncSpooledTemporaryFile(f, loop=loop, executor=executor)
 
 
-@coroutine
-def _temporary_directory(loop=None, executor=None):
+async def _temporary_directory(loop=None, executor=None):
     """Async method to open a temporary directory with async interface"""
     if loop is None:
         loop = asyncio.get_event_loop()
 
-    f = yield from loop.run_in_executor(executor, syncTemporaryDirectory)
+    f = await loop.run_in_executor(executor, syncTemporaryDirectory)
 
     return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
 
