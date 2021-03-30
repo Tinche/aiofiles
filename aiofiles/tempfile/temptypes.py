@@ -18,35 +18,32 @@ from functools import partial
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 
-    @coroutine
-    def _check(self):
+    async def _check(self):
         if self._file._rolled: return
         max_size = self._file._max_size
         if max_size and self._file.tell() > max_size:
-            yield from self.rollover()
+            await self.rollover()
 
-    @coroutine
-    def write(self, s):
+    async def write(self, s):
         """Implementation to anticipate rollover"""
         if self._file._rolled:
             cb = partial(self._file.write, s)
-            return (yield from self._loop.run_in_executor(self._executor, cb))
+            return (await self._loop.run_in_executor(self._executor, cb))
         else:
             file = self._file._file #reference underlying base IO object
             rv = file.write(s)
-            yield from self._check()
+            await self._check()
             return rv
 
-    @coroutine
-    def writelines(self, iterable):
+    async def writelines(self, iterable):
         """Implementation to anticipate rollover"""
         if self._file._rolled:
             cb = partial(self._file.writelines, iterable)
-            return (yield from self._loop.run_in_executor(self._executor, cb))
+            return (await self._loop.run_in_executor(self._executor, cb))
         else:
             file = self._file._file #reference underlying base IO object
             rv = file.writelines(iterable)
-            yield from self._check()
+            await self._check()
             return rv
 
 
@@ -60,6 +57,5 @@ class AsyncTemporaryDirectory:
         self._loop = loop
         self._executor = executor
 
-    @coroutine
-    def close(self):
-        yield from self.cleanup()
+    async def close(self):
+        await self.cleanup()
