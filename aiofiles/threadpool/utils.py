@@ -62,12 +62,11 @@ def _make_proxy_property(attr_name):
 
 def _make_cond_delegate_method(attr_name):
     """For spooled temp files, delegate only if rolled to file object"""
-    @coroutine
-    def method(self, *args, **kwargs):
+    async def method(self, *args, **kwargs):
         if self._file._rolled:
             cb = functools.partial(getattr(self._file, attr_name),
                                    *args, **kwargs)
-            return (yield from self._loop.run_in_executor(self._executor, cb))
+            return (await self._loop.run_in_executor(self._executor, cb))
         else:
             return getattr(self._file, attr_name)(*args, **kwargs)
     return method
