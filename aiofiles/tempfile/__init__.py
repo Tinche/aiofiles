@@ -1,6 +1,5 @@
 # Imports
 import asyncio
-
 from tempfile import (TemporaryFile as syncTemporaryFile,
                       NamedTemporaryFile as syncNamedTemporaryFile,
                       SpooledTemporaryFile as syncSpooledTemporaryFile,
