@@ -155,6 +155,12 @@ as desired. The return type also needs to be registered with the
 History
 ~~~~~~~
 
+0.7.0 (UNRELEASED)
+``````````````````
+- Added the ``aiofiles.tempfile`` module for async temporary files.
+  `#56 <https://github.com/Tinche/aiofiles/pull/56>`_
+- Switched to Poetry and GitHub actions.
+
 0.6.0 (2020-10-27)
 ``````````````````
 - `aiofiles` is now tested on ppc64le.

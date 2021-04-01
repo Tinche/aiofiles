@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "aiofiles"
+version = "0.7.0dev0"
+description = "File support for asyncio."
+authors = ["Tin Tvrtkovic <tinchester@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.2"
+pytest-asyncio = "^0.14.0"
+coverage = "^5.5"
+tox = "^3.23.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
