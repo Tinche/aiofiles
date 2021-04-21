@@ -84,7 +84,7 @@ def _open(
         f = yield from loop.run_in_executor(executor, cb)
         return wrap(f, loop=loop, executor=executor)
     else:
-        f = yield from anyio.run_sync_in_worker_thread(cb)
+        f = yield from anyio.to_thread.run_sync(cb)
         return wrap(f)
 
 

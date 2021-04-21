@@ -15,7 +15,7 @@ def wrap(func):
                 loop = asyncio.get_event_loop()
             return await loop.run_in_executor(executor, pfunc)
         else:
-            return await anyio.run_sync_in_worker_thread(pfunc)
+            return await anyio.to_thread.run_sync(pfunc)
 
     return run
 

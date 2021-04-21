@@ -37,7 +37,7 @@ def _make_delegate_method(attr_name):
         if self._loop is not None:
             return (yield from self._loop.run_in_executor(self._executor, cb))
         else:
-            return (yield from anyio.run_sync_in_worker_thread(cb))
+            return (yield from anyio.to_thread.run_sync(cb))
 
     return method
 
