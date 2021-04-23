@@ -15,7 +15,6 @@ anyio = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
-pytest-asyncio = "^0.14.0"
 coverage = "^5.5"
 tox = "^3.23.0"
 trio = "^0.18.0"
