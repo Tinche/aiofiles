@@ -5,6 +5,9 @@ description = "File support for asyncio."
 authors = ["Tin Tvrtkovic <tinchester@gmail.com>"]
 license = "Apache 2.0"
 readme = "README.rst"
+packages = [
+    { include = "aiofiles", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
