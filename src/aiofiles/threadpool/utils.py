@@ -70,7 +70,10 @@ def _make_cond_delegate_method(attr_name):
         if self._file._rolled:
             cb = functools.partial(getattr(self._file, attr_name),
                                    *args, **kwargs)
-            return (await self._loop.run_in_executor(self._executor, cb))
+            if self._loop is not None:
+                return (await self._loop.run_in_executor(self._executor, cb))
+            else:
+                return (await anyio.to_thread.run_sync(cb))
         else:
             return getattr(self._file, attr_name)(*args, **kwargs)
     return method

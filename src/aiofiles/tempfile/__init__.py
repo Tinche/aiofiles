@@ -14,6 +14,8 @@ from ..threadpool.binary import (AsyncBufferedIOBase, AsyncBufferedReader,
                                  AsyncFileIO)
 from .temptypes import (AsyncSpooledTemporaryFile, AsyncTemporaryDirectory)
 
+import anyio
+
 __all__ = ['NamedTemporaryFile', 'TemporaryFile', 'SpooledTemporaryFile',
            'TemporaryDirectory']
 
@@ -68,8 +70,6 @@ async def _temporary_file(named=True, mode='w+b', buffering=-1,
                     dir=None, delete=True, loop=None, executor=None,
                     max_size=0):
     """Async method to open a temporary file with async interface"""
-    if loop is None:
-        loop = asyncio.get_event_loop()
 
     if named:
         cb = partial(syncNamedTemporaryFile, mode=mode, buffering=buffering,
@@ -80,7 +80,10 @@ async def _temporary_file(named=True, mode='w+b', buffering=-1,
                      encoding=encoding, newline=newline, suffix=suffix,
                      prefix=prefix, dir=dir)
 
-    f = await loop.run_in_executor(executor, cb)
+    if loop is not None:
+        f = await loop.run_in_executor(executor, cb)
+    else:
+        f = await anyio.to_thread.run_sync(cb)
 
     # Wrap based on type of underlying IO object
     if type(f) is syncTemporaryFileWrapper:
@@ -98,15 +101,16 @@ async def _spooled_temporary_file(max_size=0, mode='w+b', buffering=-1,
                             encoding=None, newline=None, suffix=None,
                             prefix=None, dir=None, loop=None, executor=None):
     """Open a spooled temporary file with async interface"""
-    if loop is None:
-        loop = asyncio.get_event_loop()
 
     cb = partial(syncSpooledTemporaryFile, max_size=max_size, mode=mode,
                  buffering=buffering, encoding=encoding,
                  newline=newline, suffix=suffix,
                  prefix=prefix, dir=dir)
 
-    f = await loop.run_in_executor(executor, cb)
+    if loop is not None:
+        f = await loop.run_in_executor(executor, cb)
+    else:
+        f = await anyio.to_thread.run_sync(cb)
 
     # Single interface provided by SpooledTemporaryFile for all modes
     return AsyncSpooledTemporaryFile(f, loop=loop, executor=executor)
@@ -114,10 +118,10 @@ async def _spooled_temporary_file(max_size=0, mode='w+b', buffering=-1,
 
 async def _temporary_directory(loop=None, executor=None):
     """Async method to open a temporary directory with async interface"""
-    if loop is None:
-        loop = asyncio.get_event_loop()
-
-    f = await loop.run_in_executor(executor, syncTemporaryDirectory)
+    if loop is not None:
+        f = await loop.run_in_executor(executor, syncTemporaryDirectory)
+    else:
+        f = await anyio.to_thread.run_sync(syncTemporaryDirectory)
 
     return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
 

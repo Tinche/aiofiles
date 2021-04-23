@@ -8,8 +8,8 @@ import pytest
 import aiofiles.threadpool
 
 
-@pytest.mark.asyncio
-async def test_slow_file(monkeypatch, unused_tcp_port):
+@pytest.mark.anyio
+async def test_slow_file(monkeypatch, unused_tcp_port, no_trio_support):
     """Monkey patch open and file.read(), and assert the loop still works."""
     filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 

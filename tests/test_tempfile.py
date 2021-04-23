@@ -1,32 +1,33 @@
-import asyncio
 import pytest
 from aiofiles import tempfile
 import os
 import io
 
+import anyio
 
-@pytest.mark.asyncio
+
+@pytest.mark.anyio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_temporary_file(mode):
     """Test temporary file."""
-    data = b'Hello World!\n' if 'b' in mode else 'Hello World!\n' 
+    data = b'Hello World!\n' if 'b' in mode else 'Hello World!\n'
 
     async with tempfile.TemporaryFile(mode=mode) as f:
         for i in range(3):
-            await f.write(data) 
+            await f.write(data)
 
         await f.flush()
         await f.seek(0)
 
         async for line in f:
             assert line == data
-        
 
-@pytest.mark.asyncio
+
+@pytest.mark.anyio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_named_temporary_file(mode):
     """Test named temporary file."""
-    data = b'Hello World!' if 'b' in mode else 'Hello World!' 
+    data = b'Hello World!' if 'b' in mode else 'Hello World!'
     filename = None
 
     async with tempfile.NamedTemporaryFile(mode=mode) as f:
@@ -42,12 +43,12 @@ async def test_named_temporary_file(mode):
 
     assert not os.path.exists(filename)
 
-        
-@pytest.mark.asyncio
+
+@pytest.mark.anyio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_spooled_temporary_file(mode):
     """Test spooled temporary file."""
-    data = b'Hello World!' if 'b' in mode else 'Hello World!' 
+    data = b'Hello World!' if 'b' in mode else 'Hello World!'
 
     async with tempfile.SpooledTemporaryFile(max_size=len(data)+1, mode=mode) as f:
         await f.write(data)
@@ -64,7 +65,7 @@ async def test_spooled_temporary_file(mode):
         assert await f.read() == data + data
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_temporary_directory():
     """Test temporary directory."""
     dir_path = None

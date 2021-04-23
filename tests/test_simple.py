@@ -8,7 +8,7 @@ pytestmark = pytest.mark.usefixtures("no_trio_support")
 
 
 @pytest.mark.anyio
-async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
+async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port, no_trio_support):
     """Fire up a small simple file server, and fetch a file.
 
     The file is read into memory synchronously, so this test doesn't actually
@@ -38,7 +38,7 @@ async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
 
 
 @pytest.mark.anyio
-async def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
+async def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port, no_trio_support):
     """Fire up a small simple file server, and fetch a file."""
     # First we'll write a small file.
     filename = "test.bin"
