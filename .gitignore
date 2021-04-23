@@ -61,3 +61,6 @@ target/
 .idea/
 *.iml
 .pytest_cache
+
+# VScode
+.vscode/

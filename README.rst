@@ -38,12 +38,21 @@ Asynchronous iteration is also supported.
         async for line in f:
             ...
 
+Asynchronous interface to tempfile module.
+
+.. code-block:: python
+
+    async with aiofiles.tempfile.TemporaryFile('wb') as f:
+        await f.write(b'Hello, World!')
+
+
 Features
 --------
 
 - a file API very similar to Python's standard, blocking API
 - support for buffered and unbuffered binary files, and buffered text files
 - support for ``async``/``await`` (:PEP:`492`) constructs
+- async interface to tempfile module
 
 
 Installation
@@ -97,6 +106,30 @@ several useful ``os`` functions that deal with files:
 * ``mkdir``
 * ``rmdir``
 
+Tempfile
+~~~~~~~~
+
+**aiofiles.tempfile** implements the following interfaces:
+
+- TemporaryFile
+- NamedTemporaryFile
+- SpooledTemporaryFile
+- TemporaryDirectory
+
+Results return wrapped with a context manager allowing use with async with and async for.
+
+.. code-block:: python
+
+    async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
+        await f.write(b'Line1\n Line2')
+        await f.seek(0)
+        async for line in f:
+            print(line)
+
+    async with aiofiles.tempfile.TemporaryDirectory() as d:
+        filename = os.path.join(d, "file.ext")
+
+
 Writing tests for aiofiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -121,6 +154,13 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
+
+0.7.0 (UNRELEASED)
+``````````````````
+- Added the ``aiofiles.tempfile`` module for async temporary files.
+  `#56 <https://github.com/Tinche/aiofiles/pull/56>`_
+- Switched to Poetry and GitHub actions.
+- Dropped 3.5 support.
 
 0.6.0 (2020-10-27)
 ``````````````````
