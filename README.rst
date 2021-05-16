@@ -155,7 +155,7 @@ as desired. The return type also needs to be registered with the
 History
 ~~~~~~~
 
-0.7.0 (UNRELEASED)
+0.7.0 (2021-05-17)
 ``````````````````
 - Added the ``aiofiles.tempfile`` module for async temporary files.
   `#56 <https://github.com/Tinche/aiofiles/pull/56>`_
