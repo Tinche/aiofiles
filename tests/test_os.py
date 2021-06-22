@@ -49,6 +49,27 @@ async def test_rename():
     assert exists(old_filename) and exists(new_filename) is False
 
 
+@pytest.mark.asyncio
+async def test_replace():
+    """Test the replace call."""
+    old_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    new_filename = join(dirname(__file__), "resources", "test_file2.txt")
+
+    await aiofiles.os.replace(old_filename, new_filename)
+    assert exists(old_filename) is False and exists(new_filename)
+    await aiofiles.os.replace(new_filename, old_filename)
+    assert exists(old_filename) and exists(new_filename) is False
+
+    with open(new_filename, "w") as f:
+        f.write("Test file")
+    assert exists(old_filename) and exists(new_filename)
+
+    await aiofiles.os.replace(old_filename, new_filename)
+    assert exists(old_filename) is False and exists(new_filename)
+    await aiofiles.os.replace(new_filename, old_filename)
+    assert exists(old_filename) and exists(new_filename) is False    
+
+
 @pytest.mark.skipif(
     "2.4" < platform.release() < "2.6.33",
     reason="sendfile() syscall doesn't allow file->file",

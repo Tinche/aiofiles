@@ -102,6 +102,7 @@ several useful ``os`` functions that deal with files:
 * ``stat``
 * ``sendfile``
 * ``rename``
+* ``replace``
 * ``remove``
 * ``mkdir``
 * ``rmdir``
