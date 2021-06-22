@@ -17,6 +17,7 @@ def wrap(func):
 
 stat = wrap(os.stat)
 rename = wrap(os.rename)
+replace = wrap(os.replace)
 remove = wrap(os.remove)
 mkdir = wrap(os.mkdir)
 rmdir = wrap(os.rmdir)
