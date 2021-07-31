@@ -2,6 +2,8 @@
 import asyncio
 from functools import partial, wraps
 import os
+from typing import Union
+from pathlib import Path, _ignore_error as pathlib_ignore_error
 
 
 def wrap(func):
@@ -20,6 +22,20 @@ rename = wrap(os.rename)
 remove = wrap(os.remove)
 mkdir = wrap(os.mkdir)
 rmdir = wrap(os.rmdir)
+
+class path:
+    @staticmethod
+    async def exists(path: Union[Path, str]) -> bool:
+        try:
+            await stat(str(path))
+        except OSError as e:
+            if not pathlib_ignore_error(e):
+                raise
+            return False
+        except ValueError:
+            # Non-encodable path
+            return False
+        return True
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)
