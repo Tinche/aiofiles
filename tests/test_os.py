@@ -2,6 +2,7 @@
 import aiofiles.os
 import asyncio
 from os.path import join, dirname, exists, isdir
+import os
 import pytest
 import platform
 
@@ -79,6 +80,17 @@ async def test_sendfile_file(tmpdir):
 
     assert contents == actual_contents
     assert size == actual_size
+
+@pytest.mark.asyncio
+async def test_path_exists():
+    filename = join(dirname(__file__), "resources", "test_file3.txt")
+    with open(filename, "w") as file:
+        file.write("Some Content")
+    exists: bool = await aiofiles.os.path.exists(filename)
+    assert exists == True
+    os.remove(filename)
+    exists = await aiofiles.os.path.exists(filename)
+    assert exists == False
 
 
 @pytest.mark.asyncio
