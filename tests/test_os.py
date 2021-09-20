@@ -74,6 +74,10 @@ async def test_replace():
     "2.4" < platform.release() < "2.6.33",
     reason="sendfile() syscall doesn't allow file->file",
 )
+@pytest.mark.skipif(
+    platform.system() == "Darwin",
+    reason="sendfile() doesn't work on mac",
+)
 @pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
     """Test the sendfile functionality, file-to-file."""
