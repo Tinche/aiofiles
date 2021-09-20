@@ -168,6 +168,8 @@ History
 * aiofiles is now tested on Python 3.10.
 * Added ``aiofiles.os.replace``.
   `#107 <https://github.com/Tinche/aiofiles/pull/107>`_
+* Added ``aiofiles.os.{exists, isfile, isdir, getsize, getatime, getctime, samefile, sameopenfile}``.
+  `#63 <https://github.com/Tinche/aiofiles/pull/63>`_
 
 0.7.0 (2021-05-17)
 ``````````````````
