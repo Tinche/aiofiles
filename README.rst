@@ -155,6 +155,11 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
+0.8.0 (UNRELEASED)
+``````````````````
+* aiofiles is now tested on Python 3.10.
+* Added ``aiofiles.os.replace``.
+  `#107 <https://github.com/Tinche/aiofiles/pull/107>`_
 
 0.7.0 (2021-05-17)
 ``````````````````
