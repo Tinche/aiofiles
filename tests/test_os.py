@@ -16,51 +16,12 @@ async def test_stat():
     assert stat_res.st_size == 10
 
 
-@asyncio.coroutine
 @pytest.mark.asyncio
-def test_remove():
+async def test_remove():
     """Test the remove call."""
     filename = join(dirname(__file__), 'resources', 'test_file2.txt')
     with open(filename, 'w') as f:
         f.write('Test file for remove call')
-
-    assert exists(filename)
-    yield from aiofiles.os.remove(filename)
-    assert exists(filename) is False
-
-
-@asyncio.coroutine
-@pytest.mark.asyncio
-def test_mkdir_and_rmdir():
-    """Test the mkdir and rmdir call."""
-    directory = join(dirname(__file__), 'resources', 'test_dir')
-    yield from aiofiles.os.mkdir(directory)
-    assert isdir(directory)
-    yield from aiofiles.os.rmdir(directory)
-    assert exists(directory) is False
-
-
-@asyncio.coroutine
-@pytest.mark.asyncio
-def test_rename():
-    """Test the rename call."""
-    old_filename = join(dirname(__file__), 'resources', 'test_file1.txt')
-    new_filename = join(dirname(__file__), 'resources', 'test_file2.txt')
-    yield from aiofiles.os.rename(old_filename, new_filename)
-    assert exists(old_filename) is False and exists(new_filename)
-    yield from aiofiles.os.rename(new_filename, old_filename)
-    assert exists(old_filename) and exists(new_filename) is False
-
-
-@asyncio.coroutine
-@pytest.mark.skipif('2.4' < platform.release() < '2.6.33',
-                    reason = "sendfile() syscall doesn't allow file->file")
-@pytest.mark.asyncio
-async def test_remove():
-    """Test the remove call."""
-    filename = join(dirname(__file__), "resources", "test_file2.txt")
-    with open(filename, "w") as f:
-        f.write("Test file for remove call")
 
     assert exists(filename)
     await aiofiles.os.remove(filename)
@@ -70,7 +31,7 @@ async def test_remove():
 @pytest.mark.asyncio
 async def test_mkdir_and_rmdir():
     """Test the mkdir and rmdir call."""
-    directory = join(dirname(__file__), "resources", "test_dir")
+    directory = join(dirname(__file__), 'resources', 'test_dir')
     await aiofiles.os.mkdir(directory)
     assert isdir(directory)
     await aiofiles.os.rmdir(directory)
@@ -80,8 +41,8 @@ async def test_mkdir_and_rmdir():
 @pytest.mark.asyncio
 async def test_rename():
     """Test the rename call."""
-    old_filename = join(dirname(__file__), "resources", "test_file1.txt")
-    new_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    old_filename = join(dirname(__file__), 'resources', 'test_file1.txt')
+    new_filename = join(dirname(__file__), 'resources', 'test_file2.txt')
     await aiofiles.os.rename(old_filename, new_filename)
     assert exists(old_filename) is False and exists(new_filename)
     await aiofiles.os.rename(new_filename, old_filename)
