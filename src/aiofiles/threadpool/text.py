@@ -24,7 +24,14 @@ from .utils import (
 )
 @proxy_method_directly("detach", "fileno", "readable")
 @proxy_property_directly(
-    "buffer", "closed", "encoding", "errors", "line_buffering", "newlines", "name", "mode"
+    "buffer",
+    "closed",
+    "encoding",
+    "errors",
+    "line_buffering",
+    "newlines",
+    "name",
+    "mode",
 )
 class AsyncTextIOWrapper(AsyncBase):
     """The asyncio executor version of io.TextIOWrapper."""
