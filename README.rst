@@ -105,7 +105,9 @@ several useful ``os`` functions that deal with files:
 * ``replace``
 * ``remove``
 * ``mkdir``
+* ``makedirs``
 * ``rmdir``
+* ``removedirs``
 * ``path.exists``
 * ``path.isfile``
 * ``path.isdir``
@@ -168,6 +170,7 @@ History
 * aiofiles is now tested on Python 3.10.
 * Added ``aiofiles.os.replace``.
   `#107 <https://github.com/Tinche/aiofiles/pull/107>`_
+* Added ``aiofiles.os.{makedirs, removedirs}``.
 * Added ``aiofiles.os.path.{exists, isfile, isdir, getsize, getatime, getctime, samefile, sameopenfile}``.
   `#63 <https://github.com/Tinche/aiofiles/pull/63>`_
 
