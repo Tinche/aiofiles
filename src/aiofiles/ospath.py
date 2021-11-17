@@ -3,7 +3,7 @@
 from .os import wrap
 from os import path
 
-exist = wrap(path.exists)
+exists = wrap(path.exists)
 isfile = wrap(path.isfile)
 isdir = wrap(path.isdir)
 getsize = wrap(path.getsize)
