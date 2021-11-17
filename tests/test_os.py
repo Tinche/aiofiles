@@ -144,7 +144,7 @@ async def test_sendfile_socket(unused_tcp_port):
 async def test_exists():
     """Test path.exists call."""
     filename = join(dirname(__file__), 'resources', 'test_file1.txt')
-    result = await aiofiles.os.path.exist(filename)
+    result = await aiofiles.os.path.exists(filename)
     assert result
 
 
