@@ -113,10 +113,12 @@ def SpooledTemporaryFile(
     )
 
 
-def TemporaryDirectory(loop=None, executor=None):
+def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=None):
     """Async open a temporary directory"""
     return AiofilesContextManagerTempDir(
-        _temporary_directory(loop=loop, executor=executor)
+        _temporary_directory(
+            suffix=suffix, prefix=prefix, dir=dir, loop=loop, executor=executor
+        )
     )
 
 
@@ -213,12 +215,15 @@ async def _spooled_temporary_file(
     return AsyncSpooledTemporaryFile(f, loop=loop, executor=executor)
 
 
-async def _temporary_directory(loop=None, executor=None):
+async def _temporary_directory(
+    suffix=None, prefix=None, dir=None, loop=None, executor=None
+):
     """Async method to open a temporary directory with async interface"""
     if loop is None:
         loop = asyncio.get_event_loop()
 
-    f = await loop.run_in_executor(executor, syncTemporaryDirectory)
+    cb = partial(syncTemporaryDirectory, suffix, prefix, dir)
+    f = await loop.run_in_executor(executor, cb)
 
     return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
 

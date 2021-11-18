@@ -6,10 +6,10 @@ import pytest
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_iteration(mode):
     """Test iterating over lines from a file."""
-    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
     async with aioopen(filename, mode=mode) as file:
         # Append mode needs us to seek.
@@ -22,7 +22,7 @@ async def test_simple_iteration(mode):
             line = await file.readline()
             if not line:
                 break
-            assert line.strip() == 'line ' + str(counter)
+            assert line.strip() == "line " + str(counter)
             counter += 1
 
         await file.seek(0)
@@ -30,19 +30,19 @@ async def test_simple_iteration(mode):
 
         # The new iteration pattern:
         async for line in file:
-            assert line.strip() == 'line ' + str(counter)
+            assert line.strip() == "line " + str(counter)
             counter += 1
 
     assert file.closed
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_readlines(mode):
     """Test the readlines functionality."""
-    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
-    with open(filename, mode='r') as f:
+    with open(filename, mode="r") as f:
         expected = f.readlines()
 
     async with aioopen(filename, mode=mode) as file:
@@ -57,50 +57,50 @@ async def test_simple_readlines(mode):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r+', 'w', 'a'])
+@pytest.mark.parametrize("mode", ["r+", "w", "a"])
 async def test_simple_flush(mode, tmpdir):
     """Test flushing to a file."""
-    filename = 'file.bin'
+    filename = "file.bin"
 
     full_file = tmpdir.join(filename)
 
-    if 'r' in mode:
+    if "r" in mode:
         full_file.ensure()  # Read modes want it to already exist.
 
     async with aioopen(str(full_file), mode=mode) as file:
-        await file.write('0')  # Shouldn't flush.
+        await file.write("0")  # Shouldn't flush.
 
-        assert '' == full_file.read_text(encoding='utf8')
+        assert "" == full_file.read_text(encoding="utf8")
 
         await file.flush()
 
-        assert '0' == full_file.read_text(encoding='utf8')
+        assert "0" == full_file.read_text(encoding="utf8")
 
     assert file.closed
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_read(mode):
     """Just read some bytes from a test file."""
-    filename = join(dirname(__file__), '..', 'resources', 'test_file1.txt')
+    filename = join(dirname(__file__), "..", "resources", "test_file1.txt")
     async with aioopen(filename, mode=mode) as file:
         await file.seek(0)  # Needed for the append mode.
 
         actual = await file.read()
 
-        assert '' == (await file.read())
-    assert actual == open(filename, mode='r').read()
+        assert "" == (await file.read())
+    assert actual == open(filename, mode="r").read()
 
     assert file.closed
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['w', 'a'])
+@pytest.mark.parametrize("mode", ["w", "a"])
 async def test_simple_read_fail(mode, tmpdir):
     """Try reading some bytes and fail."""
-    filename = 'bigfile.bin'
-    content = '0123456789' * 4 * io.DEFAULT_BUFFER_SIZE
+    filename = "bigfile.bin"
+    content = "0123456789" * 4 * io.DEFAULT_BUFFER_SIZE
 
     full_file = tmpdir.join(filename)
     full_file.write(content)
@@ -114,10 +114,10 @@ async def test_simple_read_fail(mode, tmpdir):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_staggered_read(mode):
     """Read bytes repeatedly."""
-    filename = join(dirname(__file__), '..', 'resources', 'test_file1.txt')
+    filename = join(dirname(__file__), "..", "resources", "test_file1.txt")
     async with aioopen(filename, mode=mode) as file:
         await file.seek(0)  # Needed for the append mode.
 
@@ -129,10 +129,10 @@ async def test_staggered_read(mode):
             else:
                 break
 
-        assert '' == (await file.read())
+        assert "" == (await file.read())
 
     expected = []
-    with open(filename, mode='r') as f:
+    with open(filename, mode="r") as f:
         while True:
             char = f.read(1)
             if char:
@@ -146,28 +146,28 @@ async def test_staggered_read(mode):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_seek(mode, tmpdir):
     """Test seeking and then reading."""
-    filename = 'bigfile.bin'
-    content = '0123456789' * 4 * io.DEFAULT_BUFFER_SIZE
+    filename = "bigfile.bin"
+    content = "0123456789" * 4 * io.DEFAULT_BUFFER_SIZE
 
     full_file = tmpdir.join(filename)
     full_file.write(content)
 
     async with aioopen(str(full_file), mode=mode) as file:
         await file.seek(4)
-        assert '4' == (await file.read(1))
+        assert "4" == (await file.read(1))
 
     assert file.closed
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['w', 'r', 'r+', 'w+', 'a', 'a+'])
+@pytest.mark.parametrize("mode", ["w", "r", "r+", "w+", "a", "a+"])
 async def test_simple_close(mode, tmpdir):
     """Open a file, read a byte, and close it."""
-    filename = 'bigfile.bin'
-    content = '0' * 4 * io.DEFAULT_BUFFER_SIZE
+    filename = "bigfile.bin"
+    content = "0" * 4 * io.DEFAULT_BUFFER_SIZE
 
     full_file = tmpdir.join(filename)
     full_file.write(content)
@@ -181,11 +181,11 @@ async def test_simple_close(mode, tmpdir):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r+', 'w', 'a+'])
+@pytest.mark.parametrize("mode", ["r+", "w", "a+"])
 async def test_simple_truncate(mode, tmpdir):
     """Test truncating files."""
-    filename = 'bigfile.bin'
-    content = '0123456789' * 4 * io.DEFAULT_BUFFER_SIZE
+    filename = "bigfile.bin"
+    content = "0123456789" * 4 * io.DEFAULT_BUFFER_SIZE
 
     full_file = tmpdir.join(filename)
     full_file.write(content)
@@ -194,7 +194,7 @@ async def test_simple_truncate(mode, tmpdir):
         # The append modes want us to seek first.
         await file.seek(0)
 
-        if 'w' in mode:
+        if "w" in mode:
             # We've just erased the entire file.
             await file.write(content)
             await file.flush()
@@ -202,19 +202,19 @@ async def test_simple_truncate(mode, tmpdir):
 
         await file.truncate()
 
-    assert '' == full_file.read()
+    assert "" == full_file.read()
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['w', 'r+', 'w+', 'a', 'a+'])
+@pytest.mark.parametrize("mode", ["w", "r+", "w+", "a", "a+"])
 async def test_simple_write(mode, tmpdir):
     """Test writing into a file."""
-    filename = 'bigfile.bin'
-    content = '0' * 4 * io.DEFAULT_BUFFER_SIZE
+    filename = "bigfile.bin"
+    content = "0" * 4 * io.DEFAULT_BUFFER_SIZE
 
     full_file = tmpdir.join(filename)
 
-    if 'r' in mode:
+    if "r" in mode:
         full_file.ensure()  # Read modes want it to already exist.
 
     async with aioopen(str(full_file), mode=mode) as file:
@@ -228,13 +228,13 @@ async def test_simple_write(mode, tmpdir):
 @pytest.mark.asyncio
 async def test_simple_detach(tmpdir):
     """Test detaching for buffered streams."""
-    filename = 'file.bin'
+    filename = "file.bin"
 
     full_file = tmpdir.join(filename)
-    full_file.write('0123456789')
+    full_file.write("0123456789")
 
     with pytest.raises(ValueError):  # Close will error out.
-        async with aioopen(str(full_file), mode='r') as file:
+        async with aioopen(str(full_file), mode="r") as file:
             raw_file = file.detach()
 
             assert raw_file
@@ -242,14 +242,14 @@ async def test_simple_detach(tmpdir):
             with pytest.raises(ValueError):
                 await file.read()
 
-            assert b'0123456789' == raw_file.read(10)
+            assert b"0123456789" == raw_file.read(10)
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_iteration_ctx_mgr(mode):
     """Test iterating over lines from a file."""
-    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
     async with aioopen(filename, mode=mode) as file:
         assert not file.closed
@@ -258,17 +258,17 @@ async def test_simple_iteration_ctx_mgr(mode):
         counter = 1
 
         async for line in file:
-            assert line.strip() == 'line ' + str(counter)
+            assert line.strip() == "line " + str(counter)
             counter += 1
 
     assert file.closed
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_name_property(mode):
     """Test iterating over lines from a file."""
-    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
     async with aioopen(filename, mode=mode) as file:
         assert file.name == filename
@@ -277,10 +277,10 @@ async def test_name_property(mode):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('mode', ['r', 'r+', 'a+'])
+@pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_mode_property(mode):
     """Test iterating over lines from a file."""
-    filename = join(dirname(__file__), '..', 'resources', 'multiline_file.txt')
+    filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
     async with aioopen(filename, mode=mode) as file:
         assert file.mode == mode

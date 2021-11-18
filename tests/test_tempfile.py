@@ -9,24 +9,24 @@ import io
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_temporary_file(mode):
     """Test temporary file."""
-    data = b'Hello World!\n' if 'b' in mode else 'Hello World!\n' 
+    data = b"Hello World!\n" if "b" in mode else "Hello World!\n"
 
     async with tempfile.TemporaryFile(mode=mode) as f:
         for i in range(3):
-            await f.write(data) 
+            await f.write(data)
 
         await f.flush()
         await f.seek(0)
 
         async for line in f:
             assert line == data
-        
+
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_named_temporary_file(mode):
     """Test named temporary file."""
-    data = b'Hello World!' if 'b' in mode else 'Hello World!' 
+    data = b"Hello World!" if "b" in mode else "Hello World!"
     filename = None
 
     async with tempfile.NamedTemporaryFile(mode=mode) as f:
@@ -42,22 +42,22 @@ async def test_named_temporary_file(mode):
 
     assert not os.path.exists(filename)
 
-        
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_spooled_temporary_file(mode):
     """Test spooled temporary file."""
-    data = b'Hello World!' if 'b' in mode else 'Hello World!' 
+    data = b"Hello World!" if "b" in mode else "Hello World!"
 
-    async with tempfile.SpooledTemporaryFile(max_size=len(data)+1, mode=mode) as f:
+    async with tempfile.SpooledTemporaryFile(max_size=len(data) + 1, mode=mode) as f:
         await f.write(data)
         await f.flush()
-        if 'b' in mode:
+        if "b" in mode:
             assert type(f._file._file) is io.BytesIO
 
         await f.write(data)
         await f.flush()
-        if 'b' in mode:
+        if "b" in mode:
             assert type(f._file._file) is not io.BytesIO
 
         await f.seek(0)
@@ -65,13 +65,17 @@ async def test_spooled_temporary_file(mode):
 
 
 @pytest.mark.asyncio
-async def test_temporary_directory():
+@pytest.mark.parametrize("prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")])
+async def test_temporary_directory(prefix, suffix, tmp_path):
     """Test temporary directory."""
     dir_path = None
 
-    async with tempfile.TemporaryDirectory() as d:
+    async with tempfile.TemporaryDirectory(
+        suffix=suffix, prefix=prefix, dir=tmp_path
+    ) as d:
         dir_path = d
         assert os.path.exists(dir_path)
         assert os.path.isdir(dir_path)
-
+        assert d[-1] == suffix
+        assert d.split("/")[-1][0] == prefix
     assert not os.path.exists(dir_path)

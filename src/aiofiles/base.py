@@ -12,9 +12,9 @@ class AsyncBase:
     def __aiter__(self):
         """We are our own iterator."""
         return self
-    
+
     def __repr__(self):
-        return super().__repr__() + ' wrapping ' + repr(self._file)
+        return super().__repr__() + " wrapping " + repr(self._file)
 
     async def __anext__(self):
         """Simulate normal file iteration."""
