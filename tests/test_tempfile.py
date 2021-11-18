@@ -77,5 +77,5 @@ async def test_temporary_directory(prefix, suffix, tmp_path):
         assert os.path.exists(dir_path)
         assert os.path.isdir(dir_path)
         assert d[-1] == suffix
-        assert d.split("/")[-1][0] == prefix
+        assert d.split(os.sep)[-1][0] == prefix
     assert not os.path.exists(dir_path)
