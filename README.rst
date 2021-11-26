@@ -173,6 +173,7 @@ History
 * Added ``aiofiles.os.{makedirs, removedirs}``.
 * Added ``aiofiles.os.path.{exists, isfile, isdir, getsize, getatime, getctime, samefile, sameopenfile}``.
   `#63 <https://github.com/Tinche/aiofiles/pull/63>`_
+* Added `suffix`, `prefix`, `dir` args to ``aiofiles.tempfile.TemporaryDirectory``
 
 0.7.0 (2021-05-17)
 ``````````````````
