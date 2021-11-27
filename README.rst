@@ -165,7 +165,7 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
-0.8.0 (UNRELEASED)
+0.8.0 (2021-11-27)
 ``````````````````
 * aiofiles is now tested on Python 3.10.
 * Added ``aiofiles.os.replace``.
