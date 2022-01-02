@@ -20,6 +20,7 @@ from . import ospath as path
 
 stat = wrap(os.stat)
 rename = wrap(os.rename)
+renames = wrap(os.renames)
 replace = wrap(os.replace)
 remove = wrap(os.remove)
 mkdir = wrap(os.mkdir)
