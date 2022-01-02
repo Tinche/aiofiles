@@ -1,6 +1,7 @@
 """Tests for asyncio's os module."""
 import aiofiles.os
 import asyncio
+from os import stat
 from os.path import join, dirname, exists, isdir
 import pytest
 import platform
@@ -208,3 +209,19 @@ async def test_getctime():
     filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.getctime(filename)
     assert result
+
+
+@pytest.mark.asyncio
+async def test_link():
+    """Test the link call."""
+    src_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    dst_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    await aiofiles.os.link(src_filename, dst_filename)
+    assert (
+        exists(src_filename) and
+        exists(dst_filename) and
+        stat(src_filename).st_ino == stat(dst_filename).st_ino
+    )
+    await aiofiles.os.remove(dst_filename)
+    assert exists(src_filename) and exists(dst_filename) is False
+
