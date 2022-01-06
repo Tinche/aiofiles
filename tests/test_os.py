@@ -30,6 +30,18 @@ async def test_remove():
 
 
 @pytest.mark.asyncio
+async def test_unlink():
+    """Test the unlink call."""
+    filename = join(dirname(__file__), "resources", "test_file2.txt")
+    with open(filename, "w") as f:
+        f.write("Test file for unlink call")
+
+    assert exists(filename)
+    await aiofiles.os.unlink(filename)
+    assert exists(filename) is False
+
+
+@pytest.mark.asyncio
 async def test_mkdir_and_rmdir():
     """Test the mkdir and rmdir call."""
     directory = join(dirname(__file__), "resources", "test_dir")
