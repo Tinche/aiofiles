@@ -239,9 +239,8 @@ async def test_link():
         exists(src_filename)
         and exists(dst_filename)
         and (stat(src_filename).st_ino == stat(dst_filename).st_ino)
-        and (stat(src_filename).st_nlink == initial_src_nlink + 1)(
-            stat(dst_filename).st_nlink == 2
-        )
+        and (stat(src_filename).st_nlink == initial_src_nlink + 1)
+        and (stat(dst_filename).st_nlink == 2)
     )
     await aiofiles.os.remove(dst_filename)
     assert (
