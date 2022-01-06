@@ -29,6 +29,7 @@ makedirs = wrap(os.makedirs)
 rmdir = wrap(os.rmdir)
 removedirs = wrap(os.removedirs)
 link = wrap(os.link)
+symlink = wrap(os.symlink)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)

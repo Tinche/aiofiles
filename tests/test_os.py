@@ -245,12 +245,34 @@ async def test_link():
     """Test the link call."""
     src_filename = join(dirname(__file__), "resources", "test_file1.txt")
     dst_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    initial_src_nlink = stat(src_filename).st_nlink
     await aiofiles.os.link(src_filename, dst_filename)
     assert (
-        exists(src_filename) and
-        exists(dst_filename) and
-        stat(src_filename).st_ino == stat(dst_filename).st_ino
+        exists(src_filename)
+        and exists(dst_filename)
+        and (stat(src_filename).st_ino == stat(dst_filename).st_ino)
+        and (stat(src_filename).st_nlink == initial_src_nlink + 1)(
+            stat(dst_filename).st_nlink == 2
+        )
+    )
+    await aiofiles.os.remove(dst_filename)
+    assert (
+        exists(src_filename)
+        and exists(dst_filename) is False
+        and (stat(src_filename).st_nlink == initial_src_nlink)
+    )
+
+
+@pytest.mark.asyncio
+async def test_symlink():
+    """Test the symlink call."""
+    src_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    dst_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    await aiofiles.os.symlink(src_filename, dst_filename)
+    assert (
+        exists(src_filename)
+        and exists(dst_filename)
+        and stat(src_filename).st_ino == stat(dst_filename).st_ino
     )
     await aiofiles.os.remove(dst_filename)
     assert exists(src_filename) and exists(dst_filename) is False
-
