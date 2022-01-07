@@ -6,6 +6,7 @@ from os import path
 exists = wrap(path.exists)
 isfile = wrap(path.isfile)
 isdir = wrap(path.isdir)
+islink = wrap(path.islink)
 getsize = wrap(path.getsize)
 getmtime = wrap(path.getmtime)
 getatime = wrap(path.getatime)

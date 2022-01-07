@@ -193,6 +193,16 @@ async def test_isdir():
 
 
 @pytest.mark.asyncio
+async def test_islink():
+    """Test the path.islink call."""
+    src_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    dst_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    await aiofiles.os.symlink(src_filename, dst_filename)
+    assert await aiofiles.os.path.islink(dst_filename)
+    await aiofiles.os.remove(dst_filename)
+
+
+@pytest.mark.asyncio
 async def test_getsize():
     """Test path.getsize call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
