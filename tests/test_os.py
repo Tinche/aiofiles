@@ -275,3 +275,13 @@ async def test_symlink():
     )
     await aiofiles.os.remove(dst_filename)
     assert exists(src_filename) and exists(dst_filename) is False
+
+
+@pytest.mark.asyncio
+async def test_readlink():
+    """Test the readlink call."""
+    src_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    dst_filename = join(dirname(__file__), "resources", "test_file2.txt")
+    await aiofiles.os.symlink(src_filename, dst_filename)
+    symlinked_path = await aiofiles.os.readlink(dst_filename)
+    assert src_filename == symlinked_path
