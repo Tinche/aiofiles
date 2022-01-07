@@ -285,3 +285,4 @@ async def test_readlink():
     await aiofiles.os.symlink(src_filename, dst_filename)
     symlinked_path = await aiofiles.os.readlink(dst_filename)
     assert src_filename == symlinked_path
+    await aiofiles.os.remove(dst_filename)
