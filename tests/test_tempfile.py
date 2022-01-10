@@ -65,6 +65,28 @@ async def test_spooled_temporary_file(mode):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "test_string, newlines", [("LF\n", "\n"), ("CRLF\r\n", "\r\n")]
+)
+async def test_spooled_temporary_file_newlines(test_string, newlines):
+    """
+    Test `newlines` property in spooled temporary file.
+    issue https://github.com/Tinche/aiofiles/issues/118
+    """
+
+    async with tempfile.SpooledTemporaryFile(mode="w+") as f:
+        await f.write(test_string)
+        await f.flush()
+        await f.seek(0)
+
+        assert f.newlines is None
+
+        await f.read()
+
+        assert f.newlines == newlines
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")])
 async def test_temporary_directory(prefix, suffix, tmp_path):
     """Test temporary directory."""
