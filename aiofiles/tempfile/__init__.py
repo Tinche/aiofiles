@@ -1,32 +1,20 @@
 # -*- coding: utf-8 -*-
 from asyncio import get_running_loop
 from functools import partial, singledispatch
-from io import (
-    FileIO,
-    TextIOBase,
-    BufferedReader,
-    BufferedWriter,
-    BufferedRandom
-)
+from io import (BufferedRandom, BufferedReader, BufferedWriter, FileIO,
+                TextIOBase)
+from tempfile import NamedTemporaryFile as syncNamedTemporaryFile
+from tempfile import SpooledTemporaryFile as syncSpooledTemporaryFile
+from tempfile import TemporaryDirectory as syncTemporaryDirectory
+from tempfile import TemporaryFile as syncTemporaryFile
+from tempfile import _TemporaryFileWrapper as syncTemporaryFileWrapper
 
-from tempfile import (
-    TemporaryFile as syncTemporaryFile,
-    NamedTemporaryFile as syncNamedTemporaryFile,
-    SpooledTemporaryFile as syncSpooledTemporaryFile,
-    TemporaryDirectory as syncTemporaryDirectory,
-    _TemporaryFileWrapper as syncTemporaryFileWrapper,
-)
 from aiofiles.base import AiofilesContextManager
+from aiofiles.tempfile.temptypes import (AsyncSpooledTemporaryFile,
+                                         AsyncTemporaryDirectory)
+from aiofiles.threadpool.binary import (AsyncBufferedIOBase,
+                                        AsyncBufferedReader, AsyncFileIO)
 from aiofiles.threadpool.text import AsyncTextIOWrapper
-from aiofiles.threadpool.binary import (
-    AsyncBufferedIOBase,
-    AsyncBufferedReader,
-    AsyncFileIO
-)
-from aiofiles.tempfile.temptypes import (
-    AsyncSpooledTemporaryFile,
-    AsyncTemporaryDirectory
-)
 
 __all__ = [
     "NamedTemporaryFile",

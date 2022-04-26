@@ -3,9 +3,7 @@
 import os
 
 import aiofiles.ospath as path  # noqa: F401
-
 from aiofiles.base import asyncify
-
 
 stat = asyncify(os.stat)
 rename = asyncify(os.rename)

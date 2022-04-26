@@ -4,11 +4,9 @@
 from functools import partial
 
 from aiofiles.base import AsyncBase
-from aiofiles.threadpool.utils import (
-    delegate_to_executor,
-    proxy_property_directly,
-    cond_delegate_to_executor,
-)
+from aiofiles.threadpool.utils import (cond_delegate_to_executor,
+                                       delegate_to_executor,
+                                       proxy_property_directly)
 
 
 @delegate_to_executor("fileno", "rollover")

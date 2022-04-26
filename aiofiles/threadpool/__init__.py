@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 """Handle files using a thread pool executor."""
 import asyncio
+from functools import partial, singledispatch
+from io import (BufferedRandom, BufferedReader, BufferedWriter, FileIO,
+                TextIOBase)
 from types import coroutine
 
-from io import (
-    FileIO,
-    TextIOBase,
-    BufferedReader,
-    BufferedWriter,
-    BufferedRandom,
-)
-from functools import partial, singledispatch
-
+from ..base import AiofilesContextManager
 from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from .text import AsyncTextIOWrapper
-from ..base import AiofilesContextManager
 
 sync_open = open
 
