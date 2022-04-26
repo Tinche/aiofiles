@@ -20,6 +20,6 @@ repos:
     hooks:
     -   id: tox
         name: run-tox-locally
-        entry: tox
+        entry: python -m tox
         language: system
         types: [python]
