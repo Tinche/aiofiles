@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Tests for asyncio's os module."""
 import aiofiles.os
 import asyncio
@@ -73,9 +74,9 @@ async def test_renames():
     assert exists(old_filename) is False and exists(new_filename)
     await aiofiles.os.renames(new_filename, old_filename)
     assert (
-        exists(old_filename) and
-        exists(new_filename) is False and
-        exists(dirname(new_filename)) is False
+        exists(old_filename)
+        and exists(new_filename) is False
+        and exists(dirname(new_filename)) is False
     )
 
 
@@ -158,7 +159,8 @@ async def test_sendfile_socket(unused_tcp_port):
 
     server = await asyncio.start_server(serve_file, port=unused_tcp_port)
 
-    reader, writer = await asyncio.open_connection("127.0.0.1", unused_tcp_port)
+    conn = await asyncio.open_connection("127.0.0.1", unused_tcp_port)
+    reader, writer = conn
     actual_contents = await reader.read()
     writer.close()
 

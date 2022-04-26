@@ -1,16 +1,14 @@
-"""Async wrappers for spooled temp files and temp directory objects"""
+# -*- coding: utf-8 -*-
+"""Async wrappers for spooled temp files and temp directory objects."""
 
-# Imports
-import asyncio
-from types import coroutine
+from functools import partial
 
-from ..base import AsyncBase
-from ..threadpool.utils import (
+from aiofiles.base import AsyncBase
+from aiofiles.threadpool.utils import (
     delegate_to_executor,
     proxy_property_directly,
     cond_delegate_to_executor,
 )
-from functools import partial
 
 
 @delegate_to_executor("fileno", "rollover")
@@ -25,7 +23,12 @@ from functools import partial
     "tell",
     "truncate",
 )
-@proxy_property_directly("closed", "encoding", "mode", "name", "newlines", "softspace")
+@proxy_property_directly("closed",
+                         "encoding",
+                         "mode",
+                         "name",
+                         "newlines",
+                         "softspace")
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 

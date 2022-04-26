@@ -1,6 +1,23 @@
+# -*- coding: utf-8 -*-
 """Various base classes."""
-from types import coroutine
+
+from asyncio import get_running_loop
 from collections.abc import Coroutine
+from contextvars import copy_context
+from functools import partial, wraps
+from types import coroutine
+
+
+def asyncify(func):
+    @wraps(func)
+    async def run(*args, loop=None, executor=None, **kwargs):
+        if loop is None:
+            loop = get_running_loop()
+        ctx = copy_context()
+        pfunc = partial(ctx.run, func, *args, **kwargs)
+        return await loop.run_in_executor(executor, pfunc)
+
+    return run
 
 
 class AsyncBase:

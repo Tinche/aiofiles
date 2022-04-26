@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Handle files using a thread pool executor."""
 import asyncio
 from types import coroutine
