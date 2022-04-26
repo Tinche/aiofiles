@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Simple tests verifying basic functionality."""
 import asyncio
-from aiofiles import threadpool
+
 import pytest
+
+from aiofiles import threadpool
 
 
 @pytest.mark.asyncio

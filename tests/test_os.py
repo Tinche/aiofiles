@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """Tests for asyncio's os module."""
-import aiofiles.os
 import asyncio
-from os import stat
-from os.path import join, dirname, exists, isdir
-import pytest
 import platform
+from os import stat
+from os.path import dirname, exists, isdir, join
+
+import pytest
+
+import aiofiles.os
 
 
 @pytest.mark.asyncio
@@ -15,7 +17,7 @@ async def test_stat():
 
     stat_res = await aiofiles.os.stat(filename)
 
-    assert stat_res.st_size == 10
+    assert stat_res.st_size == 11
 
 
 @pytest.mark.asyncio
@@ -209,7 +211,7 @@ async def test_getsize():
     """Test path.getsize call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.getsize(filename)
-    assert result == 10
+    assert result == 11
 
 
 @pytest.mark.asyncio

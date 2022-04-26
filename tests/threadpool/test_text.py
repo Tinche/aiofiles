@@ -2,8 +2,10 @@
 """PEP 0492/Python 3.5+ tests for text files."""
 import io
 from os.path import dirname, join
-from aiofiles.threadpool import open as aioopen
+
 import pytest
+
+from aiofiles.threadpool import open as aioopen
 
 
 @pytest.mark.asyncio

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-import pytest
-from aiofiles.tempfile import (
-    TemporaryDirectory,
-    NamedTemporaryFile,
-    SpooledTemporaryFile,
-    TemporaryFile
-)
-import os
 import io
+import os
 import sys
+
+import pytest
+
+from aiofiles.tempfile import (NamedTemporaryFile, SpooledTemporaryFile,
+                               TemporaryDirectory, TemporaryFile)
 
 
 @pytest.mark.asyncio

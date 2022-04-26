@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test concurrency properties of the implementation."""
-from os.path import dirname
-from os.path import join
-import time
 import asyncio
+import time
+from os.path import dirname, join
+
 import pytest
 
 import aiofiles.threadpool

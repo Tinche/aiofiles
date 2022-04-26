@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test the open functionality."""
-from aiofiles.threadpool import open as aioopen, wrap
 import pytest
+
+from aiofiles.threadpool import open as aioopen
+from aiofiles.threadpool import wrap
 
 
 @pytest.mark.asyncio
