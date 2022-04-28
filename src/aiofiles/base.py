@@ -5,8 +5,13 @@ from asyncio import get_running_loop
 from collections.abc import Coroutine
 from contextvars import copy_context
 from functools import partial, wraps
-from inspect import (isasyncgen, isasyncgenfunction, isawaitable, iscoroutine,
-                     iscoroutinefunction)
+from inspect import (
+    isasyncgen,
+    isasyncgenfunction,
+    isawaitable,
+    iscoroutine,
+    iscoroutinefunction,
+)
 from types import coroutine
 
 

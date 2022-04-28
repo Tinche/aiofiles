@@ -5,8 +5,12 @@ import sys
 
 import pytest
 
-from aiofiles.tempfile import (NamedTemporaryFile, SpooledTemporaryFile,
-                               TemporaryDirectory, TemporaryFile)
+from aiofiles.tempfile import (
+    NamedTemporaryFile,
+    SpooledTemporaryFile,
+    TemporaryDirectory,
+    TemporaryFile,
+)
 
 
 @pytest.mark.asyncio
@@ -98,8 +102,9 @@ async def test_spooled_temporary_file_newlines(test_string, newlines):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("prefix, suffix",
-                         [("a", "b"), ("c", "d"), ("e", "f")])
+@pytest.mark.parametrize(
+    "prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")]
+)
 async def test_temporary_directory(prefix, suffix, tmp_path):
     """Test temporary directory."""
     dir_path = None

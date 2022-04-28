@@ -4,9 +4,11 @@
 from functools import partial
 
 from aiofiles.base import AsyncBase
-from aiofiles.threadpool.utils import (cond_delegate_to_executor,
-                                       delegate_to_executor,
-                                       proxy_property_directly)
+from aiofiles.threadpool.utils import (
+    cond_delegate_to_executor,
+    delegate_to_executor,
+    proxy_property_directly,
+)
 
 
 @delegate_to_executor("fileno", "rollover")
@@ -21,12 +23,9 @@ from aiofiles.threadpool.utils import (cond_delegate_to_executor,
     "tell",
     "truncate",
 )
-@proxy_property_directly("closed",
-                         "encoding",
-                         "mode",
-                         "name",
-                         "newlines",
-                         "softspace")
+@proxy_property_directly(
+    "closed", "encoding", "mode", "name", "newlines", "softspace"
+)
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 

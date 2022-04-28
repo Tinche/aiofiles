@@ -2,8 +2,13 @@
 """Handle files using a thread pool executor."""
 import asyncio
 from functools import partial, singledispatch
-from io import (BufferedRandom, BufferedReader, BufferedWriter, FileIO,
-                TextIOBase)
+from io import (
+    BufferedRandom,
+    BufferedReader,
+    BufferedWriter,
+    FileIO,
+    TextIOBase,
+)
 from types import coroutine
 
 from ..base import AiofilesContextManager

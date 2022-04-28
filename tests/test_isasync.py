@@ -18,7 +18,7 @@ def foo() -> str:
 
 def test_foo():
     """Test function."""
-    assert foo() == 'function'
+    assert foo() == "function"
 
 
 def gen() -> Generator:
@@ -28,7 +28,7 @@ def gen() -> Generator:
 
 def test_gen():
     """Test generator."""
-    assert next(gen()) == 'generator'
+    assert next(gen()) == "generator"
 
 
 async def afoo() -> str:
@@ -40,7 +40,7 @@ async def afoo() -> str:
 @pytest.mark.asyncio
 async def test_afoo():
     """Test async function"""
-    assert await afoo() == 'async function'
+    assert await afoo() == "async function"
 
 
 async def agen() -> AsyncGenerator:
@@ -52,7 +52,7 @@ async def agen() -> AsyncGenerator:
 @pytest.mark.asyncio
 async def test_agen():
     """Test async generator."""
-    assert await agen().__anext__() == 'async generator'
+    assert await agen().__anext__() == "async generator"
 
 
 with catch_warnings():
