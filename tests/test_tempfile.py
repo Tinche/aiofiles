@@ -1,9 +1,16 @@
-import asyncio
-import pytest
-from aiofiles import tempfile
-import os
+# -*- coding: utf-8 -*-
 import io
+import os
 import sys
+
+import pytest
+
+from aiofiles.tempfile import (
+    NamedTemporaryFile,
+    SpooledTemporaryFile,
+    TemporaryDirectory,
+    TemporaryFile,
+)
 
 
 @pytest.mark.asyncio
@@ -12,7 +19,7 @@ async def test_temporary_file(mode):
     """Test temporary file."""
     data = b"Hello World!\n" if "b" in mode else "Hello World!\n"
 
-    async with tempfile.TemporaryFile(mode=mode) as f:
+    async with TemporaryFile(mode=mode) as f:
         for i in range(3):
             await f.write(data)
 
@@ -30,7 +37,7 @@ async def test_named_temporary_file(mode):
     data = b"Hello World!" if "b" in mode else "Hello World!"
     filename = None
 
-    async with tempfile.NamedTemporaryFile(mode=mode) as f:
+    async with NamedTemporaryFile(mode=mode) as f:
         await f.write(data)
         await f.flush()
         await f.seek(0)
@@ -50,7 +57,7 @@ async def test_spooled_temporary_file(mode):
     """Test spooled temporary file."""
     data = b"Hello World!" if "b" in mode else "Hello World!"
 
-    async with tempfile.SpooledTemporaryFile(max_size=len(data) + 1, mode=mode) as f:
+    async with SpooledTemporaryFile(max_size=len(data) + 1, mode=mode) as f:
         await f.write(data)
         await f.flush()
         if "b" in mode:
@@ -69,9 +76,9 @@ async def test_spooled_temporary_file(mode):
 @pytest.mark.skipif(
     sys.version_info < (3, 7),
     reason=(
-       "text-mode SpooledTemporaryFile is implemented with StringIO in py3.6"
-       "it doesn't support `newlines`"
-    )
+        "text-mode SpooledTemporaryFile is implemented with StringIO in py3.6"
+        "it doesn't support `newlines`"
+    ),
 )
 @pytest.mark.parametrize(
     "test_string, newlines", [("LF\n", "\n"), ("CRLF\r\n", "\r\n")]
@@ -82,7 +89,7 @@ async def test_spooled_temporary_file_newlines(test_string, newlines):
     issue https://github.com/Tinche/aiofiles/issues/118
     """
 
-    async with tempfile.SpooledTemporaryFile(mode="w+") as f:
+    async with SpooledTemporaryFile(mode="w+") as f:
         await f.write(test_string)
         await f.flush()
         await f.seek(0)
@@ -95,12 +102,14 @@ async def test_spooled_temporary_file_newlines(test_string, newlines):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")])
+@pytest.mark.parametrize(
+    "prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")]
+)
 async def test_temporary_directory(prefix, suffix, tmp_path):
     """Test temporary directory."""
     dir_path = None
 
-    async with tempfile.TemporaryDirectory(
+    async with TemporaryDirectory(
         suffix=suffix, prefix=prefix, dir=tmp_path
     ) as d:
         dir_path = d

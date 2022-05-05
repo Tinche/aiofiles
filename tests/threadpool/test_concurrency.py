@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 """Test concurrency properties of the implementation."""
-from os.path import dirname
-from os.path import join
-import time
 import asyncio
+import time
+from os.path import dirname, join
+
 import pytest
 
 import aiofiles.threadpool
@@ -57,7 +58,9 @@ async def test_slow_file(monkeypatch, unused_tcp_port):
 
     spam_task = asyncio.ensure_future(spam_client())
 
-    reader, writer = await asyncio.open_connection("127.0.0.1", port=unused_tcp_port)
+    reader, writer = await asyncio.open_connection(
+        "127.0.0.1", port=unused_tcp_port
+    )
 
     actual_contents = await reader.read()
     writer.close()

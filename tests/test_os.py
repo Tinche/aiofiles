@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 """Tests for asyncio's os module."""
-import aiofiles.os
 import asyncio
-from os import stat
-from os.path import join, dirname, exists, isdir
-import pytest
 import platform
+from os import stat
+from os.path import dirname, exists, isdir, join
+
+import pytest
+
+import aiofiles.os
 
 
 @pytest.mark.asyncio
@@ -14,7 +17,7 @@ async def test_stat():
 
     stat_res = await aiofiles.os.stat(filename)
 
-    assert stat_res.st_size == 10
+    assert stat_res.st_size == 11
 
 
 @pytest.mark.asyncio
@@ -73,9 +76,9 @@ async def test_renames():
     assert exists(old_filename) is False and exists(new_filename)
     await aiofiles.os.renames(new_filename, old_filename)
     assert (
-        exists(old_filename) and
-        exists(new_filename) is False and
-        exists(dirname(new_filename)) is False
+        exists(old_filename)
+        and exists(new_filename) is False
+        and exists(dirname(new_filename)) is False
     )
 
 
@@ -158,7 +161,8 @@ async def test_sendfile_socket(unused_tcp_port):
 
     server = await asyncio.start_server(serve_file, port=unused_tcp_port)
 
-    reader, writer = await asyncio.open_connection("127.0.0.1", unused_tcp_port)
+    conn = await asyncio.open_connection("127.0.0.1", unused_tcp_port)
+    reader, writer = conn
     actual_contents = await reader.read()
     writer.close()
 
@@ -207,7 +211,7 @@ async def test_getsize():
     """Test path.getsize call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.getsize(filename)
-    assert result == 10
+    assert result == 11
 
 
 @pytest.mark.asyncio

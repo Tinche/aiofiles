@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 """PEP 0492/Python 3.5+ tests for binary files."""
 import io
 from os.path import dirname, join
-from aiofiles.threadpool import open as aioopen
+
 import pytest
+
+from aiofiles.threadpool import open as aioopen
 
 
 @pytest.mark.asyncio
@@ -95,7 +98,7 @@ async def test_simple_peek(mode, tmpdir):
         peeked = await file.peek(1)
 
         # Technically it's OK for the peek to return less bytes than requested.
-        if peeked:
+        if peeked:  # pragma: no cover
             assert peeked.startswith(b"0")
 
             read = await file.read(1)

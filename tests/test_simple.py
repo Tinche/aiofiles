@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """Simple tests verifying basic functionality."""
 import asyncio
-from aiofiles import threadpool
+
 import pytest
+
+from aiofiles import threadpool
 
 
 @pytest.mark.asyncio
@@ -25,7 +28,9 @@ async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
 
     server = await asyncio.start_server(serve_file, port=unused_tcp_port)
 
-    reader, _ = await asyncio.open_connection(host="localhost", port=unused_tcp_port)
+    reader, _ = await asyncio.open_connection(
+        host="localhost", port=unused_tcp_port
+    )
     payload = await reader.read()
 
     assert payload == file_content
@@ -52,7 +57,9 @@ async def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
 
     server = await asyncio.start_server(serve_file, port=unused_tcp_port)
 
-    reader, _ = await asyncio.open_connection(host="localhost", port=unused_tcp_port)
+    reader, _ = await asyncio.open_connection(
+        host="localhost", port=unused_tcp_port
+    )
     payload = await reader.read()
 
     assert payload == file_content

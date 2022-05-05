@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 """Utilities for asyncio-friendly file handling."""
-from .threadpool import open
-from . import tempfile
+from aiofiles import tempfile
+from aiofiles.base import asyncify
+from aiofiles.threadpool import open
 
-__all__ = ["open", "tempfile"]
+__all__ = ["asyncify", "open", "tempfile"]

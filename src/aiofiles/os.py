@@ -1,36 +1,23 @@
-"""Async executor versions of file functions from the os module."""
-import asyncio
-from functools import partial, wraps
+# -*- coding: utf-8 -*-
+"""Async versions of file functions from the os module."""
 import os
 
+import aiofiles.ospath as path  # noqa: F401
+from aiofiles.base import asyncify
 
-def wrap(func):
-    @wraps(func)
-    async def run(*args, loop=None, executor=None, **kwargs):
-        if loop is None:
-            loop = asyncio.get_event_loop()
-        pfunc = partial(func, *args, **kwargs)
-        return await loop.run_in_executor(executor, pfunc)
-
-    return run
-
-
-from . import ospath as path
-
-
-stat = wrap(os.stat)
-rename = wrap(os.rename)
-renames = wrap(os.renames)
-replace = wrap(os.replace)
-remove = wrap(os.remove)
-unlink = wrap(os.unlink)
-mkdir = wrap(os.mkdir)
-makedirs = wrap(os.makedirs)
-rmdir = wrap(os.rmdir)
-removedirs = wrap(os.removedirs)
-link = wrap(os.link)
-symlink = wrap(os.symlink)
-readlink = wrap(os.readlink)
+stat = asyncify(os.stat)
+rename = asyncify(os.rename)
+renames = asyncify(os.renames)
+replace = asyncify(os.replace)
+remove = asyncify(os.remove)
+unlink = asyncify(os.unlink)
+mkdir = asyncify(os.mkdir)
+makedirs = asyncify(os.makedirs)
+rmdir = asyncify(os.rmdir)
+removedirs = asyncify(os.removedirs)
+link = asyncify(os.link)
+symlink = asyncify(os.symlink)
+readlink = asyncify(os.readlink)
 
 if hasattr(os, "sendfile"):
-    sendfile = wrap(os.sendfile)
+    sendfile = asyncify(os.sendfile)
