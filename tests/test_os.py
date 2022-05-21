@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests for asyncio's os module."""
 import asyncio
 import platform

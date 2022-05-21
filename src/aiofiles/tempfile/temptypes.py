@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 """Async wrappers for spooled temp files and temp directory objects."""
 
 from functools import partial
 
-from aiofiles.base import AsyncBase
-from aiofiles.threadpool.utils import (
+from ..base import AsyncBase
+from ..threadpool.utils import (
     cond_delegate_to_executor,
     delegate_to_executor,
     proxy_property_directly,

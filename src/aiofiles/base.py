@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Various base classes."""
 
 from asyncio import get_running_loop

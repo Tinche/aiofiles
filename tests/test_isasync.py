@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unit-test module for isasync function."""
 
 import asyncio

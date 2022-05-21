@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Simple tests verifying basic functionality."""
 import asyncio
 

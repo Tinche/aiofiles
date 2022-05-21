@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from asyncio import get_running_loop
 from functools import partial, singledispatch
 from io import (
@@ -14,17 +13,17 @@ from tempfile import TemporaryDirectory as syncTemporaryDirectory
 from tempfile import TemporaryFile as syncTemporaryFile
 from tempfile import _TemporaryFileWrapper as syncTemporaryFileWrapper
 
-from aiofiles.base import AiofilesContextManager
-from aiofiles.tempfile.temptypes import (
+from ..base import AiofilesContextManager
+from ..tempfile.temptypes import (
     AsyncSpooledTemporaryFile,
     AsyncTemporaryDirectory,
 )
-from aiofiles.threadpool.binary import (
+from ..threadpool.binary import (
     AsyncBufferedIOBase,
     AsyncBufferedReader,
     AsyncFileIO,
 )
-from aiofiles.threadpool.text import AsyncTextIOWrapper
+from ..threadpool.text import AsyncTextIOWrapper
 
 __all__ = [
     "NamedTemporaryFile",

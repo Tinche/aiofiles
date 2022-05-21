@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Test concurrency properties of the implementation."""
 import asyncio
 import time

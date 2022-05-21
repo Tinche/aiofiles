@@ -45,7 +45,7 @@ jobs:
           python -m site
           pip install --upgrade tox tox-gh-actions
       - name: Generate coverage report
-        run: tox -e cov 
+        run: tox -e cov
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:

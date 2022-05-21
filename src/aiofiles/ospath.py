@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 """Async versions of file functions from the os.path module."""
 
 from os import path
 
-from aiofiles.base import asyncify
+from .base import asyncify
 
 exists = asyncify(path.exists)
 isfile = asyncify(path.isfile)
