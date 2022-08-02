@@ -6,15 +6,118 @@ authors = ["Tin Tvrtkovic <tinchester@gmail.com>"]
 license = "Apache-2.0"
 readme = "README.rst"
 repository = "https://github.com/Tinche/aiofiles"
+homepage = "https://pypi.org/project/aiofiles/"
+keywords = ["async", "io", "files"]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+	"Framework :: AsyncIO",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: Apache Software License",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: Implementation :: CPython"
+]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.7 <4"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
-pytest-asyncio = "^0.15.1"
-coverage = "^5.5"
-tox = "^3.23.0"
+autopep8 = "^1.6.0"
+black = "^22.3.0"
+flake8 = "^4.0.1"
+mypy = "^0.942"
+pre-commit = "^2.18.1"
+pytest = "^7.1.2"
+pytest-asyncio = "^0.18.3"
+pytest-cov = "^3.0.0"
+pytest-randomly = "^3.11.0"
+tox = "^3.25.0"
+
+[tool.tox]
+legacy_tox_ini = """
+[gh-actions]
+python =
+    3.7: py37
+    3.8: py38
+    3.9: py39
+    3.10: py310
+    pypy-3.8: pypy3
+
+[tox]
+envlist =
+    py37
+    py38
+    py39
+    py310
+    pypy3
+    cov
+    lint
+    type
+install_command = poetry install --no-root
+isolated_build = true
+skip_missing_interpreters = true
+
+[testenv]
+whitelist_externals = poetry
+deps =
+    pytest
+    pytest-asyncio
+    pytest-randomly
+commands =
+    poetry install -v --no-root
+    poetry run pytest ./tests
+passenv = CI
+
+[testenv:cov]
+skip_install = false
+skipdist = true
+deps =
+    {[testenv]deps}
+    pytest-cov
+commands =
+    pytest --cov=tests \
+    --no-cov-on-fail \
+    --cov-branch \
+    --cov-fail-under=90 \
+    --cov-report=term \
+    --cov-report=html
+
+[testenv:lint]
+skip_install = false
+skipdist = true
+extras = dev
+deps =
+    autopep8
+    black
+    flake8
+commands =
+    autopep8 -ir src tests
+    black src tests
+    flake8 src tests
+
+[testenv:type]
+skip_install = false
+skipdist = true
+deps =
+    mypy
+    pytest
+commands = mypy src tests
+"""
+
+[tool.pytest.ini_options]
+minversion = 6.0
+addopts = "-lvx --lf --capture=fd --tb=long"
+cache_dir = "tests/__pytest_cache__"
+norecursedirs = ["dist", "docs", "htmlcov", "src"]
+testpaths = "tests"
+xfail_strict = true
+asyncio_mode = "strict"
+
+[tool.black]
+line_length = 79
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

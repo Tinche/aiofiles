@@ -1,18 +1,29 @@
-# Imports
-import asyncio
-from tempfile import (
-    TemporaryFile as syncTemporaryFile,
-    NamedTemporaryFile as syncNamedTemporaryFile,
-    SpooledTemporaryFile as syncSpooledTemporaryFile,
-    TemporaryDirectory as syncTemporaryDirectory,
-    _TemporaryFileWrapper as syncTemporaryFileWrapper,
-)
-from io import FileIO, TextIOBase, BufferedReader, BufferedWriter, BufferedRandom
+from asyncio import get_running_loop
 from functools import partial, singledispatch
+from io import (
+    BufferedRandom,
+    BufferedReader,
+    BufferedWriter,
+    FileIO,
+    TextIOBase,
+)
+from tempfile import NamedTemporaryFile as syncNamedTemporaryFile
+from tempfile import SpooledTemporaryFile as syncSpooledTemporaryFile
+from tempfile import TemporaryDirectory as syncTemporaryDirectory
+from tempfile import TemporaryFile as syncTemporaryFile
+from tempfile import _TemporaryFileWrapper as syncTemporaryFileWrapper
+
 from ..base import AiofilesContextManager
+from ..tempfile.temptypes import (
+    AsyncSpooledTemporaryFile,
+    AsyncTemporaryDirectory,
+)
+from ..threadpool.binary import (
+    AsyncBufferedIOBase,
+    AsyncBufferedReader,
+    AsyncFileIO,
+)
 from ..threadpool.text import AsyncTextIOWrapper
-from ..threadpool.binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
-from .temptypes import AsyncSpooledTemporaryFile, AsyncTemporaryDirectory
 
 __all__ = [
     "NamedTemporaryFile",
@@ -113,7 +124,9 @@ def SpooledTemporaryFile(
     )
 
 
-def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=None):
+def TemporaryDirectory(
+    suffix=None, prefix=None, dir=None, loop=None, executor=None
+):
     """Async open a temporary directory"""
     return AiofilesContextManagerTempDir(
         _temporary_directory(
@@ -141,7 +154,7 @@ async def _temporary_file(
 ):
     """Async method to open a temporary file with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = get_running_loop()
 
     if named:
         cb = partial(
@@ -195,7 +208,7 @@ async def _spooled_temporary_file(
 ):
     """Open a spooled temporary file with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = get_running_loop()
 
     cb = partial(
         syncSpooledTemporaryFile,
@@ -220,7 +233,7 @@ async def _temporary_directory(
 ):
     """Async method to open a temporary directory with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = get_running_loop()
 
     cb = partial(syncTemporaryDirectory, suffix, prefix, dir)
     f = await loop.run_in_executor(executor, cb)
@@ -229,7 +242,7 @@ async def _temporary_directory(
 
 
 class AiofilesContextManagerTempDir(AiofilesContextManager):
-    """With returns the directory location, not the object (matching sync lib)"""
+    """Returns the directory location, not the object (matching sync lib)"""
 
     async def __aenter__(self):
         self._obj = await self._coro

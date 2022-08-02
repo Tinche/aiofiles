@@ -1,15 +1,16 @@
-"""Async executor versions of file functions from the os.path module."""
+"""Async versions of file functions from the os.path module."""
 
-from .os import wrap
 from os import path
 
-exists = wrap(path.exists)
-isfile = wrap(path.isfile)
-isdir = wrap(path.isdir)
-islink = wrap(path.islink)
-getsize = wrap(path.getsize)
-getmtime = wrap(path.getmtime)
-getatime = wrap(path.getatime)
-getctime = wrap(path.getctime)
-samefile = wrap(path.samefile)
-sameopenfile = wrap(path.sameopenfile)
+from .base import asyncify
+
+exists = asyncify(path.exists)
+isfile = asyncify(path.isfile)
+isdir = asyncify(path.isdir)
+islink = asyncify(path.islink)
+getsize = asyncify(path.getsize)
+getmtime = asyncify(path.getmtime)
+getatime = asyncify(path.getatime)
+getctime = asyncify(path.getctime)
+samefile = asyncify(path.samefile)
+sameopenfile = asyncify(path.sameopenfile)

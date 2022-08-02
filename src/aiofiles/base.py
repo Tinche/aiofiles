@@ -1,6 +1,62 @@
 """Various base classes."""
-from types import coroutine
+
+from asyncio import get_running_loop
 from collections.abc import Coroutine
+from contextvars import copy_context
+from functools import partial, wraps
+from inspect import (
+    isasyncgen,
+    isasyncgenfunction,
+    isawaitable,
+    iscoroutine,
+    iscoroutinefunction,
+)
+from types import coroutine
+from typing import Any, Callable
+
+
+def isasync(obj: object) -> bool:
+    """Determine if an object is asynchronous,
+
+    Args:
+        obj (object):
+
+    Returns:
+        bool:
+    """
+    foos = (
+        isasyncgen,
+        isasyncgenfunction,
+        isawaitable,
+        iscoroutine,
+        iscoroutinefunction,
+    )
+    return any(f(obj) for f in foos)
+
+
+def asyncify(func: Callable) -> Callable[..., Any]:
+    """Return the asynchronised I/O-blocking function.
+
+    If the function is already asynchronous, return it unwrapped.
+
+    Args:
+        func (Callable): I/O-blocking
+
+    Returns:
+        Callable[..., Any]: Future
+    """
+
+    @wraps(func)
+    async def run(*args, loop=None, executor=None, **kwargs):
+        if loop is None:
+            loop = get_running_loop()
+        ctx = copy_context()
+        pfunc = partial(ctx.run, func, *args, **kwargs)
+        return await loop.run_in_executor(executor, pfunc)
+
+    if isasync(func):
+        return func
+    return run
 
 
 class AsyncBase:
