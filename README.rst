@@ -189,6 +189,9 @@ History
   `#120 <https://github.com/Tinche/aiofiles/pull/120>`_
 * Added ``aiofiles.os.{listdir, scandir}``.
   `#143 <https://github.com/Tinche/aiofiles/pull/143>`_
+* Switched to CalVer.
+* Dropped Python 3.6 support. If you require it, use version 0.8.0.
+* aiofiles is now tested on Python 3.11.
 
 0.8.0 (2021-11-27)
 ``````````````````
