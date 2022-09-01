@@ -114,6 +114,7 @@ several useful ``os`` functions that deal with files:
 * ``symlink``
 * ``readlink``
 * ``listdir``
+* ``scandir``
 * ``path.exists``
 * ``path.isfile``
 * ``path.isdir``
