@@ -188,6 +188,11 @@ History
 * Added ``aiofiles.os.renames``.
   `#120 <https://github.com/Tinche/aiofiles/pull/120>`_
 
+0.8.1 (2022-09-01)
+``````````````````
+* Added ``aiofiles.os.{listdir, scandir}``.
+  `#143 <https://github.com/Tinche/aiofiles/pull/143>`_
+
 0.8.0 (2021-11-27)
 ``````````````````
 * aiofiles is now tested on Python 3.10.
