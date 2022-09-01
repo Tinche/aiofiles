@@ -29,7 +29,7 @@ jobs:
           set -xe
           python -VV
           python -m site
-          python -m pip install --upgrade pip wheel poetry==1.2.0a2
+          python -m pip install --upgrade pip wheel poetry==1.2.0
           python -m pip install --upgrade coverage[toml] virtualenv tox tox-gh-actions
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: "python -m tox"
