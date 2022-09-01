@@ -296,3 +296,68 @@ async def test_readlink():
     symlinked_path = await aiofiles.os.readlink(dst_filename)
     assert src_filename == symlinked_path
     await aiofiles.os.remove(dst_filename)
+
+
+@pytest.mark.asyncio
+async def test_listdir_empty_dir():
+    """Test the listdir call when the dir is empty."""
+    directory = join(dirname(__file__), "resources", "empty_dir")
+    await aiofiles.os.mkdir(directory)
+    dir_list = await aiofiles.os.listdir(directory)
+    assert dir_list == []
+    await aiofiles.os.rmdir(directory)
+
+
+@pytest.mark.asyncio
+async def test_listdir_dir_with_only_one_file():
+    """Test the listdir call when the dir has one file."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    some_file = join(some_dir, "some_file")
+    await aiofiles.os.mkdir(some_dir)
+    with open(some_file, 'w') as f:
+        f.write("Test file")
+    dir_list = await aiofiles.os.listdir(some_dir)
+    assert dir_list == ["some_file"]
+    await aiofiles.os.remove(some_file)
+    await aiofiles.os.rmdir(some_dir)
+
+@pytest.mark.asyncio
+async def test_listdir_dir_with_multiple_files():
+    """Test the listdir call when the dir cas multiple files."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    some_file = join(some_dir, "some_file")
+    other_file = join(some_dir, "other_file")
+    await aiofiles.os.mkdir(some_dir)
+    with open(some_file, 'w') as f:
+        f.write("Test file")
+    with open(other_file, 'w') as f:
+        f.write("Test file")
+    dir_list = await aiofiles.os.listdir(some_dir)
+    assert dir_list == ["some_file", "other_file"]
+    await aiofiles.os.remove(some_file)
+    await aiofiles.os.remove(other_file)
+    await aiofiles.os.rmdir(some_dir)
+
+@pytest.mark.asyncio
+async def test_listdir_dir_with_a_file_and_a_dir():
+    """Test the listdir call when the dir has files and other dirs."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    other_dir = join(some_dir, "other_dir")
+    some_file = join(some_dir, "some_file")
+    await aiofiles.os.mkdir(some_dir)
+    await aiofiles.os.mkdir(other_dir)
+    with open(some_file, 'w') as f:
+        f.write("Test file")
+    dir_list = await aiofiles.os.listdir(some_dir)
+    assert dir_list == ["some_file", "other_dir"]
+    await aiofiles.os.remove(some_file)
+    await aiofiles.os.rmdir(other_dir)
+    await aiofiles.os.rmdir(some_dir)
+
+
+@pytest.mark.asyncio
+async def test_listdir_non_existing_dir():
+    """Test the listdir call when the dir doesn't exist."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    with pytest.raises(FileNotFoundError) as excinfo:
+        await aiofiles.os.listdir(some_dir)
