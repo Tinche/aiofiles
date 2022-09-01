@@ -173,8 +173,8 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
-0.9.0 (TBC)
-``````````````````
+22.1.0 (TBC)
+````````````
 * Added ``aiofiles.os.path.islink``.
   `#126 <https://github.com/Tinche/aiofiles/pull/126>`_
 * Added ``aiofiles.os.readlink``.
@@ -187,9 +187,6 @@ History
   `#121 <https://github.com/Tinche/aiofiles/pull/121>`_
 * Added ``aiofiles.os.renames``.
   `#120 <https://github.com/Tinche/aiofiles/pull/120>`_
-
-0.8.1 (2022-09-01)
-``````````````````
 * Added ``aiofiles.os.{listdir, scandir}``.
   `#143 <https://github.com/Tinche/aiofiles/pull/143>`_
 
