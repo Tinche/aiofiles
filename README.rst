@@ -173,8 +173,8 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
-22.1.0 (TBC)
-````````````
+22.1.0 (2022-09-04)
+```````````````````
 * Added ``aiofiles.os.path.islink``.
   `#126 <https://github.com/Tinche/aiofiles/pull/126>`_
 * Added ``aiofiles.os.readlink``.
