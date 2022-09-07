@@ -1,8 +1,10 @@
 """Tests for asyncio's os module."""
 import aiofiles.os
 import asyncio
+import os
 from os import stat
 from os.path import join, dirname, exists, isdir
+from pathlib import Path
 import pytest
 import platform
 
@@ -424,3 +426,57 @@ async def test_scandir_non_existing_dir():
     some_dir = join(dirname(__file__), "resources", "some_dir")
     with pytest.raises(FileNotFoundError) as excinfo:
         await aiofiles.os.scandir(some_dir)
+
+
+@pytest.mark.asyncio
+async def test_access():
+    temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
+    temp_dir = Path(__file__).parent.joinpath("resources", "os_access_temp")
+
+    # prepare
+    if temp_file.exists():
+        os.remove(temp_file)
+    assert not temp_file.exists()
+    temp_file.touch()
+
+    if temp_dir.exists():
+        os.rmdir(temp_dir)
+    assert not temp_dir.exists()
+    os.mkdir(temp_dir)
+
+    data = [
+        # full access
+        [0o777, os.F_OK, True],
+        [0o777, os.R_OK, True],
+        [0o777, os.W_OK, True],
+        [0o777, os.X_OK, True],
+        # chmod -x
+        [0o666, os.F_OK, True],
+        [0o666, os.R_OK, True],
+        [0o666, os.W_OK, True],
+        [0o666, os.X_OK, False],
+        # chmod -w
+        [0o444, os.F_OK, True],
+        [0o444, os.R_OK, True],
+        [0o444, os.W_OK, False],
+        [0o444, os.X_OK, False],
+        # chmod -r
+        [0o000, os.F_OK, True],
+        [0o000, os.R_OK, False],
+        [0o000, os.W_OK, False],
+        [0o000, os.X_OK, False],
+    ]
+    for ch, mode, access in data:
+        print("mode:{}, access:{}".format(mode, access))
+        temp_file.chmod(ch)
+        temp_dir.chmod(ch)
+        assert await aiofiles.os.access(temp_file, mode) == access
+        assert await aiofiles.os.access(temp_dir, mode) == access
+
+    # not exists
+    os.remove(temp_file)
+    os.rmdir(temp_dir)
+    for mode in [os.F_OK, os.R_OK, os.W_OK, os.X_OK]:
+        print("mode:{}".format(mode))
+        assert not await aiofiles.os.access(temp_file, mode)
+        assert not await aiofiles.os.access(temp_dir, mode)
