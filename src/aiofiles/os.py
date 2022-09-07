@@ -33,6 +33,7 @@ symlink = wrap(os.symlink)
 readlink = wrap(os.readlink)
 listdir = wrap(os.listdir)
 scandir = wrap(os.scandir)
+access = wrap(os.access)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)

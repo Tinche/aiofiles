@@ -1,6 +1,7 @@
 """Tests for asyncio's os module."""
 import aiofiles.os
 import asyncio
+import os
 from os import stat
 from os.path import join, dirname, exists, isdir
 import pytest
@@ -424,3 +425,10 @@ async def test_scandir_non_existing_dir():
     some_dir = join(dirname(__file__), "resources", "some_dir")
     with pytest.raises(FileNotFoundError) as excinfo:
         await aiofiles.os.scandir(some_dir)
+
+
+@pytest.mark.asyncio
+async def test_access_all_is_ok():
+    some_file = join(dirname(__file__), "resources", "test_file1.txt")
+    assert await aiofiles.os.access(some_file, os.R_OK)
+    assert not await aiofiles.os.access(some_file, os.X_OK)
