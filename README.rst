@@ -173,6 +173,11 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
+22.2.0
+``````
+* Added ``aiofiles.os.access``.
+  `#145 <https://github.com/Tinche/aiofiles/pull/145>`_
+
 22.1.0 (2022-09-04)
 ```````````````````
 * Added ``aiofiles.os.path.islink``.
