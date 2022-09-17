@@ -17,11 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-rc.1", "pypy-3.7"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11.0-rc.2", "pypy-3.7"]
 
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "actions/setup-python@v4"
         with:
           python-version: "${{ matrix.python-version }}"
       - name: "Install dependencies"
@@ -36,9 +36,9 @@ jobs:
 
       # We always use a modern Python version for combining coverage to prevent
       # parsing errors in older versions for modern code.
-      - uses: "actions/setup-python@v2"
+      - uses: "actions/setup-python@v4"
         with:
-          python-version: "3.9"
+          python-version: "3.x"
 
       - name: "Upload coverage to Codecov"
         if: "contains(env.USING_COVERAGE, matrix.python-version)"
@@ -51,10 +51,10 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v2"
-      - uses: "actions/setup-python@v2"
+      - uses: "actions/checkout@v3"
+      - uses: "actions/setup-python@v4"
         with:
-          python-version: "3.9"
+          python-version: "3.x"
 
       - name: "Install poetry and twine"
         run: "python -m pip install poetry twine check-wheel-contents"
