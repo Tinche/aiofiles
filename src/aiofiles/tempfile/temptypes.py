@@ -25,7 +25,7 @@ from functools import partial
     "tell",
     "truncate",
 )
-@proxy_property_directly("closed", "encoding", "mode", "name", "newlines", "softspace")
+@proxy_property_directly("closed", "encoding", "mode", "name", "newlines")
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 
