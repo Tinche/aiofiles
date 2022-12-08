@@ -96,6 +96,11 @@ and delegate to an executor:
 
 In case of failure, one of the usual exceptions will be raised.
 
+``aiofiles.stdin``, ``aiofiles.stdout``, ``aiofiles.stderr``,
+``aiofiles.stdin_bytes``, ``aiofiles.stdout_bytes``, and
+``aiofiles.stderr_bytes`` provide async access to ``sys.stdin``,
+``sys.stdout``, ``sys.stderr``, and their corresponding ``.buffer`` properties.
+
 The ``aiofiles.os`` module contains executor-enabled coroutine versions of
 several useful ``os`` functions that deal with files:
 

@@ -75,9 +75,9 @@ async def test_renames():
     assert exists(old_filename) is False and exists(new_filename)
     await aiofiles.os.renames(new_filename, old_filename)
     assert (
-        exists(old_filename) and
-        exists(new_filename) is False and
-        exists(dirname(new_filename)) is False
+        exists(old_filename)
+        and exists(new_filename) is False
+        and exists(dirname(new_filename)) is False
     )
 
 
@@ -323,6 +323,7 @@ async def test_listdir_dir_with_only_one_file():
     await aiofiles.os.remove(some_file)
     await aiofiles.os.rmdir(some_dir)
 
+
 @pytest.mark.asyncio
 async def test_listdir_dir_with_only_one_dir():
     """Test the listdir call when the dir has one dir."""
@@ -334,6 +335,7 @@ async def test_listdir_dir_with_only_one_dir():
     assert "other_dir" in dir_list
     await aiofiles.os.rmdir(other_dir)
     await aiofiles.os.rmdir(some_dir)
+
 
 @pytest.mark.asyncio
 async def test_listdir_dir_with_multiple_files():
@@ -352,6 +354,7 @@ async def test_listdir_dir_with_multiple_files():
     await aiofiles.os.remove(some_file)
     await aiofiles.os.remove(other_file)
     await aiofiles.os.rmdir(some_dir)
+
 
 @pytest.mark.asyncio
 async def test_listdir_dir_with_a_file_and_a_dir():
@@ -405,6 +408,7 @@ async def test_scandir_dir_with_only_one_file():
     assert some_file_entity.name == "some_file.txt"
     await aiofiles.os.remove(some_file)
     await aiofiles.os.rmdir(some_dir)
+
 
 @pytest.mark.asyncio
 async def test_scandir_dir_with_only_one_dir():
