@@ -185,6 +185,8 @@ History
   `#146 <https://github.com/Tinche/aiofiles/pull/146>`_
 * Removed ``aiofiles.tempfile.temptypes.AsyncSpooledTemporaryFile.softspace``.
   `#151 <https://github.com/Tinche/aiofiles/pull/151>`_
+* Added ``aiofiles.stdin``, ``aiofiles.stdin_bytes``, and other stdio streams.
+  `#154 <https://github.com/Tinche/aiofiles/pull/154>`_
 
 22.1.0 (2022-09-04)
 ```````````````````
