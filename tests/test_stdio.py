@@ -1,6 +1,6 @@
 import sys
 import pytest
-from aiofiles import stdout, stderr, stdout_bytes, stderr_bytes
+from aiofiles import stdin, stdout, stderr, stdin_bytes, stdout_bytes, stderr_bytes
 
 
 @pytest.mark.asyncio
@@ -10,6 +10,8 @@ async def test_stdio(capsys):
     out, err = capsys.readouterr()
     assert out == "hello"
     assert err == "world"
+    with pytest.raises(OSError):
+        await stdin.read()
 
 
 @pytest.mark.asyncio
@@ -19,3 +21,5 @@ async def test_stdio_bytes(capsysbinary):
     out, err = capsysbinary.readouterr()
     assert out == b"hello"
     assert err == b"world"
+    with pytest.raises(OSError):
+        await stdin_bytes.read()

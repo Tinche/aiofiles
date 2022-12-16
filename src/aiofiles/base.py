@@ -31,9 +31,10 @@ class AsyncBase:
 
 
 class AsyncIndirectBase(AsyncBase):
-    def __init__(self, file, loop, executor, indirect):
+    def __init__(self, name, loop, executor, indirect):
         self._indirect = indirect
-        super().__init__(file, loop, executor)
+        self._name = name
+        super().__init__(None, loop, executor)
 
     @property
     def _file(self):

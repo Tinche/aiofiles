@@ -100,71 +100,35 @@ def _open(
 
 
 @singledispatch
-def wrap(file, *, loop=None, executor=None, indirect=None):
+def wrap(file, *, loop=None, executor=None):
     raise TypeError("Unsupported io type: {}.".format(file))
 
 
 @wrap.register(TextIOBase)
-def _(file, *, loop=None, executor=None, indirect=None):
-    if indirect is None:
-        return AsyncTextIOWrapper(file, loop=loop, executor=executor)
-    else:
-        return AsyncTextIndirectIOWrapper(
-            file, loop=loop, executor=executor, indirect=indirect
-        )
+def _(file, *, loop=None, executor=None):
+    return AsyncTextIOWrapper(file, loop=loop, executor=executor)
 
 
 @wrap.register(BufferedWriter)
 @wrap.register(BufferedIOBase)
-def _(file, *, loop=None, executor=None, indirect=None):
-    if indirect is None:
-        return AsyncBufferedIOBase(file, loop=loop, executor=executor)
-    else:
-        return AsyncIndirectBufferedIOBase(
-            file, loop=loop, executor=executor, indirect=indirect
-        )
+def _(file, *, loop=None, executor=None):
+    return AsyncBufferedIOBase(file, loop=loop, executor=executor)
 
 
 @wrap.register(BufferedReader)
 @wrap.register(BufferedRandom)
-def _(file, *, loop=None, executor=None, indirect=None):
-    if indirect is None:
-        return AsyncBufferedReader(file, loop=loop, executor=executor)
-    else:
-        return AsyncIndirectBufferedReader(
-            file, loop=loop, executor=executor, indirect=indirect
-        )
+def _(file, *, loop=None, executor=None):
+    return AsyncBufferedReader(file, loop=loop, executor=executor)
 
 
 @wrap.register(FileIO)
-def _(file, *, loop=None, executor=None, indirect=None):
-    if indirect is None:
-        return AsyncFileIO(file, loop, executor)
-    else:
-        return AsyncIndirectFileIO(file, loop, executor, indirect=indirect)
+def _(file, *, loop=None, executor=None):
+    return AsyncFileIO(file, loop=loop, executor=executor)
 
 
-try:
-    stdin = wrap(sys.stdin, indirect=lambda: sys.stdin)
-except TypeError:
-    stdin = None
-try:
-    stdout = wrap(sys.stdout, indirect=lambda: sys.stdout)
-except TypeError:
-    stdout = None
-try:
-    stderr = wrap(sys.stderr, indirect=lambda: sys.stderr)
-except TypeError:
-    stdout = None
-try:
-    stdin_bytes = wrap(sys.stdin.buffer, indirect=lambda: sys.stdin.buffer)
-except TypeError:
-    stdin_bytes = None
-try:
-    stdout_bytes = wrap(sys.stdout.buffer, indirect=lambda: sys.stdout.buffer)
-except TypeError:
-    stdout_bytes = None
-try:
-    stderr_bytes = wrap(sys.stderr.buffer, indirect=lambda: sys.stderr.buffer)
-except TypeError:
-    stderr_bytes = None
+stdin = AsyncTextIndirectIOWrapper('sys.stdin', None, None, indirect=lambda: sys.stdin)
+stdout = AsyncTextIndirectIOWrapper('sys.stdout', None, None, indirect=lambda: sys.stdout)
+stderr = AsyncTextIndirectIOWrapper('sys.stderr', None, None, indirect=lambda: sys.stderr)
+stdin_bytes = AsyncIndirectBufferedIOBase('sys.stdin.buffer', None, None, indirect=lambda: sys.stdin.buffer)
+stdout_bytes = AsyncIndirectBufferedIOBase('sys.stdout.buffer', None, None, indirect=lambda: sys.stdout.buffer)
+stderr_bytes = AsyncIndirectBufferedIOBase('sys.stderr.buffer', None, None, indirect=lambda: sys.stderr.buffer)
