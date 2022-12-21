@@ -69,9 +69,9 @@ async def test_spooled_temporary_file(mode):
 @pytest.mark.skipif(
     sys.version_info < (3, 7),
     reason=(
-       "text-mode SpooledTemporaryFile is implemented with StringIO in py3.6"
-       "it doesn't support `newlines`"
-    )
+        "text-mode SpooledTemporaryFile is implemented with StringIO in py3.6"
+        "it doesn't support `newlines`"
+    ),
 )
 @pytest.mark.parametrize(
     "test_string, newlines", [("LF\n", "\n"), ("CRLF\r\n", "\r\n")]

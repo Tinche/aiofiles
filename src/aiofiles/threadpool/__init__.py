@@ -1,5 +1,6 @@
 """Handle files using a thread pool executor."""
 import asyncio
+import sys
 from types import coroutine
 
 from io import (
@@ -8,16 +9,32 @@ from io import (
     BufferedReader,
     BufferedWriter,
     BufferedRandom,
+    BufferedIOBase,
 )
 from functools import partial, singledispatch
 
-from .binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
-from .text import AsyncTextIOWrapper
+from .binary import (
+    AsyncBufferedIOBase,
+    AsyncBufferedReader,
+    AsyncFileIO,
+    AsyncIndirectBufferedIOBase,
+    AsyncIndirectBufferedReader,
+    AsyncIndirectFileIO,
+)
+from .text import AsyncTextIOWrapper, AsyncTextIndirectIOWrapper
 from ..base import AiofilesContextManager
 
 sync_open = open
 
-__all__ = ("open",)
+__all__ = (
+    "open",
+    "stdin",
+    "stdout",
+    "stderr",
+    "stdin_bytes",
+    "stdout_bytes",
+    "stderr_bytes",
+)
 
 
 def open(
@@ -93,6 +110,7 @@ def _(file, *, loop=None, executor=None):
 
 
 @wrap.register(BufferedWriter)
+@wrap.register(BufferedIOBase)
 def _(file, *, loop=None, executor=None):
     return AsyncBufferedIOBase(file, loop=loop, executor=executor)
 
@@ -105,4 +123,12 @@ def _(file, *, loop=None, executor=None):
 
 @wrap.register(FileIO)
 def _(file, *, loop=None, executor=None):
-    return AsyncFileIO(file, loop, executor)
+    return AsyncFileIO(file, loop=loop, executor=executor)
+
+
+stdin = AsyncTextIndirectIOWrapper('sys.stdin', None, None, indirect=lambda: sys.stdin)
+stdout = AsyncTextIndirectIOWrapper('sys.stdout', None, None, indirect=lambda: sys.stdout)
+stderr = AsyncTextIndirectIOWrapper('sys.stderr', None, None, indirect=lambda: sys.stderr)
+stdin_bytes = AsyncIndirectBufferedIOBase('sys.stdin.buffer', None, None, indirect=lambda: sys.stdin.buffer)
+stdout_bytes = AsyncIndirectBufferedIOBase('sys.stdout.buffer', None, None, indirect=lambda: sys.stdout.buffer)
+stderr_bytes = AsyncIndirectBufferedIOBase('sys.stderr.buffer', None, None, indirect=lambda: sys.stderr.buffer)

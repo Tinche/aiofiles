@@ -96,6 +96,11 @@ and delegate to an executor:
 
 In case of failure, one of the usual exceptions will be raised.
 
+``aiofiles.stdin``, ``aiofiles.stdout``, ``aiofiles.stderr``,
+``aiofiles.stdin_bytes``, ``aiofiles.stdout_bytes``, and
+``aiofiles.stderr_bytes`` provide async access to ``sys.stdin``,
+``sys.stdout``, ``sys.stderr``, and their corresponding ``.buffer`` properties.
+
 The ``aiofiles.os`` module contains executor-enabled coroutine versions of
 several useful ``os`` functions that deal with files:
 
@@ -180,6 +185,8 @@ History
   `#146 <https://github.com/Tinche/aiofiles/pull/146>`_
 * Removed ``aiofiles.tempfile.temptypes.AsyncSpooledTemporaryFile.softspace``.
   `#151 <https://github.com/Tinche/aiofiles/pull/151>`_
+* Added ``aiofiles.stdin``, ``aiofiles.stdin_bytes``, and other stdio streams.
+  `#154 <https://github.com/Tinche/aiofiles/pull/154>`_
 
 22.1.0 (2022-09-04)
 ```````````````````
