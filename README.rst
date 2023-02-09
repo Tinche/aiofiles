@@ -179,7 +179,7 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
-23.1.0 (UNRELEASED)
+23.1.0 (2023-02-09)
 ```````````````````
 * Added ``aiofiles.os.access``.
   `#146 <https://github.com/Tinche/aiofiles/pull/146>`_
