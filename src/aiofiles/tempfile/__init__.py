@@ -141,7 +141,7 @@ async def _temporary_file(
 ):
     """Async method to open a temporary file with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
     if named:
         cb = partial(
@@ -195,7 +195,7 @@ async def _spooled_temporary_file(
 ):
     """Open a spooled temporary file with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
     cb = partial(
         syncSpooledTemporaryFile,
@@ -220,7 +220,7 @@ async def _temporary_directory(
 ):
     """Async method to open a temporary directory with async interface"""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
     cb = partial(syncTemporaryDirectory, suffix, prefix, dir)
     f = await loop.run_in_executor(executor, cb)

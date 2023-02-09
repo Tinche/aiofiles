@@ -179,14 +179,15 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
-22.2.0
-``````
+23.1.0 (UNRELEASED)
+```````````````````
 * Added ``aiofiles.os.access``.
   `#146 <https://github.com/Tinche/aiofiles/pull/146>`_
 * Removed ``aiofiles.tempfile.temptypes.AsyncSpooledTemporaryFile.softspace``.
   `#151 <https://github.com/Tinche/aiofiles/pull/151>`_
 * Added ``aiofiles.stdin``, ``aiofiles.stdin_bytes``, and other stdio streams.
   `#154 <https://github.com/Tinche/aiofiles/pull/154>`_
+* Transition to ``asyncio.get_running_loop`` (vs ``asyncio.get_event_loop``) internally.
 
 22.1.0 (2022-09-04)
 ```````````````````

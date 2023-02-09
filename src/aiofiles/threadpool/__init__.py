@@ -82,7 +82,7 @@ def _open(
 ):
     """Open an asyncio file."""
     if loop is None:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
     cb = partial(
         sync_open,
         file,

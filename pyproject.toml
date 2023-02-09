@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiofiles"
-version = "22.2.0.dev0"
+version = "23.1.0.dev0"
 description = "File support for asyncio."
 authors = ["Tin Tvrtkovic <tinchester@gmail.com>"]
 license = "Apache-2.0"
