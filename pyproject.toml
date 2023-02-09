@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiofiles"
-version = "23.1.0"
+version = "23.2.0.dev0"
 description = "File support for asyncio."
 authors = ["Tin Tvrtkovic <tinchester@gmail.com>"]
 license = "Apache-2.0"
@@ -8,7 +8,7 @@ readme = "README.rst"
 repository = "https://github.com/Tinche/aiofiles"
 
 [tool.poetry.urls]
-"Changelog" = "hhttps://github.com/Tinche/aiofiles#history"
+"Changelog" = "https://github.com/Tinche/aiofiles#history"
 "Bug Tracker" = "https://github.com/Tinche/aiofiles/issues"
 
 [tool.poetry.dependencies]
