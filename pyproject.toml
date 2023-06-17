@@ -22,7 +22,10 @@ tox = "^3.25.1"
 black = "^22.8.0"
 flake8 = "^5.0.4"
 
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+parallel = true
+source_pkgs = ["aiofiles"]

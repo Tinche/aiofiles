@@ -12,8 +12,6 @@ jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
     runs-on: "ubuntu-latest"
-    env:
-      USING_COVERAGE: "3.7,3.8,3.9,3.10"
 
     strategy:
       matrix:
@@ -21,30 +19,78 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v3"
+
       - uses: "actions/setup-python@v4"
         with:
           python-version: "${{ matrix.python-version }}"
+
       - name: "Install dependencies"
         run: |
           set -xe
           python -VV
           python -m site
           python -m pip install --upgrade pip wheel poetry==1.2.0
-          python -m pip install --upgrade coverage[toml] virtualenv tox tox-gh-actions
+          python -m pip install --upgrade tox tox-gh-actions
+
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: "python -m tox"
 
-      # We always use a modern Python version for combining coverage to prevent
-      # parsing errors in older versions for modern code.
+      - name: "Upload coverage data"
+        uses: "actions/upload-artifact@v3"
+        with:
+          name: "coverage-data"
+          path: ".coverage.*"
+          if-no-files-found: "ignore"
+  
+  coverage:
+    name: "Combine & check coverage."
+    needs: "tests"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: "actions/checkout@v3"
+      
       - uses: "actions/setup-python@v4"
         with:
-          python-version: "3.x"
+          cache: "pip"
+          python-version: "3.11"
 
-      - name: "Upload coverage to Codecov"
-        if: "contains(env.USING_COVERAGE, matrix.python-version)"
-        uses: "codecov/codecov-action@v1"
+      - run: "python -Im pip install --upgrade coverage[toml]"
+
+      - uses: "actions/download-artifact@v3"
         with:
-          fail_ci_if_error: true
+          name: "coverage-data"
+
+      - name: "Combine coverage"
+        run: |
+          python -Im coverage combine
+          python -Im coverage html --skip-covered --skip-empty
+          python -Im coverage json
+
+          # Report and write to summary.
+          python -Im coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+
+          export TOTAL=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
+          echo "total=$TOTAL" >> $GITHUB_ENV
+
+      - name: "Upload HTML report."
+        uses: "actions/upload-artifact@v3"
+        with:
+          name: "html-report"
+          path: "htmlcov"
+      
+      - name: "Make badge"
+        uses: "schneegans/dynamic-badges-action@v1.4.0"
+        with:
+          # GIST_TOKEN is a GitHub personal access token with scope "gist".
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: 882f02e3df32136c847ba90d2688f06e
+          filename: covbadge.json
+          label: Coverage
+          message: ${{ env.total }}%
+          minColorRange: 50
+          maxColorRange: 90
+          valColorRange: ${{ env.total }}
 
   package:
     name: "Build & verify package"
