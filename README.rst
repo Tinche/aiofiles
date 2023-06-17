@@ -8,7 +8,7 @@ aiofiles: file support for asyncio
         :target: https://github.com/Tinche/aiofiles/actions
 
 .. image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Tinche/882f02e3df32136c847ba90d2688f06e/raw/covbadge.json
-        :target: https://github.com/python-attrs/cattrs/actions/workflows/main.yml
+        :target: https://github.com/Tinche/aiofiles/actions/workflows/main.yml
 
 .. image:: https://img.shields.io/pypi/pyversions/aiofiles.svg
         :target: https://github.com/Tinche/aiofiles
