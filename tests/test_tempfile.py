@@ -1,9 +1,10 @@
-import asyncio
-import pytest
-from aiofiles import tempfile
-import os
 import io
+import os
 import sys
+
+import pytest
+
+from aiofiles import tempfile
 
 
 @pytest.mark.asyncio
@@ -25,8 +26,11 @@ async def test_temporary_file(mode):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
+@pytest.mark.skipif(
+    sys.version_info >= (3, 12),
+    reason=("3.12+ doesn't support tempfile.NamedTemporaryFile.delete"),
+)
 async def test_named_temporary_file(mode):
-    """Test named temporary file."""
     data = b"Hello World!" if "b" in mode else "Hello World!"
     filename = None
 
@@ -40,6 +44,29 @@ async def test_named_temporary_file(mode):
         assert os.path.exists(filename)
         assert os.path.isfile(filename)
         assert f.delete
+
+    assert not os.path.exists(filename)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
+@pytest.mark.skipif(
+    sys.version_info < (3, 12),
+    reason=("3.12+ doesn't support tempfile.NamedTemporaryFile.delete"),
+)
+async def test_named_temporary_file_312(mode):
+    data = b"Hello World!" if "b" in mode else "Hello World!"
+    filename = None
+
+    async with tempfile.NamedTemporaryFile(mode=mode) as f:
+        await f.write(data)
+        await f.flush()
+        await f.seek(0)
+        assert await f.read() == data
+
+        filename = f.name
+        assert os.path.exists(filename)
+        assert os.path.isfile(filename)
 
     assert not os.path.exists(filename)
 

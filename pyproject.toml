@@ -21,6 +21,7 @@ coverage = "^6.4.4"
 tox = "^3.25.1"
 black = "^22.8.0"
 flake8 = "^5.0.4"
+isort = "5.11.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -36,3 +37,10 @@ source = [
    ".tox/*/lib/python*/site-packages",
    ".tox/pypy*/site-packages",
 ]
+
+[tool.black]
+skip-magic-trailing-comma = true
+
+[tool.isort]
+profile = "black"
+known_first_party = ["aiofiles"]
