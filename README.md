@@ -1,21 +1,10 @@
 # aiofiles: file support for asyncio
 
-```{image} https://img.shields.io/pypi/v/aiofiles.svg
-:target: https://pypi.python.org/pypi/aiofiles
-```
-
-```{image} https://github.com/Tinche/aiofiles/actions/workflows/main.yml/badge.svg
-:target: https://github.com/Tinche/aiofiles/actions
-```
-
-```{image} https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Tinche/882f02e3df32136c847ba90d2688f06e/raw/covbadge.json
-:target: https://github.com/Tinche/aiofiles/actions/workflows/main.yml
-```
-
-```{image} https://img.shields.io/pypi/pyversions/aiofiles.svg
-:alt: Supported Python versions
-:target: https://github.com/Tinche/aiofiles
-```
+[![PyPI](https://img.shields.io/pypi/v/aiofiles.svg)](https://pypi.python.org/pypi/aiofiles)
+[![Build](https://github.com/Tinche/aiofiles/workflows/main.yml/badge.svg)](https://github.com/Tinche/aiofiles/actions)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Tinche/882f02e3df32136c847ba90d2688f06e/raw/covbadge.json)](https://github.com/Tinche/aiofiles/actions/workflows/main.yml)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/aiofiles.svg)](https://github.com/Tinche/aiofiles)
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 **aiofiles** is an Apache2 licensed library, written in Python, for handling local
 disk files in asyncio applications.
