@@ -179,6 +179,12 @@ as desired. The return type also needs to be registered with the
 
 History
 ~~~~~~~
+23.2.0 (UNRELEASED)
+```````````````````
+* aiofiles is now tested on Python 3.12 too.
+* ``aiofiles.tempfile.NamedTemporaryFile`` now accepts a ``delete_on_close`` argument, just like the stdlib version.
+* ``aiofiles.tempfile.NamedTemporaryFile`` no longer exposes a ``delete`` attribute, just like the stdlib version.
+
 23.1.0 (2023-02-09)
 ```````````````````
 * Added ``aiofiles.os.access``.
