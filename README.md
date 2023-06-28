@@ -166,6 +166,7 @@ async def test_stuff():
 #### 23.2.0 (UNRELEASED)
 
 - aiofiles is now tested on Python 3.12 too.
+  [#166](https://github.com/Tinche/aiofiles/issues/166) [#168](https://github.com/Tinche/aiofiles/pull/168)
 - `aiofiles.tempfile.NamedTemporaryFile` now accepts a `delete_on_close` argument, just like the stdlib version.
 - `aiofiles.tempfile.NamedTemporaryFile` no longer exposes a `delete` attribute, just like the stdlib version.
 
