@@ -31,7 +31,7 @@ jobs:
           set -xe
           python -VV
           python -m site
-          python -m pip install --upgrade pip wheel poetry==1.2.0
+          python -m pip install --upgrade pip wheel poetry==1.4.2
           python -m pip install --upgrade tox tox-gh-actions
 
       - name: "Run tox targets for ${{ matrix.python-version }}"
