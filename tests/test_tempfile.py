@@ -73,6 +73,34 @@ async def test_named_temporary_file_312(mode):
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
+@pytest.mark.skipif(
+    sys.version_info < (3, 12), reason=("3.12+ supports delete_on_close")
+)
+async def test_named_temporary_delete_on_close(mode):
+    data = b"Hello World!" if "b" in mode else "Hello World!"
+    filename = None
+
+    async with tempfile.NamedTemporaryFile(mode=mode, delete_on_close=True) as f:
+        await f.write(data)
+        await f.flush()
+        await f.close()
+
+        filename = f.name
+        assert not os.path.exists(filename)
+
+    async with tempfile.NamedTemporaryFile(mode=mode, delete_on_close=False) as f:
+        await f.write(data)
+        await f.flush()
+        await f.close()
+
+        filename = f.name
+        assert os.path.exists(filename)
+
+    assert not os.path.exists(filename)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_spooled_temporary_file(mode):
     """Test spooled temporary file."""
     data = b"Hello World!" if "b" in mode else "Hello World!"

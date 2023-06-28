@@ -1,5 +1,4 @@
 import functools
-from types import coroutine
 
 
 def delegate_to_executor(*attrs):
@@ -39,10 +38,9 @@ def cond_delegate_to_executor(*attrs):
 
 
 def _make_delegate_method(attr_name):
-    @coroutine
-    def method(self, *args, **kwargs):
+    async def method(self, *args, **kwargs):
         cb = functools.partial(getattr(self._file, attr_name), *args, **kwargs)
-        return (yield from self._loop.run_in_executor(self._executor, cb))
+        return await self._loop.run_in_executor(self._executor, cb)
 
     return method
 

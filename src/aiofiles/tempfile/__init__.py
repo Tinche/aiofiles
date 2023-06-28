@@ -11,7 +11,7 @@ from ..base import AiofilesContextManager
 from ..threadpool.binary import AsyncBufferedIOBase, AsyncBufferedReader, AsyncFileIO
 from ..threadpool.text import AsyncTextIOWrapper
 from .temptypes import AsyncSpooledTemporaryFile, AsyncTemporaryDirectory
-from sys import version_info
+import sys
 
 __all__ = [
     "NamedTemporaryFile",
@@ -25,7 +25,7 @@ __all__ = [
 # Public methods for async open and return of temp file/directory
 # objects with async interface
 # ================================================================
-if version_info >= (3, 12):
+if sys.version_info >= (3, 12):
 
     def NamedTemporaryFile(
         mode="w+b",
@@ -159,7 +159,7 @@ def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=N
 # =========================================================
 # Internal coroutines to open new temp files/directories
 # =========================================================
-if version_info >= (3, 12):
+if sys.version_info >= (3, 12):
 
     async def _temporary_file(
         named=True,
@@ -211,7 +211,6 @@ if version_info >= (3, 12):
         if type(f) is syncTemporaryFileWrapper:
             # _TemporaryFileWrapper was used (named files)
             result = wrap(f.file, f, loop=loop, executor=executor)
-            # add delete property
             result._closer = f._closer
             return result
         else:
