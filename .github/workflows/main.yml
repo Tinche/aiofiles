@@ -15,7 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "pypy-3.9"]
+        python-version:
+          ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.9"]
 
     steps:
       - uses: "actions/checkout@v3"
@@ -23,6 +24,7 @@ jobs:
       - uses: "actions/setup-python@v4"
         with:
           python-version: "${{ matrix.python-version }}"
+          allow-prerelease: true
 
       - name: "Install dependencies"
         run: |
@@ -41,7 +43,7 @@ jobs:
           name: "coverage-data"
           path: ".coverage.*"
           if-no-files-found: "ignore"
-  
+
   coverage:
     name: "Combine & check coverage."
     needs: "tests"
@@ -49,7 +51,7 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v3"
-      
+
       - uses: "actions/setup-python@v4"
         with:
           cache: "pip"
@@ -78,8 +80,9 @@ jobs:
         with:
           name: "html-report"
           path: "htmlcov"
-      
+
       - name: "Make badge"
+        if: github.ref == 'refs/heads/main'
         uses: "schneegans/dynamic-badges-action@v1.4.0"
         with:
           # GIST_TOKEN is a GitHub personal access token with scope "gist".
