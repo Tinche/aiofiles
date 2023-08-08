@@ -1,6 +1,6 @@
-import sys
 import pytest
-from aiofiles import stdin, stdout, stderr, stdin_bytes, stdout_bytes, stderr_bytes
+
+from aiofiles import stderr, stderr_bytes, stdin, stdin_bytes, stdout, stdout_bytes
 
 
 @pytest.mark.asyncio
