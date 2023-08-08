@@ -171,6 +171,8 @@ async def test_stuff():
   [#166](https://github.com/Tinche/aiofiles/issues/166) [#168](https://github.com/Tinche/aiofiles/pull/168)
 - `aiofiles.tempfile.NamedTemporaryFile` now accepts a `delete_on_close` argument, just like the stdlib version.
 - `aiofiles.tempfile.NamedTemporaryFile` no longer exposes a `delete` attribute, just like the stdlib version.
+- Added `aiofiles.os.statvfs` and `aiofiles.os.path.ismount`.
+  [#162](https://github.com/Tinche/aiofiles/pull/162)
 
 #### 23.1.0 (2023-02-09)
 
