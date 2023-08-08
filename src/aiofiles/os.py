@@ -19,6 +19,7 @@ from . import ospath as path
 
 
 stat = wrap(os.stat)
+statvfs = wrap(os.statvfs)
 rename = wrap(os.rename)
 renames = wrap(os.renames)
 replace = wrap(os.replace)

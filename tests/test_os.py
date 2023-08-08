@@ -20,6 +20,15 @@ async def test_stat():
 
 
 @pytest.mark.asyncio
+async def test_statvfs():
+    """Test the statvfs call."""
+
+    statvfs_res = await aiofiles.os.statvfs("/")
+
+    assert statvfs_res.f_bsize == os.statvfs("/").f_bsize
+
+
+@pytest.mark.asyncio
 async def test_remove():
     """Test the remove call."""
     filename = join(dirname(__file__), "resources", "test_file2.txt")
@@ -202,6 +211,14 @@ async def test_islink():
     await aiofiles.os.symlink(src_filename, dst_filename)
     assert await aiofiles.os.path.islink(dst_filename)
     await aiofiles.os.remove(dst_filename)
+
+
+@pytest.mark.asyncio
+async def test_ismount():
+    """Test the path.ismount call."""
+    filename = join(dirname(__file__), "resources")
+    assert not await aiofiles.os.path.ismount(filename)
+    assert await aiofiles.os.path.ismount("/")
 
 
 @pytest.mark.asyncio
