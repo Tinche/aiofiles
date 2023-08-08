@@ -1,12 +1,14 @@
 """Tests for asyncio's os module."""
-import aiofiles.os
 import asyncio
 import os
-from os import stat
-from os.path import join, dirname, exists, isdir
-from pathlib import Path
-import pytest
 import platform
+from os import stat
+from os.path import dirname, exists, isdir, join
+from pathlib import Path
+
+import pytest
+
+import aiofiles.os
 
 
 @pytest.mark.asyncio
@@ -116,8 +118,7 @@ async def test_replace():
     reason="sendfile() syscall doesn't allow file->file",
 )
 @pytest.mark.skipif(
-    platform.system() == "Darwin",
-    reason="sendfile() doesn't work on mac",
+    platform.system() == "Darwin", reason="sendfile() doesn't work on mac"
 )
 @pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
@@ -395,7 +396,7 @@ async def test_listdir_dir_with_a_file_and_a_dir():
 async def test_listdir_non_existing_dir():
     """Test the listdir call when the dir doesn't exist."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
-    with pytest.raises(FileNotFoundError) as excinfo:
+    with pytest.raises(FileNotFoundError):
         await aiofiles.os.listdir(some_dir)
 
 
@@ -445,7 +446,7 @@ async def test_scandir_dir_with_only_one_dir():
 async def test_scandir_non_existing_dir():
     """Test the scandir call when the dir doesn't exist."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
-    with pytest.raises(FileNotFoundError) as excinfo:
+    with pytest.raises(FileNotFoundError):
         await aiofiles.os.scandir(some_dir)
 
 

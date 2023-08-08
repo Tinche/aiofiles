@@ -1,28 +1,25 @@
 """Handle files using a thread pool executor."""
 import asyncio
 import sys
-from types import coroutine
-
+from functools import partial, singledispatch
 from io import (
-    FileIO,
-    TextIOBase,
+    BufferedIOBase,
+    BufferedRandom,
     BufferedReader,
     BufferedWriter,
-    BufferedRandom,
-    BufferedIOBase,
+    FileIO,
+    TextIOBase,
 )
-from functools import partial, singledispatch
+from types import coroutine
 
+from ..base import AiofilesContextManager
 from .binary import (
     AsyncBufferedIOBase,
     AsyncBufferedReader,
     AsyncFileIO,
     AsyncIndirectBufferedIOBase,
-    AsyncIndirectBufferedReader,
-    AsyncIndirectFileIO,
 )
-from .text import AsyncTextIOWrapper, AsyncTextIndirectIOWrapper
-from ..base import AiofilesContextManager
+from .text import AsyncTextIndirectIOWrapper, AsyncTextIOWrapper
 
 sync_open = open
 
@@ -48,7 +45,7 @@ def open(
     opener=None,
     *,
     loop=None,
-    executor=None
+    executor=None,
 ):
     return AiofilesContextManager(
         _open(
@@ -78,7 +75,7 @@ def _open(
     opener=None,
     *,
     loop=None,
-    executor=None
+    executor=None,
 ):
     """Open an asyncio file."""
     if loop is None:
@@ -126,9 +123,19 @@ def _(file, *, loop=None, executor=None):
     return AsyncFileIO(file, loop=loop, executor=executor)
 
 
-stdin = AsyncTextIndirectIOWrapper('sys.stdin', None, None, indirect=lambda: sys.stdin)
-stdout = AsyncTextIndirectIOWrapper('sys.stdout', None, None, indirect=lambda: sys.stdout)
-stderr = AsyncTextIndirectIOWrapper('sys.stderr', None, None, indirect=lambda: sys.stderr)
-stdin_bytes = AsyncIndirectBufferedIOBase('sys.stdin.buffer', None, None, indirect=lambda: sys.stdin.buffer)
-stdout_bytes = AsyncIndirectBufferedIOBase('sys.stdout.buffer', None, None, indirect=lambda: sys.stdout.buffer)
-stderr_bytes = AsyncIndirectBufferedIOBase('sys.stderr.buffer', None, None, indirect=lambda: sys.stderr.buffer)
+stdin = AsyncTextIndirectIOWrapper("sys.stdin", None, None, indirect=lambda: sys.stdin)
+stdout = AsyncTextIndirectIOWrapper(
+    "sys.stdout", None, None, indirect=lambda: sys.stdout
+)
+stderr = AsyncTextIndirectIOWrapper(
+    "sys.stderr", None, None, indirect=lambda: sys.stderr
+)
+stdin_bytes = AsyncIndirectBufferedIOBase(
+    "sys.stdin.buffer", None, None, indirect=lambda: sys.stdin.buffer
+)
+stdout_bytes = AsyncIndirectBufferedIOBase(
+    "sys.stdout.buffer", None, None, indirect=lambda: sys.stdout.buffer
+)
+stderr_bytes = AsyncIndirectBufferedIOBase(
+    "sys.stderr.buffer", None, None, indirect=lambda: sys.stderr.buffer
+)
