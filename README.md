@@ -92,6 +92,7 @@ The `aiofiles.os` module contains executor-enabled coroutine versions of
 several useful `os` functions that deal with files:
 
 - `stat`
+- `statvfs`
 - `sendfile`
 - `rename`
 - `renames`
@@ -112,6 +113,7 @@ several useful `os` functions that deal with files:
 - `path.isfile`
 - `path.isdir`
 - `path.islink`
+- `path.ismount`
 - `path.getsize`
 - `path.getatime`
 - `path.getctime`
