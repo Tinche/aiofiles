@@ -173,6 +173,8 @@ async def test_stuff():
 - `aiofiles.tempfile.NamedTemporaryFile` no longer exposes a `delete` attribute, just like the stdlib version.
 - Added `aiofiles.os.statvfs` and `aiofiles.os.path.ismount`.
   [#162](https://github.com/Tinche/aiofiles/pull/162)
+- Use [PDM](https://pdm.fming.dev/latest/) instead of Poetry.
+  [#169](https://github.com/Tinche/aiofiles/pull/169)
 
 #### 23.1.0 (2023-02-09)
 
