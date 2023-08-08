@@ -1,4 +1,7 @@
-.PHONY: test
+.PHONY: test lint
 
 test:
-	poetry run pytest -x --ff tests
+	pdm run pytest -x --ff tests
+
+lint:
+	pdm run flake8 src tests && pdm run black --check --verbose src tests
