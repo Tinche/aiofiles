@@ -1,16 +1,12 @@
 """Async wrappers for spooled temp files and temp directory objects"""
-
-# Imports
-import asyncio
-from types import coroutine
+from functools import partial
 
 from ..base import AsyncBase
 from ..threadpool.utils import (
+    cond_delegate_to_executor,
     delegate_to_executor,
     proxy_property_directly,
-    cond_delegate_to_executor,
 )
-from functools import partial
 
 
 @delegate_to_executor("fileno", "rollover")

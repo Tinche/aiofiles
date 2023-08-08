@@ -1,9 +1,5 @@
 from ..base import AsyncBase, AsyncIndirectBase
-from .utils import (
-    delegate_to_executor,
-    proxy_method_directly,
-    proxy_property_directly,
-)
+from .utils import delegate_to_executor, proxy_method_directly, proxy_property_directly
 
 
 @delegate_to_executor(

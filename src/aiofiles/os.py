@@ -1,21 +1,31 @@
 """Async executor versions of file functions from the os module."""
-import asyncio
-from functools import partial, wraps
 import os
 
-
-def wrap(func):
-    @wraps(func)
-    async def run(*args, loop=None, executor=None, **kwargs):
-        if loop is None:
-            loop = asyncio.get_running_loop()
-        pfunc = partial(func, *args, **kwargs)
-        return await loop.run_in_executor(executor, pfunc)
-
-    return run
-
-
 from . import ospath as path
+from .ospath import wrap
+
+__all__ = [
+    "path",
+    "stat",
+    "statvfs",
+    "rename",
+    "renames",
+    "replace",
+    "remove",
+    "unlink",
+    "mkdir",
+    "makedirs",
+    "rmdir",
+    "removedirs",
+    "link",
+    "symlink",
+    "readlink",
+    "listdir",
+    "scandir",
+    "access",
+    "sendfile",
+    "wrap",
+]
 
 
 stat = wrap(os.stat)
