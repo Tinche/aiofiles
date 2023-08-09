@@ -455,6 +455,7 @@ async def test_scandir_non_existing_dir():
         await aiofiles.os.scandir(some_dir)
 
 
+@pytest.mark.skipif(platform.system() in ("Windows"), reason="Doesn't work on Win")
 @pytest.mark.asyncio
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
