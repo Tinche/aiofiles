@@ -165,7 +165,7 @@ async def test_stuff():
 
 ### History
 
-#### 23.2.0 (UNRELEASED)
+#### 23.2.0 (2023-08-09)
 
 - aiofiles is now tested on Python 3.12 too.
   [#166](https://github.com/Tinche/aiofiles/issues/166) [#168](https://github.com/Tinche/aiofiles/pull/168)
