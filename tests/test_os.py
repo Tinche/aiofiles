@@ -312,6 +312,9 @@ async def test_symlink():
     assert exists(src_filename) and exists(dst_filename) is False
 
 
+@pytest.mark.skipif(
+    platform.system() == "Windows", reason="Doesn't work on Win properly"
+)
 @pytest.mark.asyncio
 async def test_readlink():
     """Test the readlink call."""
@@ -455,7 +458,7 @@ async def test_scandir_non_existing_dir():
         await aiofiles.os.scandir(some_dir)
 
 
-@pytest.mark.skipif(platform.system() in ("Windows"), reason="Doesn't work on Win")
+@pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
 @pytest.mark.asyncio
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
