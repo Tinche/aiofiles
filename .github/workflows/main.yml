@@ -28,7 +28,6 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          set -xe
           python -VV
           python -m site
           python -m pip install --upgrade pip wheel pdm
