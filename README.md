@@ -169,6 +169,7 @@ async def test_stuff():
 
 - Import `os.statvfs` conditionally to fix importing on non-UNIX systems.
   [#171](https://github.com/Tinche/aiofiles/issues/171) [#172](https://github.com/Tinche/aiofiles/pull/172)
+- aiofiles is now also tested on Windows.
 
 #### 23.2.0 (2023-08-09)
 
