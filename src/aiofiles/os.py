@@ -29,7 +29,6 @@ __all__ = [
 
 
 stat = wrap(os.stat)
-statvfs = wrap(os.statvfs)
 rename = wrap(os.rename)
 renames = wrap(os.renames)
 replace = wrap(os.replace)
@@ -48,3 +47,5 @@ access = wrap(os.access)
 
 if hasattr(os, "sendfile"):
     sendfile = wrap(os.sendfile)
+if hasattr(os, "statvfs"):
+    statvfs = wrap(os.statvfs)
