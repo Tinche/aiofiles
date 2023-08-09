@@ -119,7 +119,8 @@ async def test_replace():
     reason="sendfile() syscall doesn't allow file->file",
 )
 @pytest.mark.skipif(
-    platform.system() in ("Darwin", "Windows"), reason="sendfile() doesn't work on mac"
+    platform.system() in ("Darwin", "Windows"),
+    reason="sendfile() doesn't work on mac and Win",
 )
 @pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
@@ -149,6 +150,9 @@ async def test_sendfile_file(tmpdir):
     assert size == actual_size
 
 
+@pytest.mark.skipif(
+    platform.system() in ("Windows"), reason="sendfile() doesn't work on Win"
+)
 @pytest.mark.asyncio
 async def test_sendfile_socket(unused_tcp_port):
     """Test the sendfile functionality, file-to-socket."""
