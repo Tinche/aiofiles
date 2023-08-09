@@ -168,7 +168,7 @@ async def test_stuff():
 #### 23.2.1 (2023-08-09)
 
 - Import `os.statvfs` conditionally to fix importing on non-UNIX systems.
-  [#171](https://github.com/Tinche/aiofiles/issues/171)
+  [#171](https://github.com/Tinche/aiofiles/issues/171) [#172](https://github.com/Tinche/aiofiles/pull/172)
 
 #### 23.2.0 (2023-08-09)
 
