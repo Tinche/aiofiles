@@ -169,8 +169,8 @@ async def test_stuff():
 
 - aiofiles is now tested on Python 3.12 too.
   [#166](https://github.com/Tinche/aiofiles/issues/166) [#168](https://github.com/Tinche/aiofiles/pull/168)
-- `aiofiles.tempfile.NamedTemporaryFile` now accepts a `delete_on_close` argument, just like the stdlib version.
-- `aiofiles.tempfile.NamedTemporaryFile` no longer exposes a `delete` attribute, just like the stdlib version.
+- On Python 3.12, `aiofiles.tempfile.NamedTemporaryFile` now accepts a `delete_on_close` argument, just like the stdlib version.
+- On Python 3.12, `aiofiles.tempfile.NamedTemporaryFile` no longer exposes a `delete` attribute, just like the stdlib version.
 - Added `aiofiles.os.statvfs` and `aiofiles.os.path.ismount`.
   [#162](https://github.com/Tinche/aiofiles/pull/162)
 - Use [PDM](https://pdm.fming.dev/latest/) instead of Poetry.
