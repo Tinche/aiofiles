@@ -11,10 +11,10 @@ on:
 jobs:
   tests:
     name: "Python ${{ matrix.python-version }}"
-    runs-on: "ubuntu-latest"
-
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         python-version:
           ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.9"]
 
@@ -28,7 +28,6 @@ jobs:
 
       - name: "Install dependencies"
         run: |
-          set -xe
           python -VV
           python -m site
           python -m pip install --upgrade pip wheel pdm
@@ -43,6 +42,7 @@ jobs:
           name: "coverage-data"
           path: ".coverage.*"
           if-no-files-found: "ignore"
+        if: runner.os == 'Linux'
 
   coverage:
     name: "Combine & check coverage."

@@ -21,6 +21,7 @@ async def test_stat():
     assert stat_res.st_size == 10
 
 
+@pytest.mark.skipif(platform.system() == "Windows", reason="No statvfs on Windows")
 @pytest.mark.asyncio
 async def test_statvfs():
     """Test the statvfs call."""
@@ -118,7 +119,8 @@ async def test_replace():
     reason="sendfile() syscall doesn't allow file->file",
 )
 @pytest.mark.skipif(
-    platform.system() == "Darwin", reason="sendfile() doesn't work on mac"
+    platform.system() in ("Darwin", "Windows"),
+    reason="sendfile() doesn't work on mac and Win",
 )
 @pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
@@ -148,6 +150,9 @@ async def test_sendfile_file(tmpdir):
     assert size == actual_size
 
 
+@pytest.mark.skipif(
+    platform.system() in ("Windows"), reason="sendfile() doesn't work on Win"
+)
 @pytest.mark.asyncio
 async def test_sendfile_socket(unused_tcp_port):
     """Test the sendfile functionality, file-to-socket."""
@@ -307,6 +312,9 @@ async def test_symlink():
     assert exists(src_filename) and exists(dst_filename) is False
 
 
+@pytest.mark.skipif(
+    platform.system() == "Windows", reason="Doesn't work on Win properly"
+)
 @pytest.mark.asyncio
 async def test_readlink():
     """Test the readlink call."""
@@ -450,6 +458,7 @@ async def test_scandir_non_existing_dir():
         await aiofiles.os.scandir(some_dir)
 
 
+@pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
 @pytest.mark.asyncio
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")

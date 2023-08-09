@@ -1,5 +1,6 @@
 import io
 import os
+import platform
 import sys
 
 import pytest
@@ -120,14 +121,10 @@ async def test_spooled_temporary_file(mode):
         assert await f.read() == data + data
 
 
-@pytest.mark.asyncio
 @pytest.mark.skipif(
-    sys.version_info < (3, 7),
-    reason=(
-        "text-mode SpooledTemporaryFile is implemented with StringIO in py3.6"
-        "it doesn't support `newlines`"
-    ),
+    platform.system() == "Windows", reason="Doesn't work on Win properly"
 )
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "test_string, newlines", [("LF\n", "\n"), ("CRLF\r\n", "\r\n")]
 )
