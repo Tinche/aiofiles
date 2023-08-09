@@ -1,6 +1,6 @@
 [project]
 name = "aiofiles"
-version = "23.2.1dev0"
+version = "23.2.1"
 description = "File support for asyncio."
 authors = [
     {name = "Tin Tvrtkovic", email = "tinchester@gmail.com"},
