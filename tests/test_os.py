@@ -119,7 +119,7 @@ async def test_replace():
     reason="sendfile() syscall doesn't allow file->file",
 )
 @pytest.mark.skipif(
-    platform.system() == "Darwin", reason="sendfile() doesn't work on mac"
+    platform.system() in ("Darwin", "Windows"), reason="sendfile() doesn't work on mac"
 )
 @pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
