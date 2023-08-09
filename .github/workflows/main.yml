@@ -42,6 +42,7 @@ jobs:
           name: "coverage-data"
           path: ".coverage.*"
           if-no-files-found: "ignore"
+        if: runner.os == "Linux"
 
   coverage:
     name: "Combine & check coverage."
