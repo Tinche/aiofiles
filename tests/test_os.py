@@ -21,6 +21,9 @@ async def test_stat():
     assert stat_res.st_size == 10
 
 
+@pytest.mark.skipif(
+    platform.system() == "Windows", reason="No statvfs on Windows"
+)
 @pytest.mark.asyncio
 async def test_statvfs():
     """Test the statvfs call."""
