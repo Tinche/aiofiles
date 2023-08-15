@@ -7,7 +7,6 @@ from .ospath import wrap
 __all__ = [
     "path",
     "stat",
-    "statvfs",
     "rename",
     "renames",
     "replace",
@@ -23,9 +22,12 @@ __all__ = [
     "listdir",
     "scandir",
     "access",
-    "sendfile",
     "wrap",
 ]
+if hasattr(os, "sendfile"):
+    __all__ += ["sendfile"]
+if hasattr(os, "statvfs"):
+    __all__ += ["statvfs"]
 
 
 stat = wrap(os.stat)
