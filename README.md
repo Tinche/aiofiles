@@ -165,6 +165,10 @@ async def test_stuff():
 
 ### History
 
+#### 23.2.2 (UNRELEASED)
+
+- Remove spurious items from `aiofiles.os.__all__` when running on Windows.
+
 #### 23.2.1 (2023-08-09)
 
 - Import `os.statvfs` conditionally to fix importing on non-UNIX systems.
