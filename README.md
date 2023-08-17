@@ -167,6 +167,8 @@ async def test_stuff():
 
 #### 23.2.2 (UNRELEASED)
 
+- Import `os.link` conditionally to fix importing on android.
+  [#175](https://github.com/Tinche/aiofiles/issues/175)
 - Remove spurious items from `aiofiles.os.__all__` when running on Windows.
 
 #### 23.2.1 (2023-08-09)
