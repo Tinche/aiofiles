@@ -170,6 +170,7 @@ async def test_stuff():
 - Import `os.link` conditionally to fix importing on android.
   [#175](https://github.com/Tinche/aiofiles/issues/175)
 - Remove spurious items from `aiofiles.os.__all__` when running on Windows.
+- Switch to more modern async idioms: Remove types.coroutine and make AiofilesContextManager an awaitable instead a coroutine.
 
 #### 23.2.1 (2023-08-09)
 
