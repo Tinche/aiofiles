@@ -7,6 +7,7 @@ from .threadpool import (
     stdin_bytes,
     stdout_bytes,
     stderr_bytes,
+    wrap,
 )
 from . import tempfile
 
@@ -19,4 +20,5 @@ __all__ = [
     "stdin_bytes",
     "stdout_bytes",
     "stderr_bytes",
+    "wrap",
 ]
