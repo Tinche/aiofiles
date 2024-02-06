@@ -155,13 +155,13 @@ aiofiles.threadpool.wrap.register(mock.MagicMock)(
 
 async def test_stuff():
     write_data = 'data'
-    file_chunks = [
+    read_file_chunks = [
         b'file chunks 1',
         b'file chunks 2',
         b'file chunks 3',
         b'',
     ]
-    file_chunks_iter = iter(file_chunks)
+    file_chunks_iter = iter(read_file_chunks)
 
     mock_file_stream = mock.MagicMock(
         read=lambda *args, **kwargs: next(file_chunks_iter)
