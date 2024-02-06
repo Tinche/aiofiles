@@ -171,7 +171,7 @@ async def test_stuff():
         async with aiofiles.open('filename', 'w') as f:
             await f.write(write_data)
 
-        mock_file_stream.write.assert_called_once_with(data)
+        mock_file_stream.write.assert_called_once_with(write_data)
 ```
 
 ### History
