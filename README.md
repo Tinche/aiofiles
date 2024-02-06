@@ -150,17 +150,28 @@ as desired. The return type also needs to be registered with the
 
 ```python
 aiofiles.threadpool.wrap.register(mock.MagicMock)(
-    lambda *args, **kwargs: threadpool.AsyncBufferedIOBase(*args, **kwargs))
+    lambda *args, **kwargs: aiofiles.threadpool.AsyncBufferedIOBase(*args, **kwargs)
+)
 
 async def test_stuff():
-    data = 'data'
-    mock_file = mock.MagicMock()
+    write_data = 'data'
+    file_chunks = [
+        b'file chunks 1',
+        b'file chunks 2',
+        b'file chunks 3',
+        b'',
+    ]
+    file_chunks_iter = iter(file_chunks)
 
-    with mock.patch('aiofiles.threadpool.sync_open', return_value=mock_file) as mock_open:
+    mock_file_stream = mock.MagicMock(
+        read=lambda *args, **kwargs: next(file_chunks_iter)
+    )
+
+    with mock.patch('aiofiles.threadpool.sync_open', return_value=mock_file_stream) as mock_open:
         async with aiofiles.open('filename', 'w') as f:
-            await f.write(data)
+            await f.write(write_data)
 
-        mock_file.write.assert_called_once_with(data)
+        mock_file_stream.write.assert_called_once_with(data)
 ```
 
 ### History
