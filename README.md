@@ -170,6 +170,7 @@ async def test_stuff():
     with mock.patch('aiofiles.threadpool.sync_open', return_value=mock_file_stream) as mock_open:
         async with aiofiles.open('filename', 'w') as f:
             await f.write(write_data)
+            assert f.read() == b'file chunks 1'
 
         mock_file_stream.write.assert_called_once_with(write_data)
 ```
