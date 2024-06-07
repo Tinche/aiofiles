@@ -185,7 +185,7 @@ async def test_stuff():
   [#175](https://github.com/Tinche/aiofiles/issues/175)
 - Remove spurious items from `aiofiles.os.__all__` when running on Windows.
 - Switch to more modern async idioms: Remove types.coroutine and make AiofilesContextManager an awaitable instead a coroutine.
-- Added `aiofiles.os.path.abspath` and `aiofiles.os.getcwd`.
+- Add `aiofiles.os.path.abspath` and `aiofiles.os.getcwd`.
   [#174](https://github.com/Tinche/aiofiles/issues/181)
 
 #### 23.2.1 (2023-08-09)
