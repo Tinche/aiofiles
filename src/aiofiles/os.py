@@ -1,4 +1,5 @@
 """Async executor versions of file functions from the os module."""
+
 import os
 
 from . import ospath as path
@@ -22,6 +23,7 @@ __all__ = [
     "scandir",
     "access",
     "wrap",
+    "getcwd",
 ]
 if hasattr(os, "link"):
     __all__ += ["link"]
@@ -46,6 +48,7 @@ readlink = wrap(os.readlink)
 listdir = wrap(os.listdir)
 scandir = wrap(os.scandir)
 access = wrap(os.access)
+getcwd = wrap(os.getcwd)
 
 if hasattr(os, "link"):
     link = wrap(os.link)
