@@ -1,4 +1,5 @@
 """Async executor versions of file functions from the os.path module."""
+
 import asyncio
 from functools import partial, wraps
 from os import path
@@ -26,3 +27,4 @@ getatime = wrap(path.getatime)
 getctime = wrap(path.getctime)
 samefile = wrap(path.samefile)
 sameopenfile = wrap(path.sameopenfile)
+abspath = wrap(path.abspath)

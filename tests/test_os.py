@@ -1,4 +1,5 @@
 """Tests for asyncio's os module."""
+
 import asyncio
 import os
 import platform
@@ -511,3 +512,27 @@ async def test_access():
         print("mode:{}".format(mode))
         assert not await aiofiles.os.access(temp_file, mode)
         assert not await aiofiles.os.access(temp_dir, mode)
+
+
+@pytest.mark.asyncio
+async def test_getcwd():
+    """Test the getcwd call."""
+    cwd = await aiofiles.os.getcwd()
+    assert cwd == os.getcwd()
+
+
+@pytest.mark.asyncio
+async def test_abspath_given_abspath():
+    """Test the abspath call with an absolute path."""
+    filename = join(dirname(__file__), "resources", "test_file1.txt")
+    file_abs_path = await aiofiles.os.path.abspath(filename)
+    assert file_abs_path == filename
+
+
+@pytest.mark.asyncio
+async def test_abspath():
+    """Test the abspath call."""
+    relative_filename = "./tests/resources/test_file1.txt"
+    abs_filename = join(dirname(__file__), "resources", "test_file1.txt")
+    result = await aiofiles.os.path.abspath(relative_filename)
+    assert result == abs_filename
