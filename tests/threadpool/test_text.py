@@ -5,7 +5,6 @@ from aiofiles.threadpool import open as aioopen
 import pytest
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_iteration(mode):
     """Test iterating over lines from a file."""
@@ -36,7 +35,6 @@ async def test_simple_iteration(mode):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_readlines(mode):
     """Test the readlines functionality."""
@@ -56,7 +54,6 @@ async def test_simple_readlines(mode):
     assert actual == expected
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w", "a"])
 async def test_simple_flush(mode, tmpdir):
     """Test flushing to a file."""
@@ -79,7 +76,6 @@ async def test_simple_flush(mode, tmpdir):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_read(mode):
     """Just read some bytes from a test file."""
@@ -95,7 +91,6 @@ async def test_simple_read(mode):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["w", "a"])
 async def test_simple_read_fail(mode, tmpdir):
     """Try reading some bytes and fail."""
@@ -113,7 +108,6 @@ async def test_simple_read_fail(mode, tmpdir):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_staggered_read(mode):
     """Read bytes repeatedly."""
@@ -145,7 +139,6 @@ async def test_staggered_read(mode):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_seek(mode, tmpdir):
     """Test seeking and then reading."""
@@ -162,7 +155,6 @@ async def test_simple_seek(mode, tmpdir):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["w", "r", "r+", "w+", "a", "a+"])
 async def test_simple_close(mode, tmpdir):
     """Open a file, read a byte, and close it."""
@@ -180,7 +172,6 @@ async def test_simple_close(mode, tmpdir):
     assert file._file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w", "a+"])
 async def test_simple_truncate(mode, tmpdir):
     """Test truncating files."""
@@ -205,7 +196,6 @@ async def test_simple_truncate(mode, tmpdir):
     assert "" == full_file.read()
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["w", "r+", "w+", "a", "a+"])
 async def test_simple_write(mode, tmpdir):
     """Test writing into a file."""
@@ -225,7 +215,6 @@ async def test_simple_write(mode, tmpdir):
     assert file.closed
 
 
-@pytest.mark.asyncio
 async def test_simple_detach(tmpdir):
     """Test detaching for buffered streams."""
     filename = "file.bin"
@@ -245,7 +234,6 @@ async def test_simple_detach(tmpdir):
             assert b"0123456789" == raw_file.read(10)
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_simple_iteration_ctx_mgr(mode):
     """Test iterating over lines from a file."""
@@ -264,7 +252,6 @@ async def test_simple_iteration_ctx_mgr(mode):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_name_property(mode):
     """Test iterating over lines from a file."""
@@ -276,7 +263,6 @@ async def test_name_property(mode):
     assert file.closed
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "r+", "a+"])
 async def test_mode_property(mode):
     """Test iterating over lines from a file."""

@@ -1,11 +1,9 @@
 """Simple tests verifying basic functionality."""
 import asyncio
 from aiofiles import threadpool
-import pytest
 
 
-@pytest.mark.asyncio
-async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
+async def test_serve_small_bin_file_sync(tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file.
 
     The file is read into memory synchronously, so this test doesn't actually
@@ -34,8 +32,7 @@ async def test_serve_small_bin_file_sync(event_loop, tmpdir, unused_tcp_port):
     await server.wait_closed()
 
 
-@pytest.mark.asyncio
-async def test_serve_small_bin_file(event_loop, tmpdir, unused_tcp_port):
+async def test_serve_small_bin_file(tmpdir, unused_tcp_port):
     """Fire up a small simple file server, and fetch a file."""
     # First we'll write a small file.
     filename = "test.bin"

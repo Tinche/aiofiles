@@ -187,6 +187,9 @@ async def test_stuff():
 - Switch to more modern async idioms: Remove types.coroutine and make AiofilesContextManager an awaitable instead a coroutine.
 - Add `aiofiles.os.path.abspath` and `aiofiles.os.getcwd`.
   [#174](https://github.com/Tinche/aiofiles/issues/181)
+- _aiofiles_ is now tested on Python 3.13 too.
+  [#184](https://github.com/Tinche/aiofiles/pull/184)
+- Dropped Python 3.7 support. If you require it, use version 23.2.1.
 
 #### 23.2.1 (2023-08-09)
 
