@@ -53,7 +53,7 @@ known_first_party = ["aiofiles"]
 
 [tool.pdm.dev-dependencies]
 test = [
-    "pytest>=7.2.0",
+    "pytest>=8.2.2",
     "pytest-asyncio>=0.23.7",
     "coverage>=6.4.4",
     "tox>=3.25.1",
