@@ -8,7 +8,6 @@ import pytest
 from aiofiles import tempfile
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_temporary_file(mode):
     """Test temporary file."""
@@ -25,7 +24,6 @@ async def test_temporary_file(mode):
             assert line == data
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 @pytest.mark.skipif(
     sys.version_info >= (3, 12),
@@ -49,7 +47,6 @@ async def test_named_temporary_file(mode):
     assert not os.path.exists(filename)
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 @pytest.mark.skipif(
     sys.version_info < (3, 12),
@@ -72,7 +69,6 @@ async def test_named_temporary_file_312(mode):
     assert not os.path.exists(filename)
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 @pytest.mark.skipif(
     sys.version_info < (3, 12), reason=("3.12+ supports delete_on_close")
@@ -100,7 +96,6 @@ async def test_named_temporary_delete_on_close(mode):
     assert not os.path.exists(filename)
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_spooled_temporary_file(mode):
     """Test spooled temporary file."""
@@ -124,7 +119,6 @@ async def test_spooled_temporary_file(mode):
 @pytest.mark.skipif(
     platform.system() == "Windows", reason="Doesn't work on Win properly"
 )
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "test_string, newlines", [("LF\n", "\n"), ("CRLF\r\n", "\r\n")]
 )
@@ -146,7 +140,6 @@ async def test_spooled_temporary_file_newlines(test_string, newlines):
         assert f.newlines == newlines
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("prefix, suffix", [("a", "b"), ("c", "d"), ("e", "f")])
 async def test_temporary_directory(prefix, suffix, tmp_path):
     """Test temporary directory."""

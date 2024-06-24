@@ -12,7 +12,6 @@ import pytest
 import aiofiles.os
 
 
-@pytest.mark.asyncio
 async def test_stat():
     """Test the stat call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -23,7 +22,6 @@ async def test_stat():
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="No statvfs on Windows")
-@pytest.mark.asyncio
 async def test_statvfs():
     """Test the statvfs call."""
 
@@ -32,7 +30,6 @@ async def test_statvfs():
     assert statvfs_res.f_bsize == os.statvfs("/").f_bsize
 
 
-@pytest.mark.asyncio
 async def test_remove():
     """Test the remove call."""
     filename = join(dirname(__file__), "resources", "test_file2.txt")
@@ -44,7 +41,6 @@ async def test_remove():
     assert exists(filename) is False
 
 
-@pytest.mark.asyncio
 async def test_unlink():
     """Test the unlink call."""
     filename = join(dirname(__file__), "resources", "test_file2.txt")
@@ -56,7 +52,6 @@ async def test_unlink():
     assert exists(filename) is False
 
 
-@pytest.mark.asyncio
 async def test_mkdir_and_rmdir():
     """Test the mkdir and rmdir call."""
     directory = join(dirname(__file__), "resources", "test_dir")
@@ -66,7 +61,6 @@ async def test_mkdir_and_rmdir():
     assert exists(directory) is False
 
 
-@pytest.mark.asyncio
 async def test_rename():
     """Test the rename call."""
     old_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -77,7 +71,6 @@ async def test_rename():
     assert exists(old_filename) and exists(new_filename) is False
 
 
-@pytest.mark.asyncio
 async def test_renames():
     """Test the renames call."""
     old_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -94,7 +87,6 @@ async def test_renames():
     )
 
 
-@pytest.mark.asyncio
 async def test_replace():
     """Test the replace call."""
     old_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -123,7 +115,6 @@ async def test_replace():
     platform.system() in ("Darwin", "Windows"),
     reason="sendfile() doesn't work on mac and Win",
 )
-@pytest.mark.asyncio
 async def test_sendfile_file(tmpdir):
     """Test the sendfile functionality, file-to-file."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -154,7 +145,6 @@ async def test_sendfile_file(tmpdir):
 @pytest.mark.skipif(
     platform.system() in ("Windows"), reason="sendfile() doesn't work on Win"
 )
-@pytest.mark.asyncio
 async def test_sendfile_socket(unused_tcp_port):
     """Test the sendfile functionality, file-to-socket."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -186,7 +176,6 @@ async def test_sendfile_socket(unused_tcp_port):
     await server.wait_closed()
 
 
-@pytest.mark.asyncio
 async def test_exists():
     """Test path.exists call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -194,7 +183,6 @@ async def test_exists():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_isfile():
     """Test path.isfile call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -202,7 +190,6 @@ async def test_isfile():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_isdir():
     """Test path.isdir call."""
     filename = join(dirname(__file__), "resources")
@@ -210,7 +197,6 @@ async def test_isdir():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_islink():
     """Test the path.islink call."""
     src_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -220,7 +206,6 @@ async def test_islink():
     await aiofiles.os.remove(dst_filename)
 
 
-@pytest.mark.asyncio
 async def test_ismount():
     """Test the path.ismount call."""
     filename = join(dirname(__file__), "resources")
@@ -228,7 +213,6 @@ async def test_ismount():
     assert await aiofiles.os.path.ismount("/")
 
 
-@pytest.mark.asyncio
 async def test_getsize():
     """Test path.getsize call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -236,7 +220,6 @@ async def test_getsize():
     assert result == 10
 
 
-@pytest.mark.asyncio
 async def test_samefile():
     """Test path.samefile call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -244,7 +227,6 @@ async def test_samefile():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_sameopenfile():
     """Test path.samefile call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -252,7 +234,6 @@ async def test_sameopenfile():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_getmtime():
     """Test path.getmtime call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -260,7 +241,6 @@ async def test_getmtime():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_getatime():
     """Test path.getatime call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -268,7 +248,6 @@ async def test_getatime():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_getctime():
     """Test path. call."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -276,7 +255,6 @@ async def test_getctime():
     assert result
 
 
-@pytest.mark.asyncio
 async def test_link():
     """Test the link call."""
     src_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -298,7 +276,6 @@ async def test_link():
     )
 
 
-@pytest.mark.asyncio
 async def test_symlink():
     """Test the symlink call."""
     src_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -316,7 +293,6 @@ async def test_symlink():
 @pytest.mark.skipif(
     platform.system() == "Windows", reason="Doesn't work on Win properly"
 )
-@pytest.mark.asyncio
 async def test_readlink():
     """Test the readlink call."""
     src_filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -327,7 +303,6 @@ async def test_readlink():
     await aiofiles.os.remove(dst_filename)
 
 
-@pytest.mark.asyncio
 async def test_listdir_empty_dir():
     """Test the listdir call when the dir is empty."""
     directory = join(dirname(__file__), "resources", "empty_dir")
@@ -337,7 +312,6 @@ async def test_listdir_empty_dir():
     await aiofiles.os.rmdir(directory)
 
 
-@pytest.mark.asyncio
 async def test_listdir_dir_with_only_one_file():
     """Test the listdir call when the dir has one file."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -351,7 +325,6 @@ async def test_listdir_dir_with_only_one_file():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_listdir_dir_with_only_one_dir():
     """Test the listdir call when the dir has one dir."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -364,7 +337,6 @@ async def test_listdir_dir_with_only_one_dir():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_listdir_dir_with_multiple_files():
     """Test the listdir call when the dir has multiple files."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -383,7 +355,6 @@ async def test_listdir_dir_with_multiple_files():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_listdir_dir_with_a_file_and_a_dir():
     """Test the listdir call when the dir has files and other dirs."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -401,7 +372,6 @@ async def test_listdir_dir_with_a_file_and_a_dir():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_listdir_non_existing_dir():
     """Test the listdir call when the dir doesn't exist."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -409,7 +379,6 @@ async def test_listdir_non_existing_dir():
         await aiofiles.os.listdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_scantdir_empty_dir():
     """Test the scandir call when the dir is empty."""
     empty_dir = join(dirname(__file__), "resources", "empty_dir")
@@ -422,7 +391,6 @@ async def test_scantdir_empty_dir():
     await aiofiles.os.rmdir(empty_dir)
 
 
-@pytest.mark.asyncio
 async def test_scandir_dir_with_only_one_file():
     """Test the scandir call when the dir has one file."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -437,7 +405,6 @@ async def test_scandir_dir_with_only_one_file():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_scandir_dir_with_only_one_dir():
     """Test the scandir call when the dir has one dir."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -451,7 +418,6 @@ async def test_scandir_dir_with_only_one_dir():
     await aiofiles.os.rmdir(some_dir)
 
 
-@pytest.mark.asyncio
 async def test_scandir_non_existing_dir():
     """Test the scandir call when the dir doesn't exist."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -460,7 +426,6 @@ async def test_scandir_non_existing_dir():
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
-@pytest.mark.asyncio
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
     temp_dir = Path(__file__).parent.joinpath("resources", "os_access_temp")
@@ -514,14 +479,12 @@ async def test_access():
         assert not await aiofiles.os.access(temp_dir, mode)
 
 
-@pytest.mark.asyncio
 async def test_getcwd():
     """Test the getcwd call."""
     cwd = await aiofiles.os.getcwd()
     assert cwd == os.getcwd()
 
 
-@pytest.mark.asyncio
 async def test_abspath_given_abspath():
     """Test the abspath call with an absolute path."""
     filename = join(dirname(__file__), "resources", "test_file1.txt")
@@ -529,7 +492,6 @@ async def test_abspath_given_abspath():
     assert file_abs_path == filename
 
 
-@pytest.mark.asyncio
 async def test_abspath():
     """Test the abspath call."""
     relative_filename = "./tests/resources/test_file1.txt"

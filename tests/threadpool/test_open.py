@@ -3,7 +3,6 @@ from aiofiles.threadpool import open as aioopen, wrap
 import pytest
 
 
-@pytest.mark.asyncio
 @pytest.mark.parametrize("mode", ["r", "rb"])
 async def test_file_not_found(mode):
     filename = "non_existent"

@@ -3,12 +3,10 @@ from os.path import dirname
 from os.path import join
 import time
 import asyncio
-import pytest
 
 import aiofiles.threadpool
 
 
-@pytest.mark.asyncio
 async def test_slow_file(monkeypatch, unused_tcp_port):
     """Monkey patch open and file.read(), and assert the loop still works."""
     filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
