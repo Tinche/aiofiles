@@ -179,7 +179,7 @@ async def test_stuff():
 
 ### History
 
-#### 23.2.2 (UNRELEASED)
+#### 24.1.0 (2024-06-24)
 
 - Import `os.link` conditionally to fix importing on android.
   [#175](https://github.com/Tinche/aiofiles/issues/175)
