@@ -3,7 +3,7 @@
 import asyncio
 import os
 import platform
-from os import stat
+from os import stat, walk
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
 
@@ -498,3 +498,13 @@ async def test_abspath():
     abs_filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.abspath(relative_filename)
     assert result == abs_filename
+
+
+@pytest.mark.parametrize(("path",), [(".",), ("..",)])
+async def test_walk(path: str):
+    """Testing the `os.walk` wrapped function."""
+
+    os_walk_res = list(walk(top=path))
+    aio_walk_res = list(await aiofiles.os.walk(top=path))
+
+    assert aio_walk_res == os_walk_res
