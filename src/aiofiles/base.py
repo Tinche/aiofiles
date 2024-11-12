@@ -1,7 +1,6 @@
-"""Various base classes."""
+from asyncio import get_running_loop
 from collections.abc import Awaitable
 from contextlib import AbstractAsyncContextManager
-from asyncio import get_running_loop
 
 
 class AsyncBase:
@@ -23,11 +22,10 @@ class AsyncBase:
 
     async def __anext__(self):
         """Simulate normal file iteration."""
-        line = await self.readline()
-        if line:
+
+        if line := await self.readline():
             return line
-        else:
-            raise StopAsyncIteration
+        raise StopAsyncIteration
 
 
 class AsyncIndirectBase(AsyncBase):
