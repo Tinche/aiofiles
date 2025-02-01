@@ -333,7 +333,7 @@ class AiofilesContextManagerTempDir(AiofilesContextManager):
 @singledispatch
 def wrap(base_io_obj, file, *, loop=None, executor=None):
     """Wrap the object with interface based on type of underlying IO"""
-    raise TypeError("Unsupported IO type: {}".format(base_io_obj))
+    raise TypeError(f"Unsupported IO type: {base_io_obj}")
 
 
 @wrap.register(TextIOBase)
