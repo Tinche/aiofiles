@@ -56,6 +56,7 @@ test = [
     "pytest-asyncio>=0.23.7",
     "coverage>=6.4.4",
     "tox>=3.25.1",
+    "blockbuster>=1.5.20",
 ]
 lint = [
     "black>=22.8.0",
