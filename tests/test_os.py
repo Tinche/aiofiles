@@ -464,7 +464,7 @@ async def test_access():
         [0o000, os.X_OK, False],
     ]
     for ch, mode, access in data:
-        print("mode:{}, access:{}".format(mode, access))
+        print(f"mode:{mode}, access:{access}")
         temp_file.chmod(ch)
         temp_dir.chmod(ch)
         assert await aiofiles.os.access(temp_file, mode) == access
@@ -474,7 +474,7 @@ async def test_access():
     os.remove(temp_file)
     os.rmdir(temp_dir)
     for mode in [os.F_OK, os.R_OK, os.W_OK, os.X_OK]:
-        print("mode:{}".format(mode))
+        print(f"mode:{mode}")
         assert not await aiofiles.os.access(temp_file, mode)
         assert not await aiofiles.os.access(temp_dir, mode)
 

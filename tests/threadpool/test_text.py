@@ -40,7 +40,7 @@ async def test_simple_readlines(mode):
     """Test the readlines functionality."""
     filename = join(dirname(__file__), "..", "resources", "multiline_file.txt")
 
-    with open(filename, mode="r") as f:
+    with open(filename) as f:
         expected = f.readlines()
 
     async with aioopen(filename, mode=mode) as file:
@@ -86,7 +86,7 @@ async def test_simple_read(mode):
         actual = await file.read()
 
         assert "" == (await file.read())
-    assert actual == open(filename, mode="r").read()
+    assert actual == open(filename).read()
 
     assert file.closed
 
@@ -126,7 +126,7 @@ async def test_staggered_read(mode):
         assert "" == (await file.read())
 
     expected = []
-    with open(filename, mode="r") as f:
+    with open(filename) as f:
         while True:
             char = f.read(1)
             if char:
