@@ -50,7 +50,7 @@ skip-magic-trailing-comma = true
 profile = "black"
 known_first_party = ["aiofiles"]
 
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 test = [
     "pytest>=8.2.2",
     "pytest-asyncio>=0.23.7",
@@ -59,7 +59,7 @@ test = [
 ]
 lint = [
     "black>=22.8.0",
-    "flake8>=5.0.4",
+    "flake8>=7.1.1",
     "isort==5.11.5",
 ]
 
