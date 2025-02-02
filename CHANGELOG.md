@@ -1,5 +1,10 @@
 # History
 
+## The current release
+
+- Dropped Python 3.8 support.
+  [#204](https://github.com/Tinche/aiofiles/pull/204)
+
 ## 24.1.0 (2024-06-24)
 
 - Import `os.link` conditionally to fix importing on android.
