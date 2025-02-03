@@ -2,7 +2,7 @@
 
 ## The current release
 
-- Dropped Python 3.8 support.
+- Dropped Python 3.8 support. If you require it, use version 24.1.0.
   [#204](https://github.com/Tinche/aiofiles/pull/204)
 
 ## 24.1.0 (2024-06-24)
