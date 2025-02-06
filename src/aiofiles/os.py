@@ -2,8 +2,9 @@
 
 import os
 
+from .base import wrap
 from . import ospath as path
-from .ospath import wrap
+
 
 __all__ = [
     "path",
@@ -25,34 +26,37 @@ __all__ = [
     "wrap",
     "getcwd",
 ]
-if hasattr(os, "link"):
-    __all__ += ["link"]
-if hasattr(os, "sendfile"):
-    __all__ += ["sendfile"]
-if hasattr(os, "statvfs"):
-    __all__ += ["statvfs"]
 
+access = wrap(os.access)
 
-stat = wrap(os.stat)
+getcwd = wrap(os.getcwd)
+
+listdir = wrap(os.listdir)
+
+makedirs = wrap(os.makedirs)
+mkdir = wrap(os.mkdir)
+
+readlink = wrap(os.readlink)
+remove = wrap(os.remove)
+removedirs = wrap(os.removedirs)
 rename = wrap(os.rename)
 renames = wrap(os.renames)
 replace = wrap(os.replace)
-remove = wrap(os.remove)
-unlink = wrap(os.unlink)
-mkdir = wrap(os.mkdir)
-makedirs = wrap(os.makedirs)
 rmdir = wrap(os.rmdir)
-removedirs = wrap(os.removedirs)
-symlink = wrap(os.symlink)
-readlink = wrap(os.readlink)
-listdir = wrap(os.listdir)
+
 scandir = wrap(os.scandir)
-access = wrap(os.access)
-getcwd = wrap(os.getcwd)
+stat = wrap(os.stat)
+symlink = wrap(os.symlink)
+
+unlink = wrap(os.unlink)
+
 
 if hasattr(os, "link"):
+    __all__ += ["link"]
     link = wrap(os.link)
 if hasattr(os, "sendfile"):
+    __all__ += ["sendfile"]
     sendfile = wrap(os.sendfile)
 if hasattr(os, "statvfs"):
+    __all__ += ["statvfs"]
     statvfs = wrap(os.statvfs)

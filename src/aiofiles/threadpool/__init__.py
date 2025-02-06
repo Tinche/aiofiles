@@ -1,4 +1,5 @@
 """Handle files using a thread pool executor."""
+
 import asyncio
 import sys
 from functools import partial, singledispatch
