@@ -3,7 +3,7 @@
 import asyncio
 import os
 import platform
-from os import stat
+from os import stat, walk
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
 
@@ -498,3 +498,36 @@ async def test_abspath():
     abs_filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.abspath(relative_filename)
     assert result == abs_filename
+
+
+@pytest.mark.parametrize(("path",), [(".",), ("..",)])
+async def test_walk(path: str):
+    """Test the `walk` call."""
+
+    os_walk_res = list(walk(top=path))
+    aio_walk_res = [r async for r in aiofiles.os.walk(top=path)]
+
+    assert aio_walk_res == os_walk_res
+
+
+async def test_walk_non_blocking():
+    """Test if the `walk` is non-blocking."""
+
+    async def _set_answer():
+        nonlocal val
+        nonlocal ans
+
+        val = ans
+        await asyncio.sleep(1)
+
+    async def _walk_away():
+        nonlocal val
+        nonlocal ans
+
+        async for _ in aiofiles.os.walk(top="."):
+            pass
+        assert val == ans
+
+    val, ans = 21, 42
+
+    await asyncio.gather(_walk_away(), _set_answer())

@@ -64,6 +64,7 @@ lint = [
 ]
 
 [tool.pytest.ini_options]
+addopts = "--maxfail=1"
 asyncio_mode = "auto"
 
 [tool.hatch.version]

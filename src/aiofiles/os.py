@@ -1,5 +1,6 @@
 """Async executor versions of file functions from the os module."""
 
+import asyncio
 import os
 
 from .base import wrap
@@ -60,3 +61,16 @@ if hasattr(os, "sendfile"):
 if hasattr(os, "statvfs"):
     __all__ += ["statvfs"]
     statvfs = wrap(os.statvfs)
+
+
+async def walk(top, topdown=True, onerror=None, followlinks=False):
+    """Asynchronous directory tree generator.
+
+    Wraps the `os.walk` function.
+    """
+
+    for content in os.walk(
+        top, topdown=topdown, onerror=onerror, followlinks=followlinks
+    ):
+        yield content
+        await asyncio.sleep(0)

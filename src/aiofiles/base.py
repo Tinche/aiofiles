@@ -26,7 +26,6 @@ class AsyncBase:
         return self._ref_loop or get_running_loop()
 
     def __aiter__(self):
-        """We are our own iterator."""
         return self
 
     def __repr__(self):
