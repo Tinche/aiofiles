@@ -31,6 +31,7 @@ __all__ = (
     "stdin_bytes",
     "stdout_bytes",
     "stderr_bytes",
+    "wrap",
 )
 
 
