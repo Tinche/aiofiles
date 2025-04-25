@@ -83,6 +83,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
@@ -92,3 +97,6 @@ venv.bak/
 
 # Visual Studio Code
 .vscode/
+
+# ruff stuff:
+.ruff_cache/
