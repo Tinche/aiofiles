@@ -97,7 +97,8 @@ async def _open(
 
 @singledispatch
 def wrap(file, *, loop=None, executor=None):
-    raise TypeError(f"Unsupported io type: {file}.")
+    msg = f"Unsupported io type: {file}."
+    raise TypeError(msg)
 
 
 @wrap.register(TextIOBase)

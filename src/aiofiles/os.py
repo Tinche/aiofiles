@@ -2,9 +2,8 @@
 
 import os
 
-from .base import wrap
 from . import ospath as path
-
+from .base import wrap
 
 __all__ = [
     "path",

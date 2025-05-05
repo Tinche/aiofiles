@@ -1,5 +1,7 @@
 """Simple tests verifying basic functionality."""
+
 import asyncio
+
 from aiofiles import threadpool
 
 

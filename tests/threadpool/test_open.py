@@ -1,10 +1,9 @@
 import asyncio
 from pathlib import Path
 
-from aiofiles.threadpool import open as aioopen
-
 import pytest
 
+from aiofiles.threadpool import open as aioopen
 
 RESOURCES_DIR = Path(__file__).parent.parent / "resources"
 TEST_FILE = RESOURCES_DIR / "test_file1.txt"
