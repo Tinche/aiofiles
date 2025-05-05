@@ -1,7 +1,17 @@
+TEST_DIR := tests
+DIRS := src $(TEST_DIR)
+
 .PHONY: test lint
 
-test:
-	pdm run pytest -x --ff tests
+check:
+	pdm run ruff format --check $(DIRS)
+	pdm run ruff check $(DIRS)
 
-lint:
-	pdm run flake8 src tests && pdm run black --check src tests
+format:
+	pdm run ruff format $(DIRS)
+
+lint: format
+	pdm run ruff check --fix $(DIRS)
+
+test:
+	pdm run pytest -x --ff $(TEST_DIR)
