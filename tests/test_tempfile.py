@@ -14,7 +14,7 @@ async def test_temporary_file(mode):
     data = b"Hello World!\n" if "b" in mode else "Hello World!\n"
 
     async with tempfile.TemporaryFile(mode=mode) as f:
-        for i in range(3):
+        for _ in range(3):
             await f.write(data)
 
         await f.flush()

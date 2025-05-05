@@ -1,8 +1,11 @@
 """PEP 0492/Python 3.5+ tests for binary files."""
+
 import io
 from os.path import dirname, join
-from aiofiles.threadpool import open as aioopen
+
 import pytest
+
+from aiofiles.threadpool import open as aioopen
 
 
 @pytest.mark.parametrize("mode", ["rb", "rb+", "ab+"])
