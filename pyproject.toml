@@ -63,26 +63,6 @@ minversion = "8.2"
 asyncio_mode = "auto"
 
 [tool.ruff]
-exclude = [
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".mypy_cache",
-    ".nox",
-    ".pyenv",
-    ".pytest_cache",
-    ".ruff_cache",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "build",
-    "dist",
-    "site-packages",
-    "venv",
-]
 indent-width = 4
 line-length = 88
 target-version = "py39"
