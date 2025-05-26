@@ -1,18 +1,35 @@
-from asyncio import get_running_loop
-from collections.abc import Awaitable
+from asyncio import get_running_loop, to_thread
+from collections.abc import Awaitable, Callable, Coroutine
 from contextlib import AbstractAsyncContextManager
-from functools import partial, wraps
+from functools import wraps
+from warnings import warn
 
 
-def wrap(func):
+def to_coro(func: Callable) -> Callable:
+    """Converts the routine `func` into a coroutine.
+
+    The returned coroutine function runs the decorated function
+    in a separate thread.
+
+    Args:
+        func: A routine (regular function).
+
+    Returns:
+        A coroutine function.
+    """
+
     @wraps(func)
-    async def run(*args, loop=None, executor=None, **kwargs):
-        if loop is None:
-            loop = get_running_loop()
-        pfunc = partial(func, *args, **kwargs)
-        return await loop.run_in_executor(executor, pfunc)
+    async def _wrapper(*args, **kwargs) -> Coroutine:
+        return await to_thread(func, *args, **kwargs)
 
-    return run
+    return _wrapper
+
+
+def wrap(func: Callable) -> Callable:
+    warn(
+        "scheduled to removal, consider using to_coro", DeprecationWarning, stacklevel=1
+    )
+    return to_coro(func)
 
 
 class AsyncBase:
