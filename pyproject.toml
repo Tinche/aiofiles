@@ -8,8 +8,7 @@ description = "File support for asyncio."
 authors = [
     {name = "Tin Tvrtkovic", email = "tinchester@gmail.com"},
 ]
-dependencies = []
-requires-python = ">=3.9"
+requires-python = ">=3.9.21"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 classifiers = [
@@ -21,11 +20,13 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Framework :: AsyncIO",
 ]
 dynamic = ["version"]
+dependencies = []
 
 [project.urls]
 Changelog = "https://github.com/Tinche/aiofiles#history"
@@ -33,14 +34,14 @@ Changelog = "https://github.com/Tinche/aiofiles#history"
 Repository = "https://github.com/Tinche/aiofiles"
 
 [dependency-groups]
-test = [
-    "pytest>=8.2.2",
-    "pytest-asyncio>=0.23.7",
-    "coverage>=6.4.4",
-    "tox>=3.25.1",
-]
 lint = [
-    "ruff>=0.11.8",
+    "mypy>=1.16.0",
+    "ruff>=0.11.12",
+]
+test = [
+    "coverage>=7.8.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
 ]
 
 [tool.hatch.version]
@@ -59,7 +60,7 @@ source = [
 ]
 
 [tool.pytest.ini_options]
-minversion = "8.2"
+minversion = "8.3"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
