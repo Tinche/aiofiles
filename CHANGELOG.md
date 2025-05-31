@@ -2,6 +2,8 @@
 
 ## 25.1.0 (UNRELEASED)
 
+- Switch to [uv](https://docs.astral.sh/uv/) + add Python3.14 support.
+  ([#219](https://github.com/Tinche/aiofiles/pull/219))
 - Add `ruff` formatter and linter.
   [#216](https://github.com/Tinche/aiofiles/pull/216)
 - Dropped Python 3.8 support. If you require it, use version 24.1.0.
