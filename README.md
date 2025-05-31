@@ -48,8 +48,8 @@ async with aiofiles.tempfile.TemporaryFile('wb') as f:
 
 To install aiofiles, simply:
 
-```bash
-$ pip install aiofiles
+```shell
+pip install aiofiles
 ```
 
 ## Usage
