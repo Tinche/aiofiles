@@ -2,6 +2,8 @@
 
 ## 25.1.0 (UNRELEASED)
 
+- Use `asyncio.to_thread` in the `wrap` asynchroniser
+  [#213](https://github.com/Tinche/aiofiles/pull/213)
 - Add `ruff` formatter and linter.
   [#216](https://github.com/Tinche/aiofiles/pull/216)
 - Dropped Python 3.8 support. If you require it, use version 24.1.0.

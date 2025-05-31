@@ -2,7 +2,7 @@
 
 from os import path
 
-from .base import wrap
+from .base import to_coro
 
 __all__ = [
     "abspath",
@@ -19,19 +19,19 @@ __all__ = [
     "sameopenfile",
 ]
 
-abspath = wrap(path.abspath)
+abspath = to_coro(path.abspath)
 
-getatime = wrap(path.getatime)
-getctime = wrap(path.getctime)
-getmtime = wrap(path.getmtime)
-getsize = wrap(path.getsize)
+getatime = to_coro(path.getatime)
+getctime = to_coro(path.getctime)
+getmtime = to_coro(path.getmtime)
+getsize = to_coro(path.getsize)
 
-exists = wrap(path.exists)
+exists = to_coro(path.exists)
 
-isdir = wrap(path.isdir)
-isfile = wrap(path.isfile)
-islink = wrap(path.islink)
-ismount = wrap(path.ismount)
+isdir = to_coro(path.isdir)
+isfile = to_coro(path.isfile)
+islink = to_coro(path.islink)
+ismount = to_coro(path.ismount)
 
-samefile = wrap(path.samefile)
-sameopenfile = wrap(path.sameopenfile)
+samefile = to_coro(path.samefile)
+sameopenfile = to_coro(path.sameopenfile)
