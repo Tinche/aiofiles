@@ -44,6 +44,9 @@ test = [
     "pytest-asyncio>=1.0.0",
 ]
 
+[tool.uv.build-backend]
+source-include = ["LICENSE"]
+
 [tool.hatch.version]
 source = "vcs"
 raw-options = { local_scheme = "no-local-version" }
