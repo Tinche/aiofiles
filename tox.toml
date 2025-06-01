@@ -18,8 +18,11 @@ allowlist_externals = ["just", "uv"]
 commands = [
     ["uv", "sync", "--group", "test"],
     ["just", "check"],
-    ["just", "test"],
+    ["just", "coverage"]  # will run tests
 ]
+pass_env = ["CI"]
+package = "wheel"
+wheel_build_env = ".pkg"
 
 [env.lint]
 description = "run ruff formatter and linter"
