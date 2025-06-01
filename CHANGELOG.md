@@ -2,7 +2,7 @@
 
 ## 25.1.0 (UNRELEASED)
 
-- Switch to [uv](https://docs.astral.sh/uv/) + add Python3.14 support.
+- Switch to [uv](https://docs.astral.sh/uv/) + add Python v3.14 support.
   ([#219](https://github.com/Tinche/aiofiles/pull/219))
 - Add `ruff` formatter and linter.
   [#216](https://github.com/Tinche/aiofiles/pull/216)
@@ -19,7 +19,7 @@
   [#174](https://github.com/Tinche/aiofiles/issues/181)
 - _aiofiles_ is now tested on Python 3.13 too.
   [#184](https://github.com/Tinche/aiofiles/pull/184)
-- Dropped Python 3.7 support. If you require it, use version 23.2.1.
+- Drop Python 3.7 support. If you require it, use version 23.2.1.
 
 ## 23.2.1 (2023-08-09)
 
