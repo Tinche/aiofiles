@@ -1,0 +1,32 @@
+requires = ["tox>=4"]
+min_version = "4.26.0"
+env_list = [
+    "py39",
+    "py310",
+    "py311",
+    "py312",
+    "py313",
+    "pypy3.9",
+    "lint",
+]
+# isolated_build = true
+no_package = false
+
+[env_run_base]
+description = "run aiofiles unit tests"
+allowlist_externals = ["just", "uv"]
+commands = [
+    ["uv", "sync", "--group", "test"],
+    ["just", "check"],
+    ["just", "test"],
+]
+
+[env.lint]
+description = "run ruff formatter and linter"
+skip_install = true
+basepython = ["python3.13"]
+allowlist_externals = ["just", "uv"]
+commands = [
+    ["uv", "sync", "--group", "lint"],
+    ["just", "lint"],
+]
