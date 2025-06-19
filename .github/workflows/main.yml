@@ -26,11 +26,11 @@ jobs:
       - name: "Run tox targets for ${{ matrix.python-version }}"
         env:
           V: ${{ matrix.python-version }}
-        run: "uvx --with=tox-uv tox -e py$(echo $V | tr -d . | sed 's/^py//')"
+        run: "uv run --group tox tox -e py$(echo $V | tr -d . | sed 's/^py//')"
 
       - name: "Lint"
         if: matrix.python-version == '3.13' && runner.os == 'Linux'
-        run: "uvx --with=tox-uv tox -e lint"
+        run: "uv run --group tox tox -e lint"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
@@ -94,17 +94,13 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v4"
-      - uses: "actions/setup-python@v5"
-        with:
-          python-version: "3.13"
+      - uses: hynek/setup-cached-uv@v2
 
-      - name: "Install UV and twine"
-        run: "python -m pip install uv twine check-wheel-contents"
       - name: "Build package"
         run: "uv build"
       - name: "List result"
         run: "ls -l dist"
       - name: "Check wheel contents"
-        run: "check-wheel-contents dist/*.whl"
+        run: "uvx check-wheel-contents dist/*.whl"
       - name: "Check long_description"
-        run: "python -m twine check dist/*"
+        run: "uvx twine check dist/*"

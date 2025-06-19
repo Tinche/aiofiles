@@ -15,6 +15,8 @@ test = [
     { name = "coverage" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+]
+tox = [
     { name = "tox" },
     { name = "tox-uv" },
 ]
@@ -30,6 +32,8 @@ test = [
     { name = "coverage", specifier = ">=7.8.2" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-asyncio", specifier = ">=1.0.0" },
+]
+tox = [
     { name = "tox", specifier = ">=4.26.0" },
     { name = "tox-uv", specifier = ">=1.26.0" },
 ]
