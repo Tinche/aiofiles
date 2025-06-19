@@ -20,19 +20,11 @@ jobs:
     steps:
       - uses: "actions/checkout@v4"
 
-      - uses: "actions/setup-python@v5"
-        with:
-          python-version: "${{ matrix.python-version }}"
-          allow-prereleases: true
-
       - uses: hynek/setup-cached-uv@v2
       - uses: extractions/setup-just@v3
 
-      - name: "Install Tox"
-        run: uvx --with=tox-uv --with=tox-gh-actions tox
-
       - name: "Run tox targets for ${{ matrix.python-version }}"
-        run: "python -m tox"
+        run: "uvx --with=tox-uv --with=tox-gh-actions tox"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
