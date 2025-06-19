@@ -10,30 +10,27 @@ on:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }}"
+    name: "Python ${{ matrix.python-version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "pypy-3.9"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "pypy3.9"]
 
     steps:
       - uses: "actions/checkout@v4"
 
-      - uses: "actions/setup-python@v5"
-        with:
-          python-version: "${{ matrix.python-version }}"
-          allow-prereleases: true
-
-      - name: "Install dependencies"
-        run: |
-          python -VV
-          python -m site
-          python -m pip install --upgrade pip wheel pdm
-          python -m pip install --upgrade tox tox-gh-actions
+      - uses: hynek/setup-cached-uv@v2
+      - uses: extractions/setup-just@v3
 
       - name: "Run tox targets for ${{ matrix.python-version }}"
-        run: "python -m tox"
+        env:
+          V: ${{ matrix.python-version }}
+        run: "uv run --group tox tox -e py$(echo $V | tr -d . | sed 's/^py//')"
+
+      - name: "Lint"
+        if: matrix.python-version == '3.13' && runner.os == 'Linux'
+        run: "uv run --group tox tox -e lint"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
@@ -51,13 +48,7 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v4"
-
-      - uses: "actions/setup-python@v5"
-        with:
-          cache: "pip"
-          python-version: "3.13"
-
-      - run: "python -Im pip install --upgrade coverage[toml]"
+      - uses: hynek/setup-cached-uv@v2
 
       - uses: "actions/download-artifact@v4"
         with:
@@ -66,12 +57,13 @@ jobs:
 
       - name: "Combine coverage"
         run: |
-          python -Im coverage combine
-          python -Im coverage html --skip-covered --skip-empty
-          python -Im coverage json
+          uv sync --group test --python 3.13
+          uv run coverage combine
+          uv run coverage html --skip-covered --skip-empty
+          uv run coverage json
 
           # Report and write to summary.
-          python -Im coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          uv run coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
 
           export TOTAL=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "total=$TOTAL" >> $GITHUB_ENV
@@ -101,18 +93,14 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: "actions/checkout@v3"
-      - uses: "actions/setup-python@v4"
-        with:
-          python-version: "3.12"
+      - uses: "actions/checkout@v4"
+      - uses: hynek/setup-cached-uv@v2
 
-      - name: "Install PDM and twine"
-        run: "python -m pip install pdm twine check-wheel-contents"
       - name: "Build package"
-        run: "pdm build"
+        run: "uv build"
       - name: "List result"
         run: "ls -l dist"
       - name: "Check wheel contents"
-        run: "check-wheel-contents dist/*.whl"
+        run: "uvx check-wheel-contents dist/*.whl"
       - name: "Check long_description"
-        run: "python -m twine check dist/*"
+        run: "uvx twine check dist/*"
