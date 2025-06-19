@@ -8,7 +8,7 @@ description = "File support for asyncio."
 authors = [
     {name = "Tin Tvrtkovic", email = "tinchester@gmail.com"},
 ]
-requires-python = ">=3.9.21"
+requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 classifiers = [

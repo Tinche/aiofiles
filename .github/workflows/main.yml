@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "pypy-3.9"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "pypy3.9"]
 
     steps:
       - uses: "actions/checkout@v4"
@@ -24,7 +24,13 @@ jobs:
       - uses: extractions/setup-just@v3
 
       - name: "Run tox targets for ${{ matrix.python-version }}"
-        run: "uvx --with=tox-uv --with=tox-gh-actions tox"
+        env:
+          V: ${{ matrix.python-version }}
+        run: "uvx --with=tox-uv tox -e py$(echo $V | tr -d . | sed 's/^py//')"
+
+      - name: "Lint"
+        if: matrix.python-version == '3.13' && matrix.os == 'ubuntu-latest'
+        run: "uvx --with=tox-uv tox -e lint"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
