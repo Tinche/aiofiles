@@ -57,6 +57,7 @@ jobs:
 
       - name: "Combine coverage"
         run: |
+          uv sync --group test --python 3.13
           uv run coverage combine
           uv run coverage html --skip-covered --skip-empty
           uv run coverage json
