@@ -10,7 +10,7 @@ on:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }}"
+    name: "Python ${{ matrix.python-version }} on ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -29,7 +29,7 @@ jobs:
         run: "uvx --with=tox-uv tox -e py$(echo $V | tr -d . | sed 's/^py//')"
 
       - name: "Lint"
-        if: matrix.python-version == '3.13' && matrix.os == 'ubuntu-latest'
+        if: matrix.python-version == '3.13' && runner.os == 'Linux'
         run: "uvx --with=tox-uv tox -e lint"
 
       - name: "Upload coverage data"
@@ -48,13 +48,7 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v4"
-
-      - uses: "actions/setup-python@v5"
-        with:
-          cache: "pip"
-          python-version: "3.13"
-
-      - run: "python -Im pip install --upgrade coverage[toml]"
+      - uses: hynek/setup-cached-uv@v2
 
       - uses: "actions/download-artifact@v4"
         with:
@@ -63,12 +57,12 @@ jobs:
 
       - name: "Combine coverage"
         run: |
-          python -Im coverage combine
-          python -Im coverage html --skip-covered --skip-empty
-          python -Im coverage json
+          uv run coverage combine
+          uv run coverage html --skip-covered --skip-empty
+          uv run coverage json
 
           # Report and write to summary.
-          python -Im coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          uv run coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
 
           export TOTAL=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "total=$TOTAL" >> $GITHUB_ENV
