@@ -1,18 +1,19 @@
 tests_dir := "tests"
 code_dirs := "src" + " " + tests_dir
+run_prefix := if env_var_or_default("VIRTUAL_ENV", "") == "" { "uv run " } else { "" }
 
 check:
-	uv run ruff format --check {{ code_dirs }}
-	uv run ruff check {{ code_dirs }}
+	{{ run_prefix }}ruff format --check {{ code_dirs }}
+	{{ run_prefix }}ruff check {{ code_dirs }}
 
 coverage:
-	uv run coverage run -m pytest {{ tests_dir }}
+	{{ run_prefix }}coverage run -m pytest {{ tests_dir }}
 
 format:
-	uv run ruff format {{ code_dirs }}
+	{{ run_prefix }}ruff format {{ code_dirs }}
 
 lint: format
-	uv run ruff check --fix {{ code_dirs }}
+	{{ run_prefix }}ruff check --fix {{ code_dirs }}
 
 test:
-	uv run pytest -x --ff {{ tests_dir }}
+	{{ run_prefix }}pytest -x --ff {{ tests_dir }}
