@@ -16,4 +16,4 @@ lint: format
 	ruff check --fix {{ code_dirs }}
 
 test:
-	pytest -x --ff {{ tests_dir }}
+	pytest {{ tests_dir }}
