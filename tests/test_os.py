@@ -3,9 +3,11 @@
 import asyncio
 import os
 import platform
+from collections import defaultdict
 from os import stat
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
+from typing import Optional
 
 import pytest
 
@@ -498,3 +500,74 @@ async def test_abspath():
     abs_filename = join(dirname(__file__), "resources", "test_file1.txt")
     result = await aiofiles.os.path.abspath(relative_filename)
     assert result == abs_filename
+
+
+def _act_on_error(oserror):
+    print(f"aiofiles.os.walk onerror handler: {oserror}")
+
+
+@pytest.mark.parametrize(
+    ("top", "topdown", "onerror", "followlinks"),
+    [
+        ("non-existent", True, _act_on_error, False),
+        ("README.md", True, None, False),
+        ("README.md", False, _act_on_error, False),
+        ("./src", True, _act_on_error, False),
+        ("./src", False, _act_on_error, False),
+        ("./tests", True, None, True),
+        ("./tests", False, None, True),
+    ],
+)
+async def test_walk(top, topdown, onerror, followlinks):
+    result = [  # noqa: C416
+        row
+        async for row in aiofiles.os.walk(
+            top=top, topdown=topdown, onerror=onerror, followlinks=followlinks
+        )
+    ]
+    answer = list(
+        os.walk(top=top, topdown=topdown, onerror=onerror, followlinks=followlinks)
+    )
+
+    assert result == answer
+
+
+@pytest.mark.parametrize(
+    "top_path",
+    [
+        "c3Po-ar2D2",  # does not mean to exist
+        "./.github",
+        "./src",
+        "./tests",
+        # ".",  # it is long
+    ],
+)
+async def test_walk_non_blocking(top_path: str):
+    async def _test_walk(
+        top: str, key: str, storage: defaultdict[str, list]
+    ) -> Optional[bool]:
+        non_blocking = None
+        async for datum in aiofiles.os.walk(top=top):
+            storage[key].append(datum)
+            # checking the statistics (common shareable resource) for other tasks
+            other_keys = set(storage) - {key}
+            if not non_blocking:
+                non_blocking = any(storage[other_key] for other_key in other_keys)
+            # without the `asyncio.sleep(0)` the `async for` may block
+            await asyncio.sleep(0)
+
+        return non_blocking
+
+    keys = {f"w_{i}" for i in range(2)}
+    storage = defaultdict(list)
+
+    tasks: list[asyncio.Task] = [
+        asyncio.create_task(_test_walk(top=top_path, key=key, storage=storage))
+        for key in keys
+    ]
+    results = await asyncio.gather(*tasks)
+
+    # Asserting that each task does not block the event loop.
+    # Empty results are not assumed to be non-blocking by default.
+    if statuses := (r for r in results if r is not None):
+        assert all(statuses)
