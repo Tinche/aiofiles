@@ -2,6 +2,7 @@
 
 ## 25.1.0 (UNRELEASED)
 
+- Add `to_agen` generator asynchroniser tool with the `os.walk` asynchronous analogue introduced
 - Use `asyncio.to_thread` in the `to_coro` decorator that deprecates the `wrap` decorator
   [#213](https://github.com/Tinche/aiofiles/pull/213)
 - Switch to [uv](https://docs.astral.sh/uv/) + add Python v3.14 support.

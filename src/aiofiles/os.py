@@ -3,7 +3,7 @@
 import os
 
 from . import ospath as path
-from .base import to_coro
+from .base import to_agen, to_coro
 
 __all__ = [
     "access",
@@ -23,6 +23,7 @@ __all__ = [
     "stat",
     "symlink",
     "unlink",
+    "walk",
 ]
 
 access = to_coro(os.access)
@@ -47,6 +48,8 @@ stat = to_coro(os.stat)
 symlink = to_coro(os.symlink)
 
 unlink = to_coro(os.unlink)
+
+walk = to_agen(os.walk)
 
 
 if hasattr(os, "link"):
