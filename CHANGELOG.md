@@ -2,6 +2,8 @@
 
 ## 25.1.0 (UNRELEASED)
 
+- Add the `to_coro` decorator (with the `asyncio.to_thread` under the hood) in favour of the deprecated `wrap` decorator.
+  [#213](https://github.com/Tinche/aiofiles/pull/213)
 - Switch to [uv](https://docs.astral.sh/uv/) + add Python v3.14 support.
   ([#219](https://github.com/Tinche/aiofiles/pull/219))
 - Add `ruff` formatter and linter.
