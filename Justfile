@@ -2,18 +2,25 @@ src_dir := "src"
 tests_dir := "tests"
 code_dirs := src_dir + " " + tests_dir
 
+build:
+	uv build
+
+sync:
+	uv sync --group lint --group test --group tox
+
 check:
 	ruff format --check {{ code_dirs }}
 	ruff check {{ code_dirs }}
+	mypy {{ code_dirs }}
 
 coverage:
 	coverage run -m pytest {{ tests_dir }}
 
-format:
-	ruff format {{ code_dirs }}
+format *files=".":
+	ruff format {{ files }}
 
 lint: format
 	ruff check --fix {{ code_dirs }}
 
-test:
-	pytest {{ tests_dir }}
+test *args:
+	pytest {{ args }}
