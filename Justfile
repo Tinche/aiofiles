@@ -11,7 +11,7 @@ sync:
 check:
 	ruff format --check {{ code_dirs }}
 	ruff check {{ code_dirs }}
-	mypy {{ code_dir }}  # lint only the source code
+	mypy {{ src_dir }}  # lint only the source code
 
 coverage:
 	coverage run -m pytest {{ tests_dir }}
