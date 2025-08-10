@@ -46,7 +46,7 @@ async def test_file_async_context_aexit():
 
 async def test_filetask_async_context_aexit():
     async def _process_test_file(file_ctx, sleep_time: float = 1.0):
-        nonlocal file_ref
+        nonlocal file_ref  # type: ignore
         async with file_ctx as fp:
             file_ref = file_ctx._obj
             await asyncio.sleep(sleep_time)
