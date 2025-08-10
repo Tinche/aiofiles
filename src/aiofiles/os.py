@@ -3,7 +3,7 @@
 import os
 
 from . import ospath as path
-from .base import to_coro
+from .base import wrap
 
 __all__ = [
     "access",
@@ -25,36 +25,36 @@ __all__ = [
     "unlink",
 ]
 
-access = to_coro(os.access)
+access = wrap(os.access)
 
-getcwd = to_coro(os.getcwd)
+getcwd = wrap(os.getcwd)
 
-listdir = to_coro(os.listdir)
+listdir = wrap(os.listdir)
 
-makedirs = to_coro(os.makedirs)
-mkdir = to_coro(os.mkdir)
+makedirs = wrap(os.makedirs)
+mkdir = wrap(os.mkdir)
 
-readlink = to_coro(os.readlink)
-remove = to_coro(os.remove)
-removedirs = to_coro(os.removedirs)
-rename = to_coro(os.rename)
-renames = to_coro(os.renames)
-replace = to_coro(os.replace)
-rmdir = to_coro(os.rmdir)
+readlink = wrap(os.readlink)
+remove = wrap(os.remove)
+removedirs = wrap(os.removedirs)
+rename = wrap(os.rename)
+renames = wrap(os.renames)
+replace = wrap(os.replace)
+rmdir = wrap(os.rmdir)
 
-scandir = to_coro(os.scandir)
-stat = to_coro(os.stat)
-symlink = to_coro(os.symlink)
+scandir = wrap(os.scandir)
+stat = wrap(os.stat)
+symlink = wrap(os.symlink)
 
-unlink = to_coro(os.unlink)
+unlink = wrap(os.unlink)
 
 
 if hasattr(os, "link"):
     __all__ += ["link"]
-    link = to_coro(os.link)
+    link = wrap(os.link)
 if hasattr(os, "sendfile"):
     __all__ += ["sendfile"]
-    sendfile = to_coro(os.sendfile)
+    sendfile = wrap(os.sendfile)
 if hasattr(os, "statvfs"):
     __all__ += ["statvfs"]
-    statvfs = to_coro(os.statvfs)
+    statvfs = wrap(os.statvfs)

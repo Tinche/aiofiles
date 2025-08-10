@@ -2,10 +2,9 @@ from asyncio import get_running_loop, to_thread
 from collections.abc import Awaitable, Callable, Coroutine
 from contextlib import AbstractAsyncContextManager
 from functools import wraps
-from warnings import warn
 
 
-def to_coro(func: Callable) -> Callable:
+def wrap(func: Callable) -> Callable:
     """Converts the routine `func` into a coroutine.
 
     The returned coroutine function runs the decorated function
@@ -23,13 +22,6 @@ def to_coro(func: Callable) -> Callable:
         return await to_thread(func, *args, **kwargs)
 
     return _wrapper
-
-
-def wrap(func: Callable) -> Callable:
-    warn(
-        "scheduled to removal, consider using to_coro", DeprecationWarning, stacklevel=1
-    )
-    return to_coro(func)
 
 
 class AsyncBase:
