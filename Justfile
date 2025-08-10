@@ -16,11 +16,9 @@ check:
 coverage:
 	coverage run -m pytest {{ tests_dir }}
 
-format *files=".":
+lint *files=".":
 	ruff format {{ files }}
-
-lint: format
-	ruff check --fix {{ code_dirs }}
+	ruff check --fix {{ files }}
 
 test *args:
 	pytest {{ args }}
