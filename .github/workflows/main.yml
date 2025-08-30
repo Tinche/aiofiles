@@ -28,9 +28,9 @@ jobs:
           V: ${{ matrix.python-version }}
         run: "uv run --group tox tox -e py$(echo $V | tr -d . | sed 's/^py//')"
 
-      - name: "Lint"
+      - name: "Check code"
         if: matrix.python-version == '3.13' && runner.os == 'Linux'
-        run: "uv run --group tox tox -e lint"
+        run: "uv run --group tox tox -e check"
 
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
