@@ -15,9 +15,9 @@ from .temptypes import AsyncSpooledTemporaryFile, AsyncTemporaryDirectory
 
 __all__ = [
     "NamedTemporaryFile",
-    "TemporaryFile",
     "SpooledTemporaryFile",
     "TemporaryDirectory",
+    "TemporaryFile",
 ]
 
 

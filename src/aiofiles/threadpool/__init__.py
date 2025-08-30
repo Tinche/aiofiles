@@ -25,12 +25,12 @@ sync_open = open
 
 __all__ = (
     "open",
-    "stdin",
-    "stdout",
     "stderr",
-    "stdin_bytes",
-    "stdout_bytes",
     "stderr_bytes",
+    "stdin",
+    "stdin_bytes",
+    "stdout",
+    "stdout_bytes",
 )
 
 

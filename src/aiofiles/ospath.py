@@ -6,11 +6,11 @@ from .base import wrap
 
 __all__ = [
     "abspath",
+    "exists",
     "getatime",
     "getctime",
     "getmtime",
     "getsize",
-    "exists",
     "isdir",
     "isfile",
     "islink",
