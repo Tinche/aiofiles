@@ -68,8 +68,8 @@ and delegate to an executor:
 - `flush`
 - `isatty`
 - `read`
-- `readall`
 - `read1`
+- `readall`
 - `readinto`
 - `readline`
 - `readlines`
@@ -91,36 +91,39 @@ In case of failure, one of the usual exceptions will be raised.
 The `aiofiles.os` module contains executor-enabled coroutine versions of
 several useful `os` functions that deal with files:
 
-- `stat`
-- `statvfs`
+- `access`
+- `getcwd`
+- `link`
+- `listdir`
+- `makedirs`
+- `mkdir`
+- `path`:
+  - `path.abspath`
+  - `path.exists`
+  - `path.getatime`
+  - `path.getctime`
+  - `path.getmtime`
+  - `path.getsize`
+  - `path.isdir`
+  - `path.isfile`
+  - `path.islink`
+  - `path.ismount`
+  - `path.samefile`
+  - `path.sameopenfile`
+- `readlink`
+- `remove`
+- `removedirs`
 - `sendfile`
 - `rename`
 - `renames`
 - `replace`
-- `remove`
-- `unlink`
-- `mkdir`
-- `makedirs`
 - `rmdir`
-- `removedirs`
-- `link`
-- `symlink`
-- `readlink`
-- `listdir`
 - `scandir`
-- `access`
-- `getcwd`
-- `path.abspath`
-- `path.exists`
-- `path.isfile`
-- `path.isdir`
-- `path.islink`
-- `path.ismount`
-- `path.getsize`
-- `path.getatime`
-- `path.getctime`
-- `path.samefile`
-- `path.sameopenfile`
+- `sendfile`
+- `stat`
+- `statvfs`
+- `symlink`
+- `unlink`
 
 ### Tempfile
 
