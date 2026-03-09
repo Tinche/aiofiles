@@ -2,6 +2,7 @@
 
 import os
 from asyncio import get_running_loop
+from functools import partial
 
 from . import ospath as path
 from .base import wrap
@@ -46,6 +47,7 @@ rmdir = wrap(os.rmdir)
 
 _END = object()
 
+
 class AsyncScandirIterator:
     """An asynchronous iterator and context manager for os.scandir."""
 
@@ -68,10 +70,11 @@ class AsyncScandirIterator:
         return item
 
     async def __aenter__(self):
+        await self._loop.run_in_executor(self._executor, self._iterator.__enter__)
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self._loop.run_in_executor(
+        return await self._loop.run_in_executor(
             self._executor, self._iterator.__exit__, exc_type, exc_val, exc_tb
         )
 
@@ -86,10 +89,10 @@ class AsyncScandirIterator:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._iterator.__exit__(exc_type, exc_val, exc_tb)
+        return self._iterator.__exit__(exc_type, exc_val, exc_tb)
 
     def close(self):
-        self._iterator.close()
+        return self._iterator.close()
 
 
 def _wrap_scandir():
@@ -97,11 +100,12 @@ def _wrap_scandir():
         if loop is None:
             loop = get_running_loop()
         iterator = await loop.run_in_executor(
-            executor, lambda: os.scandir(*args, **kwargs)
+            executor, partial(os.scandir, *args, **kwargs)
         )
         return AsyncScandirIterator(iterator, loop, executor)
 
     return run
+
 
 scandir = _wrap_scandir()
 stat = wrap(os.stat)

@@ -3,6 +3,7 @@
 import asyncio
 import os
 import platform
+import time
 from os import stat
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
@@ -445,6 +446,7 @@ async def test_scandir_async_for_dir_with_multiple_files():
     await aiofiles.os.remove(some_file2)
     await aiofiles.os.rmdir(some_dir)
 
+
 async def test_scandir_async_with():
     """Test the scandir call using async with."""
     some_dir = join(dirname(__file__), "resources", "some_dir")
@@ -452,15 +454,171 @@ async def test_scandir_async_with():
     await aiofiles.os.mkdir(some_dir)
     with open(some_file1, "w") as f1:
         f1.write("Test file")
-        
+
     names = []
     async with await aiofiles.os.scandir(some_dir) as dir_iterator:
         async for entry in dir_iterator:
             names.append(entry.name)
-            
+
     assert names == ["some_file1.txt"]
     await aiofiles.os.remove(some_file1)
     await aiofiles.os.rmdir(some_dir)
+
+
+async def test_scandir_sync_with_calls_iterator_enter_and_exit(monkeypatch):
+    """Test sync with remains supported and delegates enter/exit."""
+    state = {"entered": 0, "exited": 0}
+
+    class StubScandirIterator:
+        def __init__(self):
+            self._items = iter(["entry"])
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            return next(self._items)
+
+        def __enter__(self):
+            state["entered"] += 1
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            state["exited"] += 1
+            return False
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: StubScandirIterator()
+    )
+
+    entries = []
+    with await aiofiles.os.scandir("ignored") as dir_iterator:
+        for entry in dir_iterator:
+            entries.append(entry)
+
+    assert entries == ["entry"]
+    assert state == {"entered": 1, "exited": 1}
+
+
+async def test_scandir_async_with_calls_iterator_enter_and_exit(monkeypatch):
+    """Test async with calls the underlying iterator enter/exit methods."""
+    state = {"entered": 0, "exited": 0}
+
+    class StubScandirIterator:
+        def __init__(self):
+            self._items = iter(["entry"])
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            return next(self._items)
+
+        def __enter__(self):
+            state["entered"] += 1
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            state["exited"] += 1
+            return False
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: StubScandirIterator()
+    )
+
+    entries = []
+    async with await aiofiles.os.scandir("ignored") as dir_iterator:
+        async for entry in dir_iterator:
+            entries.append(entry)
+
+    assert entries == ["entry"]
+    assert state == {"entered": 1, "exited": 1}
+
+
+async def test_scandir_close_calls_underlying_close(monkeypatch):
+    """Test close delegates to the underlying scandir iterator."""
+    state = {"closed": 0}
+
+    class StubScandirIterator:
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            msg = "no entries"
+            raise StopIteration(msg)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+
+        def close(self):
+            state["closed"] += 1
+            return "closed"
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: StubScandirIterator()
+    )
+
+    dir_iterator = await aiofiles.os.scandir("ignored")
+    assert dir_iterator.close() == "closed"
+    assert state == {"closed": 1}
+
+
+async def test_scandir_async_for_does_not_block_event_loop(monkeypatch):
+    """Test scandir async iteration keeps the event loop responsive."""
+
+    class SlowScandirIterator:
+        def __init__(self):
+            self._items = iter(["a", "b", "c"])
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            time.sleep(0.05)
+            return next(self._items)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: SlowScandirIterator()
+    )
+
+    ticks = 0
+    should_run = True
+
+    async def ticker():
+        nonlocal ticks
+        while should_run:
+            ticks += 1
+            await asyncio.sleep(0.005)
+
+    tick_task = asyncio.create_task(ticker())
+    try:
+        entries = []
+        async for entry in await aiofiles.os.scandir("ignored"):
+            entries.append(entry)
+    finally:
+        should_run = False
+        await tick_task
+
+    assert entries == ["a", "b", "c"]
+    assert ticks > 2
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
