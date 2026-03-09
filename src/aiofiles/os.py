@@ -2,7 +2,10 @@
 
 import os
 from asyncio import get_running_loop
+from collections.abc import AsyncIterator
 from functools import partial
+from types import TracebackType
+from typing import Any, Optional
 
 from . import ospath as path
 from .base import wrap
@@ -48,20 +51,20 @@ rmdir = wrap(os.rmdir)
 _END = object()
 
 
-class AsyncScandirIterator:
-    """An asynchronous iterator and context manager for os.scandir."""
+class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
+    """Async iterator/context manager wrapper around ``os.scandir`` results."""
 
     __slots__ = ("_iterator", "_loop", "_executor")
 
-    def __init__(self, iterator, loop, executor):
+    def __init__(self, iterator: Any, loop: Any, executor: Any) -> None:
         self._iterator = iterator
         self._loop = loop
         self._executor = executor
 
-    def __aiter__(self):
+    def __aiter__(self) -> "AsyncScandirIterator":
         return self
 
-    async def __anext__(self):
+    async def __anext__(self) -> os.DirEntry:
         item = await self._loop.run_in_executor(
             self._executor, next, self._iterator, _END
         )
@@ -69,34 +72,47 @@ class AsyncScandirIterator:
             raise StopAsyncIteration
         return item
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "AsyncScandirIterator":
         await self._loop.run_in_executor(self._executor, self._iterator.__enter__)
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> bool:
         return await self._loop.run_in_executor(
             self._executor, self._iterator.__exit__, exc_type, exc_val, exc_tb
         )
 
-    def __iter__(self):
+    def __iter__(self) -> "AsyncScandirIterator":
         return self
 
-    def __next__(self):
+    def __next__(self) -> os.DirEntry:
         return next(self._iterator)
 
-    def __enter__(self):
+    def __enter__(self) -> "AsyncScandirIterator":
         self._iterator.__enter__()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> bool:
         return self._iterator.__exit__(exc_type, exc_val, exc_tb)
 
-    def close(self):
+    def close(self) -> Any:
         return self._iterator.close()
 
 
 def _wrap_scandir():
-    async def run(*args, loop=None, executor=None, **kwargs):
+    async def run(
+        *args: Any, loop: Any = None, executor: Any = None, **kwargs: Any
+    ) -> AsyncScandirIterator:
+        """Return an async-friendly ``scandir`` iterator."""
         if loop is None:
             loop = get_running_loop()
         iterator = await loop.run_in_executor(
