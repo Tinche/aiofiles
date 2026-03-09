@@ -621,6 +621,55 @@ async def test_scandir_async_for_does_not_block_event_loop(monkeypatch):
     assert ticks > 2
 
 
+async def test_scandir_many_entries_remains_non_blocking(monkeypatch):
+    """Test non-blocking behavior holds across a larger async iteration."""
+
+    class SlowScandirIterator:
+        def __init__(self):
+            self._items = iter([f"entry-{i}" for i in range(200)])
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            time.sleep(0.001)
+            return next(self._items)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: SlowScandirIterator()
+    )
+
+    ticks = 0
+    should_run = True
+
+    async def ticker():
+        nonlocal ticks
+        while should_run:
+            ticks += 1
+            await asyncio.sleep(0.0005)
+
+    tick_task = asyncio.create_task(ticker())
+    try:
+        count = 0
+        async for _entry in await aiofiles.os.scandir("ignored"):
+            count += 1
+    finally:
+        should_run = False
+        await tick_task
+
+    assert count == 200
+    assert ticks > 10
+
+
 @pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
