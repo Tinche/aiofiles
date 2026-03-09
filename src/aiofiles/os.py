@@ -1,6 +1,7 @@
 """Async executor versions of file functions from the os module."""
 
 import os
+from asyncio import get_running_loop
 
 from . import ospath as path
 from .base import wrap
@@ -43,7 +44,66 @@ renames = wrap(os.renames)
 replace = wrap(os.replace)
 rmdir = wrap(os.rmdir)
 
-scandir = wrap(os.scandir)
+_END = object()
+
+class AsyncScandirIterator:
+    """An asynchronous iterator and context manager for os.scandir."""
+
+    __slots__ = ("_iterator", "_loop", "_executor")
+
+    def __init__(self, iterator, loop, executor):
+        self._iterator = iterator
+        self._loop = loop
+        self._executor = executor
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        item = await self._loop.run_in_executor(
+            self._executor, next, self._iterator, _END
+        )
+        if item is _END:
+            raise StopAsyncIteration
+        return item
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self._loop.run_in_executor(
+            self._executor, self._iterator.__exit__, exc_type, exc_val, exc_tb
+        )
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return next(self._iterator)
+
+    def __enter__(self):
+        self._iterator.__enter__()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._iterator.__exit__(exc_type, exc_val, exc_tb)
+
+    def close(self):
+        self._iterator.close()
+
+
+def _wrap_scandir():
+    async def run(*args, loop=None, executor=None, **kwargs):
+        if loop is None:
+            loop = get_running_loop()
+        iterator = await loop.run_in_executor(
+            executor, lambda: os.scandir(*args, **kwargs)
+        )
+        return AsyncScandirIterator(iterator, loop, executor)
+
+    return run
+
+scandir = _wrap_scandir()
 stat = wrap(os.stat)
 symlink = wrap(os.symlink)
 

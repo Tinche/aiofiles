@@ -425,6 +425,44 @@ async def test_scandir_non_existing_dir():
         await aiofiles.os.scandir(some_dir)
 
 
+async def test_scandir_async_for_dir_with_multiple_files():
+    """Test the scandir call using async for."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    some_file1 = join(some_dir, "some_file1.txt")
+    some_file2 = join(some_dir, "some_file2.txt")
+    await aiofiles.os.mkdir(some_dir)
+    with open(some_file1, "w") as f1, open(some_file2, "w") as f2:
+        f1.write("Test file")
+        f2.write("Test file")
+
+    dir_iterator = await aiofiles.os.scandir(some_dir)
+    names = []
+    async for entry in dir_iterator:
+        names.append(entry.name)
+
+    assert set(names) == {"some_file1.txt", "some_file2.txt"}
+    await aiofiles.os.remove(some_file1)
+    await aiofiles.os.remove(some_file2)
+    await aiofiles.os.rmdir(some_dir)
+
+async def test_scandir_async_with():
+    """Test the scandir call using async with."""
+    some_dir = join(dirname(__file__), "resources", "some_dir")
+    some_file1 = join(some_dir, "some_file1.txt")
+    await aiofiles.os.mkdir(some_dir)
+    with open(some_file1, "w") as f1:
+        f1.write("Test file")
+        
+    names = []
+    async with await aiofiles.os.scandir(some_dir) as dir_iterator:
+        async for entry in dir_iterator:
+            names.append(entry.name)
+            
+    assert names == ["some_file1.txt"]
+    await aiofiles.os.remove(some_file1)
+    await aiofiles.os.rmdir(some_dir)
+
+
 @pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
 async def test_access():
     temp_file = Path(__file__).parent.joinpath("resources", "os_access_temp.txt")
