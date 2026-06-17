@@ -465,8 +465,12 @@ async def test_scandir_async_with():
     await aiofiles.os.rmdir(some_dir)
 
 
-async def test_scandir_sync_with_calls_iterator_enter_and_exit(monkeypatch):
-    """Test sync with remains supported and delegates enter/exit."""
+async def test_scandir_sync_with_delegates_cleanup_on_exit(monkeypatch):
+    """Test sync ``with`` cleans up via ``__exit__`` without calling ``__enter__``.
+
+    ``os.scandir``'s ``__enter__`` is a no-op, so the wrapper skips it; the
+    handle is released through ``__exit__``.
+    """
     state = {"entered": 0, "exited": 0}
 
     class StubScandirIterator:
@@ -500,11 +504,11 @@ async def test_scandir_sync_with_calls_iterator_enter_and_exit(monkeypatch):
             entries.append(entry)
 
     assert entries == ["entry"]
-    assert state == {"entered": 1, "exited": 1}
+    assert state == {"entered": 0, "exited": 1}
 
 
-async def test_scandir_async_with_calls_iterator_enter_and_exit(monkeypatch):
-    """Test async with calls the underlying iterator enter/exit methods."""
+async def test_scandir_async_with_delegates_cleanup_on_exit(monkeypatch):
+    """Test async ``with`` cleans up via ``__exit__`` without calling ``__enter__``."""
     state = {"entered": 0, "exited": 0}
 
     class StubScandirIterator:
@@ -538,7 +542,7 @@ async def test_scandir_async_with_calls_iterator_enter_and_exit(monkeypatch):
             entries.append(entry)
 
     assert entries == ["entry"]
-    assert state == {"entered": 1, "exited": 1}
+    assert state == {"entered": 0, "exited": 1}
 
 
 async def test_scandir_close_calls_underlying_close(monkeypatch):
@@ -569,6 +573,37 @@ async def test_scandir_close_calls_underlying_close(monkeypatch):
 
     dir_iterator = await aiofiles.os.scandir("ignored")
     assert dir_iterator.close() == "closed"
+    assert state == {"closed": 1}
+
+
+async def test_scandir_aclose_calls_underlying_close(monkeypatch):
+    """Test aclose delegates to the underlying scandir iterator close."""
+    state = {"closed": 0}
+
+    class StubScandirIterator:
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            msg = "no entries"
+            raise StopIteration(msg)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            return False
+
+        def close(self):
+            state["closed"] += 1
+            return "closed"
+
+    monkeypatch.setattr(
+        aiofiles.os.os, "scandir", lambda *_args, **_kwargs: StubScandirIterator()
+    )
+
+    dir_iterator = await aiofiles.os.scandir("ignored")
+    await dir_iterator.aclose()
     assert state == {"closed": 1}
 
 

@@ -73,7 +73,9 @@ class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
         return item
 
     async def __aenter__(self) -> "AsyncScandirIterator":
-        await self._loop.run_in_executor(self._executor, self._iterator.__enter__)
+        # ``os.scandir``'s ``__enter__`` is a no-op that returns ``self``; the
+        # underlying handle is released by ``__exit__``/``close``. So there's
+        # nothing to delegate (and nothing to offload to a thread) on entry.
         return self
 
     async def __aexit__(
@@ -93,7 +95,6 @@ class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
         return next(self._iterator)
 
     def __enter__(self) -> "AsyncScandirIterator":
-        self._iterator.__enter__()
         return self
 
     def __exit__(
@@ -106,6 +107,9 @@ class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
 
     def close(self) -> Any:
         return self._iterator.close()
+
+    async def aclose(self) -> None:
+        await self._loop.run_in_executor(self._executor, self._iterator.close)
 
 
 def _wrap_scandir():
