@@ -1,6 +1,7 @@
 import io
 import os
 import platform
+import shutil
 import sys
 
 import pytest
@@ -153,4 +154,25 @@ async def test_temporary_directory(prefix, suffix, tmp_path):
         assert os.path.isdir(dir_path)
         assert d[-1] == suffix
         assert d.split(os.sep)[-1][0] == prefix
+    assert not os.path.exists(dir_path)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 12),
+    reason="tempfile.TemporaryDirectory.delete added in 3.12",
+)
+async def test_temporary_directory_delete(tmp_path):
+    """Test temporary directory delete parameter."""
+    dir_path = None
+
+    async with tempfile.TemporaryDirectory(dir=tmp_path, delete=False) as d:
+        dir_path = d
+        assert os.path.exists(dir_path)
+    assert os.path.exists(dir_path)
+
+    shutil.rmtree(dir_path)
+
+    async with tempfile.TemporaryDirectory(dir=tmp_path, delete=True) as d:
+        dir_path = d
+        assert os.path.exists(dir_path)
     assert not os.path.exists(dir_path)

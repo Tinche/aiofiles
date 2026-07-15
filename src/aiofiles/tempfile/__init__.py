@@ -147,13 +147,39 @@ def SpooledTemporaryFile(
     )
 
 
-def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=None):
-    """Async open a temporary directory"""
-    return AiofilesContextManagerTempDir(
-        _temporary_directory(
-            suffix=suffix, prefix=prefix, dir=dir, loop=loop, executor=executor
+if sys.version_info >= (3, 12):
+
+    def TemporaryDirectory(
+        suffix=None,
+        prefix=None,
+        dir=None,
+        ignore_cleanup_errors=False,
+        delete=True,
+        loop=None,
+        executor=None,
+    ):
+        """Async open a temporary directory"""
+        return AiofilesContextManagerTempDir(
+            _temporary_directory(
+                suffix=suffix,
+                prefix=prefix,
+                dir=dir,
+                ignore_cleanup_errors=ignore_cleanup_errors,
+                delete=delete,
+                loop=loop,
+                executor=executor,
+            )
         )
-    )
+
+else:
+
+    def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=None):
+        """Async open a temporary directory"""
+        return AiofilesContextManagerTempDir(
+            _temporary_directory(
+                suffix=suffix, prefix=prefix, dir=dir, loop=loop, executor=executor
+            )
+        )
 
 
 # =========================================================
@@ -307,17 +333,46 @@ async def _spooled_temporary_file(
     return AsyncSpooledTemporaryFile(f, loop=loop, executor=executor)
 
 
-async def _temporary_directory(
-    suffix=None, prefix=None, dir=None, loop=None, executor=None
-):
-    """Async method to open a temporary directory with async interface"""
-    if loop is None:
-        loop = asyncio.get_running_loop()
+if sys.version_info >= (3, 12):
 
-    cb = partial(syncTemporaryDirectory, suffix, prefix, dir)
-    f = await loop.run_in_executor(executor, cb)
+    async def _temporary_directory(
+        suffix=None,
+        prefix=None,
+        dir=None,
+        ignore_cleanup_errors=False,
+        delete=True,
+        loop=None,
+        executor=None,
+    ):
+        """Async method to open a temporary directory with async interface"""
+        if loop is None:
+            loop = asyncio.get_running_loop()
 
-    return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
+        cb = partial(
+            syncTemporaryDirectory,
+            suffix,
+            prefix,
+            dir,
+            ignore_cleanup_errors,
+            delete=delete,
+        )
+        f = await loop.run_in_executor(executor, cb)
+
+        return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
+
+else:
+
+    async def _temporary_directory(
+        suffix=None, prefix=None, dir=None, loop=None, executor=None
+    ):
+        """Async method to open a temporary directory with async interface"""
+        if loop is None:
+            loop = asyncio.get_running_loop()
+
+        cb = partial(syncTemporaryDirectory, suffix, prefix, dir)
+        f = await loop.run_in_executor(executor, cb)
+
+        return AsyncTemporaryDirectory(f, loop=loop, executor=executor)
 
 
 class AiofilesContextManagerTempDir(AiofilesContextManager):
