@@ -173,7 +173,9 @@ if sys.version_info >= (3, 12):
 
 else:
 
-    def TemporaryDirectory(suffix=None, prefix=None, dir=None, loop=None, executor=None):
+    def TemporaryDirectory(
+        suffix=None, prefix=None, dir=None, loop=None, executor=None
+    ):
         """Async open a temporary directory"""
         return AiofilesContextManagerTempDir(
             _temporary_directory(
