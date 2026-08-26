@@ -1,4 +1,4 @@
-"""Async executor versions of file functions from the os.path module."""
+"""Asynchronous version of the os.path module."""
 
 from os import path
 
@@ -20,18 +20,14 @@ __all__ = [
 ]
 
 abspath = wrap(path.abspath)
-
 getatime = wrap(path.getatime)
 getctime = wrap(path.getctime)
 getmtime = wrap(path.getmtime)
 getsize = wrap(path.getsize)
-
 exists = wrap(path.exists)
-
 isdir = wrap(path.isdir)
 isfile = wrap(path.isfile)
 islink = wrap(path.islink)
 ismount = wrap(path.ismount)
-
 samefile = wrap(path.samefile)
 sameopenfile = wrap(path.sameopenfile)

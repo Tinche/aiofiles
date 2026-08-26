@@ -7,8 +7,10 @@
 
 ## 25.1.0 (2025-10-09)
 
+- Add asynchronous `to_agen` wrapper for synchronous generators -> add `os.fwalk` (Linux only) and `os.walk`.
+  [#193](https://github.com/Tinche/aiofiles/pull/193)
 - Switch to [uv](https://docs.astral.sh/uv/) + add Python v3.14 support.
-  ([#219](https://github.com/Tinche/aiofiles/pull/219))
+  [#219](https://github.com/Tinche/aiofiles/pull/219)
 - Add `ruff` formatter and linter.
   [#216](https://github.com/Tinche/aiofiles/pull/216)
 - Drop Python 3.8 support. If you require it, use version 24.1.0.

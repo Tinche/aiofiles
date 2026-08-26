@@ -35,8 +35,8 @@ if sys.version_info >= (3, 12):
         suffix=None,
         prefix=None,
         dir=None,
-        delete=True,
-        delete_on_close=True,
+        delete=True,  # noqa: FBT002
+        delete_on_close=True,  # noqa: FBT002
         loop=None,
         executor=None,
     ):
@@ -68,7 +68,7 @@ else:
         suffix=None,
         prefix=None,
         dir=None,
-        delete=True,
+        delete=True,  # noqa: FBT002
         loop=None,
         executor=None,
     ):
@@ -191,7 +191,7 @@ else:
 if sys.version_info >= (3, 12):
 
     async def _temporary_file(
-        named=True,
+        named=True,  # noqa: FBT002
         mode="w+b",
         buffering=-1,
         encoding=None,
@@ -199,8 +199,8 @@ if sys.version_info >= (3, 12):
         suffix=None,
         prefix=None,
         dir=None,
-        delete=True,
-        delete_on_close=True,
+        delete=True,  # noqa: FBT002
+        delete_on_close=True,  # noqa: FBT002
         loop=None,
         executor=None,
         max_size=0,
@@ -248,7 +248,7 @@ if sys.version_info >= (3, 12):
 else:
 
     async def _temporary_file(
-        named=True,
+        named=True,  # noqa: FBT002
         mode="w+b",
         buffering=-1,
         encoding=None,
@@ -256,7 +256,7 @@ else:
         suffix=None,
         prefix=None,
         dir=None,
-        delete=True,
+        delete=True,  # noqa: FBT002
         loop=None,
         executor=None,
         max_size=0,

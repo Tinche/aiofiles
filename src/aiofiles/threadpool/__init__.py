@@ -41,7 +41,7 @@ def open(
     encoding=None,
     errors=None,
     newline=None,
-    closefd=True,
+    closefd=True,  # noqa: FBT002
     opener=None,
     *,
     loop=None,
@@ -70,7 +70,7 @@ async def _open(
     encoding=None,
     errors=None,
     newline=None,
-    closefd=True,
+    closefd=True,  # noqa: FBT002
     opener=None,
     *,
     loop=None,

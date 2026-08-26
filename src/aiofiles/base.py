@@ -1,18 +1,64 @@
-from asyncio import get_running_loop
-from collections.abc import Awaitable
+import asyncio
+import threading
+from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
 from functools import partial, wraps
+from queue import Queue
+from typing import Any, Union
 
 
-def wrap(func):
-    @wraps(func)
-    async def run(*args, loop=None, executor=None, **kwargs):
-        if loop is None:
-            loop = get_running_loop()
-        pfunc = partial(func, *args, **kwargs)
-        return await loop.run_in_executor(executor, pfunc)
+def to_agen(cb: Callable) -> Callable:
+    @wraps(cb)
+    async def _wrapper(*args, **kwargs) -> AsyncIterator:
+        def _iterate(
+            q: Queue, *, next_item_event: threading.Event, eos_item: object
+        ) -> None:
+            nonlocal exc
+            try:
+                for row in cb(*args, **kwargs):
+                    next_item_event.clear()
+                    q.put(row)
+                    # Only the consumer can unblock the next iteration
+                    next_item_event.wait()
+            except Exception as e:  # noqa: BLE001
+                exc = e
+            finally:
+                # The End-Of-Stream entity must be put anyway
+                q.put(eos_item)
 
-    return run
+        loop = asyncio.get_running_loop()
+        queue: Queue = Queue()  # thread-safe
+        ready_for_item = threading.Event()
+        end_of_stream_item = object()  # sentinel value
+        gen = partial(
+            _iterate,
+            q=queue,
+            next_item_event=ready_for_item,
+            eos_item=end_of_stream_item,
+        )
+        loop.run_in_executor(None, gen)
+
+        exc: Union[None, Exception] = None
+        while True:
+            item = queue.get()
+            queue.task_done()
+            if item is end_of_stream_item:
+                break
+            ready_for_item.set()
+            yield item
+        queue.join()
+        if exc:
+            raise exc
+
+    return _wrapper
+
+
+def wrap(cb: Callable) -> Callable:
+    @wraps(cb)
+    async def _wrapper(*args, **kwargs) -> Any:
+        return await asyncio.to_thread(cb, *args, **kwargs)
+
+    return _wrapper
 
 
 class AsyncBase:
@@ -23,10 +69,9 @@ class AsyncBase:
 
     @property
     def _loop(self):
-        return self._ref_loop or get_running_loop()
+        return self._ref_loop or asyncio.get_running_loop()
 
     def __aiter__(self):
-        """We are our own iterator."""
         return self
 
     def __repr__(self):
@@ -73,7 +118,7 @@ class AiofilesContextManager(Awaitable, AbstractAsyncContextManager):
         return await self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await get_running_loop().run_in_executor(
+        await asyncio.get_running_loop().run_in_executor(
             None, self._obj._file.__exit__, exc_type, exc_val, exc_tb
         )
         self._obj = None
