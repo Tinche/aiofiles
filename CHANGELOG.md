@@ -2,6 +2,8 @@
 
 ## 25.2.0 (UNRELEASED)
 
+- Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.
+  ([#234](https://github.com/Tinche/aiofiles/pull/234/))
 - Add `delete` and `ignore_cleanup_errors` parameters to `aiofiles.tempfile.TemporaryDirectory` on Python 3.12+, matching the standard library signature.
   ([#228](https://github.com/Tinche/aiofiles/pull/228))
 

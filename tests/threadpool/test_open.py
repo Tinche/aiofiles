@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
@@ -42,6 +43,16 @@ async def test_file_async_context_aexit():
     async with aioopen(TEST_FILE) as fp:
         line = await fp.read()
         assert line == TEST_FILE_CONTENTS
+
+
+async def test_file_async_context_aexit_uses_configured_executor():
+    await asyncio.get_running_loop().shutdown_default_executor()
+
+    with ThreadPoolExecutor() as executor:
+        async with aioopen(TEST_FILE, executor=executor) as file:
+            pass
+
+    assert file.closed
 
 
 async def test_filetask_async_context_aexit():
