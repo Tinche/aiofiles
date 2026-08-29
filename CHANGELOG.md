@@ -2,6 +2,8 @@
 
 ## 25.2.0 (UNRELEASED)
 
+- Add `aiofiles.pathlib.Path`, an async version of `pathlib.Path` that delegates filesystem calls to an executor. On Python 3.14+, its `info` property is an async version of `pathlib.types.PathInfo`.
+  ([#60](https://github.com/Tinche/aiofiles/issues/60))
 - Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.
   ([#234](https://github.com/Tinche/aiofiles/pull/234/))
 - Add `delete` and `ignore_cleanup_errors` parameters to `aiofiles.tempfile.TemporaryDirectory` on Python 3.12+, matching the standard library signature.

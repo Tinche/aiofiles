@@ -37,12 +37,23 @@ async with aiofiles.tempfile.TemporaryFile('wb') as f:
     await f.write(b'Hello, World!')
 ```
 
+Asynchronous interface to pathlib.
+
+```python
+from aiofiles.pathlib import Path
+
+data = await Path('filename').read_text()
+async for path in Path('directory').glob('*.txt'):
+    ...
+```
+
 ## Features
 
 - a file API very similar to Python's standard, blocking API
 - support for buffered and unbuffered binary files, and buffered text files
 - support for `async`/`await` ([PEP 492](https://peps.python.org/pep-0492/)) constructs
 - async interface to tempfile module
+- async version of `pathlib.Path`
 
 ## Installation
 
@@ -143,6 +154,40 @@ async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
 async with aiofiles.tempfile.TemporaryDirectory() as d:
     filename = os.path.join(d, "file.ext")
 ```
+
+### Pathlib
+
+`aiofiles.pathlib.Path` is an asynchronous version of `pathlib.Path`. Pure path
+operations (`name`, `parent`, `joinpath`, the `/` operator, and so on) do no IO
+and stay synchronous. Methods that touch the filesystem are coroutines;
+`iterdir`, `glob`, `rglob`, and `walk` return async iterators, and `open()`
+returns the same asynchronous file objects as `aiofiles.open()`.
+
+```python
+from aiofiles.pathlib import Path
+
+path = Path('directory') / 'file.txt'
+if await path.exists():
+    contents = await path.read_text()
+
+async with path.open('rb') as f:
+    header = await f.read(16)
+
+async for python_file in Path('directory').rglob('*.py'):
+    print(python_file, (await python_file.stat()).st_size)
+```
+
+The class implements the `os.PathLike` interface, so it is accepted anywhere a
+path is, but it cannot substitute for `pathlib.Path` or `pathlib.PurePath`.
+
+The constructor accepts optional `loop` and `executor` keyword arguments, used
+for every blocking call and inherited by paths derived from the instance, such
+as the results of `parent`, the `/` operator, and `glob`.
+
+On Python 3.14+, `path.info` returns an async version of the path's
+`pathlib.types.PathInfo`: its query methods are coroutines, and their answers
+are cached like the standard library's. The wrapped synchronous object is
+available as `path.info.wrapped`.
 
 ### Writing tests for aiofiles
 

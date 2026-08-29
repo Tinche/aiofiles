@@ -138,6 +138,9 @@ fixable = [
 "src/**/*.py" = [
     "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 ]
+"src/aiofiles/pathlib.py" = [
+    "PTH",  # delegating to blocking os functions is the point of this module
+]
 "tests/**/*.py" = [
     "ARG",
     "ASYNC",
