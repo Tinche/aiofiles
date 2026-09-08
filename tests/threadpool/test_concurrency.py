@@ -2,6 +2,7 @@
 
 import asyncio
 import time
+from contextlib import suppress
 from os.path import dirname, join
 
 import aiofiles.threadpool
@@ -20,7 +21,10 @@ async def test_slow_file(monkeypatch, unused_tcp_port):
 
     monkeypatch.setattr(aiofiles.threadpool, "sync_open", value=new_open)
 
+    file_tasks = []
+
     async def serve_file(_, writer):
+        file_tasks.append(asyncio.current_task())
         file = await aiofiles.threadpool.open(filename, mode="rb")
         try:
             while True:
@@ -69,6 +73,9 @@ async def test_slow_file(monkeypatch, unused_tcp_port):
     await spam_server.wait_closed()
 
     spam_task.cancel()
+    with suppress(asyncio.CancelledError):
+        await spam_task
+    await asyncio.gather(*file_tasks)
 
     assert actual_contents == contents
     assert counter > 30
