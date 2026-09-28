@@ -26,7 +26,7 @@ jobs:
       - name: "Run tox targets for ${{ matrix.python-version }}"
         env:
           V: ${{ matrix.python-version }}
-        run: "uv run --group tox tox -e py$(echo $V | tr -d . | sed 's/^py//')"
+        run: "uv run --python-preference only-managed --group tox tox -e py$(echo $V | tr -d . | sed 's/^py//')"
 
       - name: "Lint"
         if: matrix.python-version == '3.13' && runner.os == 'Linux'
