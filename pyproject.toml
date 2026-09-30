@@ -135,7 +135,7 @@ fixable = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"src/**/*.py" = [
+"src/**/*.{py,pyi}" = [
     "TID252",  # https://docs.astral.sh/ruff/rules/relative-imports/
 ]
 "tests/**/*.py" = [
