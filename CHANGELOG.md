@@ -3,7 +3,7 @@
 ## 25.2.0 (UNRELEASED)
 
 - Support `ignore_cleanup_errors` for `aiofiles.tempfile.TemporaryDirectory` on Python 3.10 and 3.11, preserving positional `loop` and `executor` arguments.
-
+  ([#242](https://github.com/Tinche/aiofiles/pull/242))
 - _aiofiles_ is now tested on Python 3.15 too.
   ([#240](https://github.com/Tinche/aiofiles/pull/240))
 - Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.
