@@ -1,8 +1,10 @@
+import asyncio
 import io
 import os
 import platform
 import shutil
 import sys
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -176,3 +178,50 @@ async def test_temporary_directory_delete(tmp_path):
         dir_path = d
         assert os.path.exists(dir_path)
     assert not os.path.exists(dir_path)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason="tempfile.TemporaryDirectory.ignore_cleanup_errors added in 3.10",
+)
+@pytest.mark.parametrize("ignore_cleanup_errors", [False, True])
+async def test_temporary_directory_ignore_cleanup_errors(
+    tmp_path, monkeypatch, ignore_cleanup_errors
+):
+    """Test cleanup failures respect the requested suppression setting."""
+
+    def rmtree(path, ignore_errors=False):
+        if not ignore_errors:
+            raise PermissionError
+        os.rmdir(path)
+
+    monkeypatch.setattr(
+        tempfile.syncTemporaryDirectory, "_rmtree", staticmethod(rmtree)
+    )
+    manager = tempfile.TemporaryDirectory(
+        dir=tmp_path, ignore_cleanup_errors=ignore_cleanup_errors
+    )
+    if ignore_cleanup_errors:
+        async with manager as dir_path:
+            assert os.path.isdir(dir_path)
+        assert not os.path.exists(dir_path)
+    else:
+        with pytest.raises(PermissionError):
+            async with manager as dir_path:
+                assert os.path.isdir(dir_path)
+        os.rmdir(dir_path)
+
+
+@pytest.mark.skipif(
+    not (3, 10) <= sys.version_info < (3, 12),
+    reason="Test the Python 3.10/3.11 positional loop and executor signature",
+)
+async def test_temporary_directory_cleanup_positional_args(tmp_path):
+    """Keep the existing positional loop and executor arguments."""
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        async with tempfile.TemporaryDirectory(
+            None, None, tmp_path, loop, executor, ignore_cleanup_errors=True
+        ) as dir_path:
+            assert os.path.isdir(dir_path)
+        assert not os.path.exists(dir_path)
