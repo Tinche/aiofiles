@@ -15,5 +15,8 @@ format:
 lint: format
 	{{ run_prefix }}ruff check --fix {{ code_dirs }}
 
+typecheck:
+	{{ run_prefix }}mypy src
+
 test:
 	{{ run_prefix }}pytest -x --ff {{ tests_dir }}

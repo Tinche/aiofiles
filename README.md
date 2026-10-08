@@ -181,3 +181,8 @@ async def test_stuff():
 
 Contributions are very welcome. Tests can be run with `tox`, please ensure
 the coverage at least stays the same before you submit a pull request.
+
+If your change touches the public API or any function/class signatures, please
+also update the type stub files (`*.pyi`) to match the runtime code.  Please
+also run a type check locally (e.g., `tox -e typecheck`) before you submit a
+pull request
