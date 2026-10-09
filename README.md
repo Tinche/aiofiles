@@ -122,6 +122,15 @@ several useful `os` functions that deal with files:
 - `path.samefile`
 - `path.sameopenfile`
 
+`aiofiles.os.scandir` returns an async-capable iterator/context manager. For
+non-blocking directory iteration, prefer:
+
+```python
+async with await aiofiles.os.scandir(path) as entries:
+    async for entry in entries:
+        print(entry.name)
+```
+
 ### Tempfile
 
 **aiofiles.tempfile** implements the following interfaces:
