@@ -26,6 +26,13 @@ from ..threadpool.utils import (
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 
+    async def readinto(self, buffer):
+        readinto = self._file._file.readinto
+        if self._file._rolled:
+            cb = partial(readinto, buffer)
+            return await self._loop.run_in_executor(self._executor, cb)
+        return readinto(buffer)
+
     async def _check(self):
         if self._file._rolled:
             return

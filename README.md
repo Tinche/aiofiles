@@ -133,6 +133,9 @@ several useful `os` functions that deal with files:
 
 Results return wrapped with a context manager allowing use with async with and async for.
 
+Binary spooled temporary files support `await f.readinto(buffer)` both in memory
+and after rolling over to disk. Disk reads use the configured executor.
+
 ```python
 async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
     await f.write(b'Line1\n Line2')
