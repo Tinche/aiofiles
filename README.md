@@ -71,6 +71,7 @@ and delegate to an executor:
 - `readall`
 - `read1`
 - `readinto`
+- `readinto1`
 - `readline`
 - `readlines`
 - `seek`
