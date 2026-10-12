@@ -3,10 +3,13 @@
 import asyncio
 import os
 import platform
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from os import stat
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -703,6 +706,322 @@ async def test_scandir_many_entries_remains_non_blocking(monkeypatch):
 
     assert count == 200
     assert ticks > 10
+
+
+# ``GatedScandir`` stands in for the ``os.scandir`` iterator: it holds its first
+# ``__next__`` open and records any call that starts while another one is still
+# running. A cancelled ``await`` does not stop the executor thread running
+# ``next()``, so every other call into the iterator must wait for it.
+
+SCANDIR_TIMEOUT = 5  # upper bound for waits that succeed on a correct implementation
+SCANDIR_HOLD = 0.2  # how long the first next() stays open for an overlapping call
+
+
+class GatedScandir:
+    """Stands in for the ``os.scandir`` iterator."""
+
+    def __init__(self, items=("a", "b", "c"), fail_first=False):
+        self._items = iter(items)
+        self._fail_first = fail_first
+        self._calls = 0
+        self._active = 0
+        self._guard = threading.Lock()
+        self.entered = threading.Event()  # the first __next__ is running
+        self.release = threading.Event()  # lets the first __next__ finish
+        self.overlap = threading.Event()  # a call started while another ran
+        self.closes = 0
+
+    def _enter(self):
+        with self._guard:
+            self._active += 1
+            self._calls += 1
+            if self._active > 1:
+                self.overlap.set()
+            return self._calls
+
+    def _leave(self):
+        with self._guard:
+            self._active -= 1
+
+    def release_after_hold(self):
+        """Run in a helper thread: free the first ``__next__`` after SCANDIR_HOLD.
+
+        Returns early if another call overlaps, so the race shows at once.
+        """
+        self.overlap.wait(SCANDIR_HOLD)
+        self.release.set()
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        call = self._enter()
+        try:
+            if self._fail_first and call == 1:
+                msg = "readdir failed"
+                raise OSError(msg)
+            if call == 1:
+                self.entered.set()
+                if not self.release.wait(SCANDIR_TIMEOUT):
+                    msg = "first next() was never released"
+                    raise TimeoutError(msg)
+            return next(self._items)
+        finally:
+            self._leave()
+
+    def close(self):
+        self._enter()
+        try:
+            self.closes += 1
+        finally:
+            self._leave()
+
+    def __exit__(self, *exc_info):
+        self.close()  # returns None, like the os.scandir iterator
+
+
+async def open_gated(fake, executor):
+    with patch.object(aiofiles.os.os, "scandir", return_value=fake):
+        return await aiofiles.os.scandir("unused", executor=executor)
+
+
+def start_releaser(fake):
+    releaser = threading.Thread(target=fake.release_after_hold, daemon=True)
+    releaser.start()
+    return releaser
+
+
+@pytest.mark.parametrize("cleanup", ["aclose", "async-with", "close", "with"])
+async def test_scandir_cleanup_waits_for_cancelled_anext(cleanup):
+    """Closing after a cancelled ``__anext__`` must not overlap its ``next()``."""
+    fake = GatedScandir()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        dir_iterator = await open_gated(fake, executor)
+
+        async def consume():
+            if cleanup == "aclose":
+                try:
+                    await dir_iterator.__anext__()
+                finally:
+                    await dir_iterator.aclose()
+            elif cleanup == "async-with":
+                async with dir_iterator:
+                    await dir_iterator.__anext__()
+            elif cleanup == "close":
+                try:
+                    await dir_iterator.__anext__()
+                finally:
+                    dir_iterator.close()
+            else:
+                with dir_iterator:
+                    await dir_iterator.__anext__()
+
+        task = asyncio.create_task(consume())
+        assert await asyncio.to_thread(fake.entered.wait, SCANDIR_TIMEOUT)
+        releaser = start_releaser(fake)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+        releaser.join(SCANDIR_TIMEOUT)
+
+    assert not fake.overlap.is_set(), "closed the iterator while next() was running"
+    assert fake.closes == 1
+
+
+@pytest.mark.parametrize("second", ["async", "sync"])
+async def test_scandir_concurrent_consumers_do_not_overlap(second):
+    """Two consumers never run the underlying ``next()`` at the same time."""
+    fake = GatedScandir()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        dir_iterator = await open_gated(fake, executor)
+        first = asyncio.create_task(dir_iterator.__anext__())
+        assert await asyncio.to_thread(fake.entered.wait, SCANDIR_TIMEOUT)
+        releaser = start_releaser(fake)
+        if second == "async":
+            second_entry = await dir_iterator.__anext__()
+        else:
+            second_entry = next(dir_iterator)
+        first_entry = await first
+        releaser.join(SCANDIR_TIMEOUT)
+
+    assert not fake.overlap.is_set(), "two next() calls ran at once"
+    assert (first_entry, second_entry) == ("a", "b")
+
+
+async def test_scandir_anext_after_cancelled_anext_resumes_in_order():
+    """A retry after a cancelled ``__anext__`` waits for the in-flight call.
+
+    The entry that call read is dropped (as with ``aiofiles`` file iteration);
+    iteration resumes with the next one.
+    """
+    fake = GatedScandir()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        dir_iterator = await open_gated(fake, executor)
+        first = asyncio.create_task(dir_iterator.__anext__())
+        assert await asyncio.to_thread(fake.entered.wait, SCANDIR_TIMEOUT)
+        first.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await first
+        releaser = start_releaser(fake)
+        rest = [entry async for entry in dir_iterator]
+        releaser.join(SCANDIR_TIMEOUT)
+
+    assert not fake.overlap.is_set(), "the retry ran next() alongside the old call"
+    assert rest == ["b", "c"]
+
+
+async def test_scandir_next_error_propagates_and_releases_lock():
+    """An error from the underlying ``next()`` reaches the caller.
+
+    The lock is released, so a later call does not hang.
+    """
+    fake = GatedScandir(items=("a",), fail_first=True)
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        dir_iterator = await open_gated(fake, executor)
+        with pytest.raises(OSError, match="readdir failed"):
+            await dir_iterator.__anext__()
+
+    entries = []
+    # A daemon thread, so a lock left held fails the test instead of hanging it.
+    probe = threading.Thread(
+        target=lambda: entries.append(next(dir_iterator)), daemon=True
+    )
+    probe.start()
+    probe.join(SCANDIR_TIMEOUT)
+    assert entries == ["a"]
+
+
+async def test_scandir_reentrant_close_does_not_deadlock():
+    """A ``close()`` from the thread already inside ``next()`` does not hang.
+
+    A signal handler or finalizer can do this; the lock must be re-entrant.
+    """
+
+    class ClosesItself:
+        def __init__(self):
+            self.wrapper = None
+            self.closes = 0
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            self.wrapper.close()  # re-enters the wrapper on the same thread
+            raise StopIteration
+
+        def close(self):
+            self.closes += 1
+
+        def __exit__(self, *exc_info):
+            self.close()
+
+    fake = ClosesItself()
+    fake.wrapper = await open_gated(fake, None)
+    results = []
+    # A daemon thread, so a deadlock fails the test instead of hanging it.
+    probe = threading.Thread(
+        target=lambda: results.append(next(fake.wrapper, "end")), daemon=True
+    )
+    probe.start()
+    probe.join(SCANDIR_TIMEOUT)
+    assert results == ["end"]
+    assert fake.closes == 1
+
+
+async def test_scandir_async_iteration_yields_every_entry(tmp_path):
+    """Mixed sync and async iteration over a real directory sees each entry once."""
+    expected = {f"file{i}" for i in range(25)}
+    for name in expected:
+        (tmp_path / name).write_text("x")
+    (tmp_path / "subdir").mkdir()
+    expected.add("subdir")
+
+    async with await aiofiles.os.scandir(tmp_path) as dir_iterator:
+        names = [next(dir_iterator).name]
+        names += [entry.name async for entry in dir_iterator]
+
+    assert len(names) == len(expected)
+    assert set(names) == expected
+
+
+@pytest.mark.parametrize("cleanup", ["aclose", "async-with", "close", "with"])
+async def test_scandir_cleanup_closes_real_directory(tmp_path, cleanup):
+    """Every cleanup path closes the handle.
+
+    The context managers do not swallow exceptions.
+    """
+    for name in ("a", "b", "c"):
+        (tmp_path / name).write_text("x")
+    dir_iterator = await aiofiles.os.scandir(tmp_path)
+
+    if cleanup == "aclose":
+        await dir_iterator.__anext__()
+        await dir_iterator.aclose()
+    elif cleanup == "close":
+        await dir_iterator.__anext__()
+        dir_iterator.close()
+    elif cleanup == "async-with":
+        with pytest.raises(ValueError):
+            async with dir_iterator:
+                await dir_iterator.__anext__()
+                raise ValueError
+    else:
+        with pytest.raises(ValueError):
+            with dir_iterator:
+                next(dir_iterator)
+                raise ValueError
+
+    with pytest.raises(StopIteration):  # entries were left, but it is closed
+        next(dir_iterator)
+
+
+async def test_scandir_runs_every_call_in_the_configured_executor():
+    """Iteration and cleanup use the executor passed to ``scandir``."""
+    threads = []
+
+    class Recording:
+        def __init__(self):
+            self._items = iter(["a"])
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            threads.append(threading.current_thread().name)
+            return next(self._items)
+
+        def close(self):
+            threads.append(threading.current_thread().name)
+
+        def __exit__(self, *exc_info):
+            self.close()
+
+    with ThreadPoolExecutor(max_workers=1, thread_name_prefix="scandir-test") as ex:
+        dir_iterator = await open_gated(Recording(), ex)
+        async with dir_iterator:
+            assert [entry async for entry in dir_iterator] == ["a"]
+        await dir_iterator.aclose()
+
+    assert len(threads) == 4
+    assert all(name.startswith("scandir-test") for name in threads), threads
+
+
+async def test_scandir_iterators_do_not_block_each_other():
+    """The lock is per iterator: a slow directory does not stall another one."""
+    slow = GatedScandir()
+    fast = GatedScandir()
+    fast.release.set()
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        slow_iterator = await open_gated(slow, executor)
+        fast_iterator = await open_gated(fast, executor)
+        pending = asyncio.create_task(slow_iterator.__anext__())
+        assert await asyncio.to_thread(slow.entered.wait, SCANDIR_TIMEOUT)
+        try:
+            entry = await asyncio.wait_for(fast_iterator.__anext__(), SCANDIR_TIMEOUT)
+            assert entry == "a"
+        finally:
+            slow.release.set()
+        assert await pending == "a"
 
 
 @pytest.mark.skipif(platform.system() == "Windows", reason="Doesn't work on Win")
