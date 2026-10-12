@@ -26,6 +26,25 @@ from ..threadpool.utils import (
 class AsyncSpooledTemporaryFile(AsyncBase):
     """Async wrapper for SpooledTemporaryFile class"""
 
+    def readable(self):
+        """Return whether the underlying stream supports reading."""
+        return self._file._file.readable()
+
+    async def seekable(self):
+        """Return whether the underlying stream supports seeking."""
+        return await self._capability("seekable")
+
+    async def writable(self):
+        """Return whether the underlying stream supports writing."""
+        return await self._capability("writable")
+
+    async def _capability(self, name):
+        # SpooledTemporaryFile itself has these methods only on Python 3.11+.
+        method = getattr(self._file._file, name)
+        if self._file._rolled:
+            return await self._loop.run_in_executor(self._executor, method)
+        return method()
+
     async def _check(self):
         if self._file._rolled:
             return
