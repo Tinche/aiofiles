@@ -133,6 +133,10 @@ several useful `os` functions that deal with files:
 
 Results return wrapped with a context manager allowing use with async with and async for.
 
+The temporary file functions accept an `errors` keyword argument to control
+encoding and decoding errors in text mode, just like the standard library
+`tempfile` functions.
+
 ```python
 async with aiofiles.tempfile.NamedTemporaryFile('wb+') as f:
     await f.write(b'Line1\n Line2')

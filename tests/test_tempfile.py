@@ -9,6 +9,49 @@ import pytest
 from aiofiles import tempfile
 
 
+@pytest.mark.parametrize(
+    "factory",
+    [
+        tempfile.TemporaryFile,
+        tempfile.NamedTemporaryFile,
+        tempfile.SpooledTemporaryFile,
+    ],
+)
+@pytest.mark.parametrize("errors, expected", [("replace", "caf?"), ("ignore", "caf")])
+async def test_temporary_file_encoding_errors(factory, errors, expected):
+    async with factory(mode="w+", encoding="ascii", errors=errors) as f:
+        await f.write("caf\u00e9")
+        await f.seek(0)
+        assert await f.read() == expected
+
+
+@pytest.mark.parametrize(
+    "factory",
+    [
+        tempfile.TemporaryFile,
+        tempfile.NamedTemporaryFile,
+        tempfile.SpooledTemporaryFile,
+    ],
+)
+@pytest.mark.parametrize("errors", [None, "strict"])
+async def test_temporary_file_strict_encoding_errors(factory, errors):
+    async with factory(mode="w+", encoding="ascii", errors=errors) as f:
+        with pytest.raises(UnicodeEncodeError):
+            await f.write("caf\u00e9")
+
+
+@pytest.mark.parametrize("errors, expected", [("replace", "caf?"), ("ignore", "caf")])
+async def test_spooled_temporary_file_encoding_errors_after_rollover(errors, expected):
+    async with tempfile.SpooledTemporaryFile(
+        max_size=1, mode="w+", encoding="ascii", errors=errors
+    ) as f:
+        await f.write("caf\u00e9")
+        assert f._file._rolled
+        await f.write("caf\u00e9")
+        await f.seek(0)
+        assert await f.read() == expected * 2
+
+
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_temporary_file(mode):
     """Test temporary file."""
