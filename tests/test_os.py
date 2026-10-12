@@ -928,6 +928,12 @@ async def test_scandir_reentrant_close_does_not_deadlock():
     assert fake.closes == 1
 
 
+async def test_scandir_keeps_the_wrapped_function_metadata():
+    """``aiofiles.os.scandir`` keeps the name and signature of ``os.scandir``."""
+    assert aiofiles.os.scandir.__name__ == "scandir"
+    assert aiofiles.os.scandir.__wrapped__ is os.scandir
+
+
 async def test_scandir_async_iteration_yields_every_entry(tmp_path):
     """Mixed sync and async iteration over a real directory sees each entry once."""
     expected = {f"file{i}" for i in range(25)}

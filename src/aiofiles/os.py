@@ -4,7 +4,7 @@ import os
 import threading
 from asyncio import get_running_loop
 from collections.abc import AsyncIterator
-from functools import partial
+from functools import partial, wraps
 from types import TracebackType
 from typing import Any, Optional
 
@@ -125,10 +125,10 @@ class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
 
 
 def _wrap_scandir():
+    @wraps(os.scandir)
     async def run(
         *args: Any, loop: Any = None, executor: Any = None, **kwargs: Any
     ) -> AsyncScandirIterator:
-        """Return an async-friendly ``scandir`` iterator."""
         if loop is None:
             loop = get_running_loop()
         iterator = await loop.run_in_executor(
