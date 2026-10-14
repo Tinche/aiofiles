@@ -4,6 +4,8 @@
 
 - _aiofiles_ is now tested on Python 3.15 too.
   ([#240](https://github.com/Tinche/aiofiles/pull/240))
+- Add `aiofiles.os.fsync` for asynchronous synchronization of file descriptors.
+  ([#52](https://github.com/Tinche/aiofiles/issues/52))
 - Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.
   ([#234](https://github.com/Tinche/aiofiles/pull/234/))
 - Add `delete` and `ignore_cleanup_errors` parameters to `aiofiles.tempfile.TemporaryDirectory` on Python 3.12+, matching the standard library signature.

@@ -59,3 +59,7 @@ if hasattr(os, "sendfile"):
 if hasattr(os, "statvfs"):
     __all__ += ["statvfs"]
     statvfs = wrap(os.statvfs)
+
+if hasattr(os, "fsync"):
+    __all__ += ["fsync"]
+    fsync = wrap(os.fsync)

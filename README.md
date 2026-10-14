@@ -92,6 +92,7 @@ The `aiofiles.os` module contains executor-enabled coroutine versions of
 several useful `os` functions that deal with files:
 
 - `stat`
+- `fsync` (where supported by the platform)
 - `statvfs`
 - `sendfile`
 - `rename`
