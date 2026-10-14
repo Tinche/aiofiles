@@ -8,6 +8,8 @@
   ([#234](https://github.com/Tinche/aiofiles/pull/234/))
 - Add `delete` and `ignore_cleanup_errors` parameters to `aiofiles.tempfile.TemporaryDirectory` on Python 3.12+, matching the standard library signature.
   ([#228](https://github.com/Tinche/aiofiles/pull/228))
+- Add `aiofiles.fdopen` for existing integer file descriptors.
+  ([#10](https://github.com/Tinche/aiofiles/issues/10))
 
 ## 25.1.0 (2025-10-09)
 
