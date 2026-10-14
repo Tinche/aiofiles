@@ -567,8 +567,20 @@ async def test_info_wrapped(tmp_path):
     path = Path(tmp_path)
     assert isinstance(path.info.wrapped, PathInfo)
     assert path.info.wrapped is path.info.wrapped
-    assert Path(path).info.wrapped is path.info.wrapped
     assert repr(path.info.wrapped) in repr(path.info)
+
+
+@pytest.mark.skipif(sys.version_info < (3, 14), reason="info is 3.14+")
+async def test_construction_resets_info_cache(tmp_path):
+    """Constructing a new Path from an existing one resets its info cache."""
+    path = Path(tmp_path) / "file"
+    await path.touch()
+    assert await path.info.exists()
+
+    await path.unlink()
+
+    assert await path.info.exists()  # Original cache remains stale.
+    assert not await Path(path).info.exists()  # New path should refresh it.
 
 
 @pytest.mark.skipif(sys.version_info < (3, 14), reason="info is 3.14+")

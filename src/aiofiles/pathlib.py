@@ -122,22 +122,7 @@ class Path:
         loop: asyncio.AbstractEventLoop | None = None,
         executor: Executor | None = None,
     ) -> None:
-        if len(pathsegments) == 1:
-            segment = pathsegments[0]
-            if isinstance(segment, Path):
-                segment = segment._path
-            # Keep a concrete instance as-is so its cached stat
-            # information is not lost, for example when wrapping the
-            # scandir-prefetched paths yielded by iterdir().
-            if (
-                type(segment) is pathlib.PosixPath
-                or type(segment) is pathlib.WindowsPath
-            ):
-                self._path = segment
-            else:
-                self._path = pathlib.Path(segment)
-        else:
-            self._path = pathlib.Path(*pathsegments)
+        self._path = pathlib.Path(*pathsegments)
         self._ref_loop = loop
         self._executor = executor
 
@@ -165,7 +150,10 @@ class Path:
             return next(iterator, None)
 
         while (item := await self._run(step)) is not None:
-            yield self.with_segments(item)
+            derived = self.with_segments(item)
+            # Reuse item so iterdir() entries keep prefetched info.
+            derived._path = item
+            yield derived
 
     def __fspath__(self) -> str:
         return self._path.__fspath__()
