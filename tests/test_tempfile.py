@@ -1,8 +1,11 @@
+import asyncio
 import io
 import os
 import platform
 import shutil
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -115,6 +118,55 @@ async def test_spooled_temporary_file(mode):
 
         await f.seek(0)
         assert await f.read() == data + data
+
+
+@pytest.mark.parametrize("mode", ["w+b", "w+"])
+@pytest.mark.parametrize("max_size, size", [(0, 1), (1, 2)])
+async def test_spooled_truncate_rollover_uses_executor(
+    mode, max_size, size, monkeypatch, tmp_path
+):
+    """Truncation must not roll an in-memory spool over on the event loop."""
+    loop_thread = threading.get_ident()
+    rollover_threads = []
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        worker_thread = await asyncio.get_running_loop().run_in_executor(
+            executor, threading.get_ident
+        )
+        async with tempfile.SpooledTemporaryFile(
+            max_size=max_size, mode=mode, dir=tmp_path, executor=executor
+        ) as f:
+            assert not f._file._rolled
+            original_rollover = f._file.rollover
+
+            def record_rollover():
+                rollover_threads.append(threading.get_ident())
+                return original_rollover()
+
+            monkeypatch.setattr(f._file, "rollover", record_rollover)
+            assert await f.truncate(size) == size
+            assert f._file._rolled
+            assert rollover_threads == [worker_thread]
+            assert worker_thread != loop_thread
+            assert await f.tell() == 0
+            await f.seek(0, os.SEEK_END)
+            assert await f.tell() == size
+
+
+@pytest.mark.parametrize("mode", ["w+b", "w+"])
+@pytest.mark.parametrize("rolled", [False, True])
+async def test_spooled_truncate_preserves_behavior(mode, rolled, tmp_path):
+    data = b"abc" if "b" in mode else "abc"
+    async with tempfile.SpooledTemporaryFile(max_size=8, mode=mode, dir=tmp_path) as f:
+        await f.write(data)
+        if rolled:
+            await f.rollover()
+        await f.seek(2)
+        assert await f.truncate() == 2
+        assert f._file._rolled is rolled
+        await f.seek(0)
+        assert await f.read() == data[:2]
+        with pytest.raises((ValueError, OSError)):
+            await f.truncate(-1)
 
 
 @pytest.mark.skipif(
