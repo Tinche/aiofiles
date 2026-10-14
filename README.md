@@ -80,6 +80,7 @@ and delegate to an executor:
 - `isatty`
 - `read`
 - `readall`
+- `peek`
 - `read1`
 - `readinto`
 - `readline`
@@ -98,6 +99,7 @@ In case of failure, one of the usual exceptions will be raised.
 `aiofiles.stdin_bytes`, `aiofiles.stdout_bytes`, and
 `aiofiles.stderr_bytes` provide async access to `sys.stdin`,
 `sys.stdout`, `sys.stderr`, and their corresponding `.buffer` properties.
+`stdin_bytes` supports `await stdin_bytes.peek()` when the underlying input buffer supports peeking.
 
 The `aiofiles.os` module contains executor-enabled coroutine versions of
 several useful `os` functions that deal with files:
