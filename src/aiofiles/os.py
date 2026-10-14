@@ -1,6 +1,12 @@
 """Async executor versions of file functions from the os module."""
 
 import os
+import threading
+from asyncio import get_running_loop
+from collections.abc import AsyncIterator
+from functools import partial, wraps
+from types import TracebackType
+from typing import Any, Optional
 
 from . import ospath as path
 from .base import wrap
@@ -43,7 +49,97 @@ renames = wrap(os.renames)
 replace = wrap(os.replace)
 rmdir = wrap(os.rmdir)
 
-scandir = wrap(os.scandir)
+_END = object()
+
+
+class AsyncScandirIterator(AsyncIterator[os.DirEntry]):
+    """Async iterator/context manager wrapper around ``os.scandir`` results."""
+
+    __slots__ = ("_iterator", "_loop", "_executor", "_lock")
+
+    def __init__(self, iterator: Any, loop: Any, executor: Any) -> None:
+        self._iterator = iterator
+        self._loop = loop
+        self._executor = executor
+        # The ``os.scandir`` iterator is not thread-safe, and cancelling an
+        # ``await`` does not stop the worker thread running it. Every call into
+        # the iterator holds this lock, so closing it waits for an in-flight
+        # ``next()`` instead of releasing the handle under it. It is re-entrant
+        # so that a signal handler or finalizer closing the iterator on the
+        # thread already holding it does not deadlock.
+        self._lock = threading.RLock()
+
+    def __aiter__(self) -> "AsyncScandirIterator":
+        return self
+
+    async def __anext__(self) -> os.DirEntry:
+        # ``next(self, _END)`` runs the locked ``__next__`` below. If this await
+        # is cancelled, the worker still finishes that call and its entry is
+        # dropped, as with a cancelled read on an aiofiles file.
+        item = await self._loop.run_in_executor(self._executor, next, self, _END)
+        if item is _END:
+            raise StopAsyncIteration
+        return item
+
+    async def __aenter__(self) -> "AsyncScandirIterator":
+        # ``os.scandir``'s ``__enter__`` is a no-op that returns ``self``; the
+        # underlying handle is released by ``__exit__``/``close``. So there's
+        # nothing to delegate (and nothing to offload to a thread) on entry.
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> bool:
+        return await self._loop.run_in_executor(
+            self._executor, self.__exit__, exc_type, exc_val, exc_tb
+        )
+
+    def __iter__(self) -> "AsyncScandirIterator":
+        return self
+
+    def __next__(self) -> os.DirEntry:
+        with self._lock:
+            return next(self._iterator)
+
+    def __enter__(self) -> "AsyncScandirIterator":
+        return self
+
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> bool:
+        with self._lock:
+            return self._iterator.__exit__(exc_type, exc_val, exc_tb)
+
+    def close(self) -> Any:
+        with self._lock:
+            return self._iterator.close()
+
+    async def aclose(self) -> None:
+        await self._loop.run_in_executor(self._executor, self.close)
+
+
+def _wrap_scandir():
+    @wraps(os.scandir)
+    async def run(
+        *args: Any, loop: Any = None, executor: Any = None, **kwargs: Any
+    ) -> AsyncScandirIterator:
+        if loop is None:
+            loop = get_running_loop()
+        iterator = await loop.run_in_executor(
+            executor, partial(os.scandir, *args, **kwargs)
+        )
+        return AsyncScandirIterator(iterator, loop, executor)
+
+    return run
+
+
+scandir = _wrap_scandir()
 stat = wrap(os.stat)
 symlink = wrap(os.symlink)
 

@@ -2,6 +2,8 @@
 
 ## 25.2.0 (UNRELEASED)
 
+- `aiofiles.os.scandir` now returns an async iterator and async context manager. `async for` reads the entries, and `async with` or the new `aclose()` closes the directory, in the executor instead of blocking the event loop. Plain `for` and `with` keep working.
+  ([#226](https://github.com/Tinche/aiofiles/pull/226))
 - _aiofiles_ is now tested on Python 3.15 too.
   ([#240](https://github.com/Tinche/aiofiles/pull/240))
 - Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.
