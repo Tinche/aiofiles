@@ -2,6 +2,7 @@
 
 from . import tempfile
 from .threadpool import (
+    fdopen,
     open,
     stderr,
     stderr_bytes,
@@ -13,6 +14,7 @@ from .threadpool import (
 
 __all__ = [
     "open",
+    "fdopen",
     "tempfile",
     "stdin",
     "stdout",
