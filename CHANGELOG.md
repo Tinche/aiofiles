@@ -4,6 +4,8 @@
 
 - Add `aiofiles.pathlib.Path`, an async version of `pathlib.Path` that delegates filesystem calls to an executor. On Python 3.14+, its `info` property is an async version of `pathlib.types.PathInfo`.
   ([#60](https://github.com/Tinche/aiofiles/issues/60))
+- Close the file opened by `aiofiles.open` when the call is cancelled before the worker thread finishes opening it, instead of leaving it to the garbage collector (with a `ResourceWarning`).
+  ([#165](https://github.com/Tinche/aiofiles/issues/165))
 - _aiofiles_ is now tested on Python 3.15 too.
   ([#240](https://github.com/Tinche/aiofiles/pull/240))
 - Use the configured event loop and executor when exiting the async context managers returned by `aiofiles.open` and the `aiofiles.tempfile` functions.

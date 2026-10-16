@@ -90,9 +90,23 @@ async def _open(
         closefd=closefd,
         opener=opener,
     )
-    f = await loop.run_in_executor(executor, cb)
+    fut = loop.run_in_executor(executor, cb)
+    try:
+        # Shield the executor future so that, if this call is cancelled, the
+        # file the worker thread eventually opens can still be closed.
+        f = await asyncio.shield(fut)
+    except asyncio.CancelledError:
+        fut.add_done_callback(partial(_close_abandoned, loop, executor))
+        raise
 
     return wrap(f, loop=loop, executor=executor)
+
+
+def _close_abandoned(loop, executor, fut):
+    """Close a file whose open() call was cancelled before it completed."""
+    if fut.cancelled() or fut.exception() is not None:
+        return
+    loop.run_in_executor(executor, fut.result().close)
 
 
 @singledispatch
