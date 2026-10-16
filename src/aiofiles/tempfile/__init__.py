@@ -383,8 +383,7 @@ class AiofilesContextManagerTempDir(AiofilesContextManager):
     """With returns the directory location, not the object (matching sync lib)"""
 
     async def __aenter__(self):
-        self._obj = await self._coro
-        return self._obj.name
+        return (await super().__aenter__()).name
 
 
 @singledispatch
