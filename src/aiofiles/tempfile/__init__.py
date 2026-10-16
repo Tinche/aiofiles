@@ -39,6 +39,8 @@ if sys.version_info >= (3, 12):
         delete_on_close=True,
         loop=None,
         executor=None,
+        *,
+        errors=None,
     ):
         """Async open a named temporary file"""
         return AiofilesContextManager(
@@ -47,6 +49,7 @@ if sys.version_info >= (3, 12):
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -71,6 +74,8 @@ else:
         delete=True,
         loop=None,
         executor=None,
+        *,
+        errors=None,
     ):
         """Async open a named temporary file"""
         return AiofilesContextManager(
@@ -79,6 +84,7 @@ else:
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -100,6 +106,8 @@ def TemporaryFile(
     dir=None,
     loop=None,
     executor=None,
+    *,
+    errors=None,
 ):
     """Async open an unnamed temporary file"""
     return AiofilesContextManager(
@@ -108,6 +116,7 @@ def TemporaryFile(
             mode=mode,
             buffering=buffering,
             encoding=encoding,
+            errors=errors,
             newline=newline,
             suffix=suffix,
             prefix=prefix,
@@ -129,6 +138,8 @@ def SpooledTemporaryFile(
     dir=None,
     loop=None,
     executor=None,
+    *,
+    errors=None,
 ):
     """Async open a spooled temporary file"""
     return AiofilesContextManager(
@@ -137,6 +148,7 @@ def SpooledTemporaryFile(
             mode=mode,
             buffering=buffering,
             encoding=encoding,
+            errors=errors,
             newline=newline,
             suffix=suffix,
             prefix=prefix,
@@ -204,6 +216,8 @@ if sys.version_info >= (3, 12):
         loop=None,
         executor=None,
         max_size=0,
+        *,
+        errors=None,
     ):
         """Async method to open a temporary file with async interface"""
         if loop is None:
@@ -215,6 +229,7 @@ if sys.version_info >= (3, 12):
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -228,6 +243,7 @@ if sys.version_info >= (3, 12):
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -260,6 +276,8 @@ else:
         loop=None,
         executor=None,
         max_size=0,
+        *,
+        errors=None,
     ):
         """Async method to open a temporary file with async interface"""
         if loop is None:
@@ -271,6 +289,7 @@ else:
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -283,6 +302,7 @@ else:
                 mode=mode,
                 buffering=buffering,
                 encoding=encoding,
+                errors=errors,
                 newline=newline,
                 suffix=suffix,
                 prefix=prefix,
@@ -313,6 +333,8 @@ async def _spooled_temporary_file(
     dir=None,
     loop=None,
     executor=None,
+    *,
+    errors=None,
 ):
     """Open a spooled temporary file with async interface"""
     if loop is None:
@@ -324,6 +346,7 @@ async def _spooled_temporary_file(
         mode=mode,
         buffering=buffering,
         encoding=encoding,
+        errors=errors,
         newline=newline,
         suffix=suffix,
         prefix=prefix,
