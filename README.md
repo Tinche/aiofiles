@@ -189,6 +189,20 @@ On Python 3.14+, `path.info` returns an async version of the path's
 are cached like the standard library's. The wrapped synchronous object is
 available as `path.info.wrapped`.
 
+### Bzip2 files
+
+`aiofiles.bz2.open()` accepts the same options as `bz2.open()`, plus the optional
+`loop` and `executor` arguments. Binary and text files support async iteration
+and async context managers. Opening, compression, decompression and closing run
+in the executor. Await operations on each file sequentially.
+
+```python
+import aiofiles.bz2
+
+async with aiofiles.bz2.open("data.txt.bz2", "rt", encoding="utf-8") as f:
+    contents = await f.read()
+```
+
 ### Writing tests for aiofiles
 
 Real file IO can be mocked by patching `aiofiles.threadpool.sync_open`
