@@ -189,6 +189,20 @@ On Python 3.14+, `path.info` returns an async version of the path's
 are cached like the standard library's. The wrapped synchronous object is
 available as `path.info.wrapped`.
 
+### Gzip files
+
+`aiofiles.gzip.open()` accepts the same options as `gzip.open()`, plus the
+optional `loop` and `executor` arguments. It supports binary and text files,
+async iteration and async context managers. Opening, compression, decompression
+and closing run in the executor.
+
+```python
+import aiofiles.gzip
+
+async with aiofiles.gzip.open("data.txt.gz", "rt", encoding="utf-8") as f:
+    contents = await f.read()
+```
+
 ### Writing tests for aiofiles
 
 Real file IO can be mocked by patching `aiofiles.threadpool.sync_open`
