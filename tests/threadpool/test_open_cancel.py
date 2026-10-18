@@ -47,7 +47,13 @@ async def test_cancelled_open_closes_file(tmp_path):
         gc.collect()
 
     assert len(fds) == 1
-    assert not [w for w in caught if issubclass(w.category, ResourceWarning)]
+    # Only count warnings about this file: without reference counting (PyPy),
+    # gc.collect() also finalizes objects leaked by earlier tests.
+    assert not [
+        w
+        for w in caught
+        if issubclass(w.category, ResourceWarning) and str(path) in str(w.message)
+    ]
     try:
         os.fstat(fds[0])
     except OSError:
@@ -144,7 +150,13 @@ async def test_cancelled_open_closes_file_after_executor_shutdown(tmp_path):
         gc.collect()
 
     assert len(fds) == 1
-    assert not [w for w in caught if issubclass(w.category, ResourceWarning)]
+    # Only count warnings about this file: without reference counting (PyPy),
+    # gc.collect() also finalizes objects leaked by earlier tests.
+    assert not [
+        w
+        for w in caught
+        if issubclass(w.category, ResourceWarning) and str(path) in str(w.message)
+    ]
     try:
         os.fstat(fds[0])
     except OSError:
