@@ -3,6 +3,8 @@ import os
 import platform
 import shutil
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
@@ -115,6 +117,35 @@ async def test_spooled_temporary_file(mode):
 
         await f.seek(0)
         assert await f.read() == data + data
+
+
+@pytest.mark.parametrize("rolled", [False, True])
+async def test_spooled_readinto(rolled, monkeypatch):
+    loop_thread = threading.get_ident()
+    calls = []
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        worker_thread = executor.submit(threading.get_ident).result()
+        async with tempfile.SpooledTemporaryFile(
+            max_size=1 if rolled else 16, mode="w+b", executor=executor
+        ) as f:
+            await f.write(b"abcdefgh")
+            await f.seek(0)
+            assert f._file._rolled is rolled
+            original_readinto = f._file._file.readinto
+
+            def readinto(buffer):
+                calls.append(threading.get_ident())
+                return original_readinto(buffer)
+
+            monkeypatch.setattr(f._file._file, "readinto", readinto)
+            buffer = bytearray(4)
+            assert await f.readinto(buffer) == 4
+            assert buffer == b"abcd"
+            assert await f.tell() == 4
+            assert await f.readinto(memoryview(buffer)) == 4
+            assert buffer == b"efgh"
+            assert await f.readinto(buffer) == 0
+    assert calls == [worker_thread if rolled else loop_thread] * 3
 
 
 @pytest.mark.skipif(
