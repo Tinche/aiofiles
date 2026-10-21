@@ -9,6 +9,22 @@ import pytest
 from aiofiles import tempfile
 
 
+@pytest.mark.parametrize("mode", ["w+", "w+b"])
+@pytest.mark.parametrize("legacy_api", [False, True])
+async def test_spooled_temporary_file_capabilities(mode, legacy_api, monkeypatch):
+    async with tempfile.SpooledTemporaryFile(mode=mode) as f:
+        if legacy_api:
+            for capability in ("readable", "seekable", "writable"):
+                monkeypatch.delattr(type(f._file), capability, raising=False)
+        assert f.readable()
+        assert await f.seekable()
+        assert await f.writable()
+        await f.rollover()
+        assert f.readable()
+        assert await f.seekable()
+        assert await f.writable()
+
+
 @pytest.mark.parametrize("mode", ["r+", "w+", "rb+", "wb+"])
 async def test_temporary_file(mode):
     """Test temporary file."""
