@@ -32,6 +32,10 @@ jobs:
         if: matrix.python-version == '3.13' && runner.os == 'Linux'
         run: "uv run --group tox tox -e lint"
 
+      - name: "Typecheck"
+        if: matrix.python-version == '3.13' && runner.os == 'Linux'
+        run: "uv run --group tox tox -e typecheck"
+
       - name: "Upload coverage data"
         uses: "actions/upload-artifact@v4"
         with:
