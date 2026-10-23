@@ -71,6 +71,10 @@ arguments. If `loop` is absent, the default loop will be used, as per the
 set asyncio policy. If `executor` is not specified, the default event loop
 executor will be used.
 
+`aiofiles.fdopen(fd, ...)` provides the same interface for an existing integer file
+descriptor and accepts the same arguments as `aiofiles.open()`. The descriptor is
+closed with the file by default. Use `closefd=False` to retain ownership of it.
+
 In case of success, an asynchronous file object is returned with an
 API identical to an ordinary file, except the following methods are coroutines
 and delegate to an executor:

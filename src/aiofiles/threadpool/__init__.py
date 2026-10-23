@@ -25,6 +25,7 @@ sync_open = open
 
 __all__ = (
     "open",
+    "fdopen",
     "stdin",
     "stdout",
     "stderr",
@@ -61,6 +62,14 @@ def open(
             executor=executor,
         )
     )
+
+
+def fdopen(fd, *args, **kwargs):
+    """Open an existing integer file descriptor with asynchronous file operations."""
+    if not isinstance(fd, int):
+        msg = f"invalid fd type ({type(fd)}, expected integer)"
+        raise TypeError(msg)
+    return open(fd, *args, **kwargs)
 
 
 async def _open(
