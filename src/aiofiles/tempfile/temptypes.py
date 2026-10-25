@@ -10,7 +10,7 @@ from ..threadpool.utils import (
 )
 
 
-@delegate_to_executor("fileno", "rollover")
+@delegate_to_executor("fileno", "rollover", "truncate")
 @cond_delegate_to_executor(
     "close",
     "flush",
@@ -20,7 +20,6 @@ from ..threadpool.utils import (
     "readlines",
     "seek",
     "tell",
-    "truncate",
 )
 @proxy_property_directly("closed", "encoding", "mode", "name", "newlines")
 class AsyncSpooledTemporaryFile(AsyncBase):
