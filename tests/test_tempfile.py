@@ -3,6 +3,7 @@ import os
 import platform
 import shutil
 import sys
+import threading
 
 import pytest
 
@@ -176,3 +177,24 @@ async def test_temporary_directory_delete(tmp_path):
         dir_path = d
         assert os.path.exists(dir_path)
     assert not os.path.exists(dir_path)
+
+
+async def test_spooled_truncate_rollover_runs_in_executor(monkeypatch):
+    event_loop_thread = threading.get_ident()
+    rollover_threads = []
+    async with tempfile.SpooledTemporaryFile(max_size=4) as f:
+        rollover = f._file.rollover
+
+        def record_rollover():
+            rollover_threads.append(threading.get_ident())
+            return rollover()
+
+        monkeypatch.setattr(f._file, "rollover", record_rollover)
+        await f.write(b"ab")
+        await f.truncate(8)
+        assert f._file._rolled
+        await f.seek(0)
+        assert await f.read() == b"ab" + b"\0" * 6
+
+    assert rollover_threads
+    assert all(thread != event_loop_thread for thread in rollover_threads)
