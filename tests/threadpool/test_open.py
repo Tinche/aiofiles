@@ -1,9 +1,12 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
+from io import StringIO
 from pathlib import Path
 
 import pytest
 
+from aiofiles import threadpool
 from aiofiles.threadpool import open as aioopen
 
 RESOURCES_DIR = Path(__file__).parent.parent / "resources"
@@ -53,6 +56,41 @@ async def test_file_async_context_aexit_uses_configured_executor():
             pass
 
     assert file.closed
+
+
+@pytest.mark.parametrize("exit_result", [None, False, True])
+@pytest.mark.parametrize("raise_error", [False, True])
+@pytest.mark.parametrize("use_executor", [False, True])
+async def test_file_context_preserves_exit_result(
+    monkeypatch, exit_result, raise_error, use_executor
+):
+    seen_exceptions = []
+
+    class CustomFile(StringIO):
+        def __exit__(self, exc_type, exc_value, traceback):
+            seen_exceptions.append(exc_type)
+            super().__exit__(exc_type, exc_value, traceback)
+            return exit_result
+
+    file = CustomFile()
+    monkeypatch.setattr(threadpool, "sync_open", lambda *args, **kwargs: file)
+    body_error = RuntimeError("body failed")
+    expected_error = (
+        pytest.raises(RuntimeError, match="body failed")
+        if raise_error and not exit_result
+        else nullcontext()
+    )
+
+    with ThreadPoolExecutor(max_workers=1) as executor, expected_error:
+        async with aioopen(
+            "unused", executor=executor if use_executor else None
+        ) as wrapped:
+            assert not wrapped.closed
+            if raise_error:
+                raise body_error
+
+    assert file.closed
+    assert seen_exceptions == [RuntimeError if raise_error else None]
 
 
 async def test_filetask_async_context_aexit():
