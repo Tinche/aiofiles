@@ -1,5 +1,6 @@
 """Utilities for asyncio-friendly file handling."""
 
+import utils.session
 from . import tempfile
 from .threadpool import (
     open,
