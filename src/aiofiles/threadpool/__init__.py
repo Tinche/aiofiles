@@ -2,6 +2,7 @@
 
 import asyncio
 import sys
+import threading
 from functools import partial, singledispatch
 from io import (
     BufferedIOBase,
@@ -79,7 +80,7 @@ async def _open(
     """Open an asyncio file."""
     if loop is None:
         loop = asyncio.get_running_loop()
-    cb = partial(
+    open_file = partial(
         sync_open,
         file,
         mode=mode,
@@ -90,9 +91,46 @@ async def _open(
         closefd=closefd,
         opener=opener,
     )
-    f = await loop.run_in_executor(executor, cb)
+    # `state` is shared with the worker thread. Once the call is cancelled,
+    # a worker that has not started yet must not open (and possibly create
+    # or truncate) the file. A worker that has already started will finish,
+    # and the file it returns is closed instead of being left to the GC.
+    lock = threading.Lock()
+    state = {"started": False, "cancelled": False}
+
+    def cb():
+        with lock:
+            if state["cancelled"]:
+                return None
+            state["started"] = True
+        return open_file()
+
+    fut = loop.run_in_executor(executor, cb)
+    try:
+        f = await asyncio.shield(fut)
+    except asyncio.CancelledError:
+        with lock:
+            state["cancelled"] = True
+            started = state["started"]
+        if started:
+            fut.add_done_callback(partial(_close_abandoned, loop, executor))
+        else:
+            fut.cancel()
+        raise
 
     return wrap(f, loop=loop, executor=executor)
+
+
+def _close_abandoned(loop, executor, fut):
+    """Close a file whose open() call was cancelled after it started."""
+    if fut.cancelled() or fut.exception() is not None:
+        return
+    f = fut.result()
+    try:
+        loop.run_in_executor(executor, f.close)
+    except RuntimeError:
+        # The executor (or the loop) is already shut down.
+        f.close()
 
 
 @singledispatch
