@@ -264,6 +264,24 @@ async def test_mkdir_and_rmdir(tmp_path):
     assert not await path.exists()
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 15), reason="parent_mode was added in Python 3.15"
+)
+async def test_mkdir_parent_mode(tmp_path):
+    """mkdir() applies parent_mode to parents and mode to the leaf."""
+    path = Path(tmp_path) / "a" / "b" / "leaf"
+    await path.mkdir(mode=0o755, parents=True, parent_mode=0o700)
+    assert await path.is_dir()
+    assert (tmp_path / "a").is_dir()
+    assert (tmp_path / "a" / "b").is_dir()
+    if os.name == "posix":
+        umask = os.umask(0)
+        os.umask(umask)
+        assert (await path.stat()).st_mode & 0o777 == 0o755 & ~umask
+        assert os.stat(tmp_path / "a").st_mode & 0o777 == 0o700 & ~umask
+        assert os.stat(tmp_path / "a" / "b").st_mode & 0o777 == 0o700 & ~umask
+
+
 async def test_read_write_text(tmp_path):
     """Text written with write_text() is returned by read_text()."""
     path = Path(tmp_path) / "file.txt"
