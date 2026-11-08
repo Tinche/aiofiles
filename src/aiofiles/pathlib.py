@@ -503,13 +503,29 @@ class Path:
         def match(self, path_pattern: str) -> bool:
             return self._path.match(path_pattern)
 
-    async def mkdir(
-        self,
-        mode: int = 0o777,
-        parents: bool = False,
-        exist_ok: bool = False,
-    ) -> None:
-        await self._run(self._path.mkdir, mode, parents, exist_ok)
+    if sys.version_info >= (3, 15):
+
+        async def mkdir(
+            self,
+            mode: int = 0o777,
+            parents: bool = False,
+            exist_ok: bool = False,
+            *,
+            parent_mode: int | None = None,
+        ) -> None:
+            await self._run(
+                self._path.mkdir, mode, parents, exist_ok, parent_mode=parent_mode
+            )
+
+    else:
+
+        async def mkdir(
+            self,
+            mode: int = 0o777,
+            parents: bool = False,
+            exist_ok: bool = False,
+        ) -> None:
+            await self._run(self._path.mkdir, mode, parents, exist_ok)
 
     def open(
         self,
