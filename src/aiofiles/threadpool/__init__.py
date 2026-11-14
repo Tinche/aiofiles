@@ -11,6 +11,7 @@ from io import (
     FileIO,
     TextIOBase,
 )
+from threading import Lock
 
 from ..base import AiofilesContextManager
 from .binary import (
@@ -90,7 +91,31 @@ async def _open(
         closefd=closefd,
         opener=opener,
     )
-    f = await loop.run_in_executor(executor, cb)
+    lock = Lock()
+    cancelled = False
+    opened = None
+
+    def open_and_transfer():
+        nonlocal opened
+        result = cb()
+        with lock:
+            if not cancelled:
+                opened = result
+                return result
+        # Cancellation cannot stop the worker, but it must not lose its file.
+        result.close()
+        return None
+
+    try:
+        f = await loop.run_in_executor(executor, open_and_transfer)
+    except asyncio.CancelledError:
+        with lock:
+            cancelled = True
+            result = opened
+        if result is not None:
+            # The worker completed before cancellation was delivered.
+            loop.run_in_executor(executor, result.close)
+        raise
 
     return wrap(f, loop=loop, executor=executor)
 
