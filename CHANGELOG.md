@@ -2,6 +2,8 @@
 
 ## 25.2.0 (UNRELEASED)
 
+- Add `aiofiles.os.fstat` to retrieve metadata from an open file descriptor using an executor.
+  ([#4](https://github.com/Tinche/aiofiles/issues/4))
 - Add `aiofiles.pathlib.Path`, an async version of `pathlib.Path` that delegates filesystem calls to an executor. On Python 3.14+, its `info` property is an async version of `pathlib.types.PathInfo`.
   ([#60](https://github.com/Tinche/aiofiles/issues/60))
 - _aiofiles_ is now tested on Python 3.15 too.

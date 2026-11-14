@@ -103,6 +103,7 @@ The `aiofiles.os` module contains executor-enabled coroutine versions of
 several useful `os` functions that deal with files:
 
 - `stat`
+- `fstat`
 - `statvfs`
 - `sendfile`
 - `rename`

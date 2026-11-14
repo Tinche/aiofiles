@@ -8,6 +8,7 @@ from .base import wrap
 __all__ = [
     "path",
     "stat",
+    "fstat",
     "rename",
     "renames",
     "replace",
@@ -27,6 +28,8 @@ __all__ = [
 ]
 
 access = wrap(os.access)
+
+fstat = wrap(os.fstat)
 
 getcwd = wrap(os.getcwd)
 
