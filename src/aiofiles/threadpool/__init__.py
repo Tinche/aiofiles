@@ -18,6 +18,7 @@ from .binary import (
     AsyncBufferedReader,
     AsyncFileIO,
     AsyncIndirectBufferedIOBase,
+    AsyncIndirectBufferedReader,
 )
 from .text import AsyncTextIndirectIOWrapper, AsyncTextIOWrapper
 
@@ -130,7 +131,7 @@ stdout = AsyncTextIndirectIOWrapper(
 stderr = AsyncTextIndirectIOWrapper(
     "sys.stderr", None, None, indirect=lambda: sys.stderr
 )
-stdin_bytes = AsyncIndirectBufferedIOBase(
+stdin_bytes = AsyncIndirectBufferedReader(
     "sys.stdin.buffer", None, None, indirect=lambda: sys.stdin.buffer
 )
 stdout_bytes = AsyncIndirectBufferedIOBase(
