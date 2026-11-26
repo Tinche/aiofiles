@@ -1,3 +1,5 @@
+import io
+
 import pytest
 
 from aiofiles import stderr, stderr_bytes, stdin, stdin_bytes, stdout, stdout_bytes
@@ -21,3 +23,12 @@ async def test_stdio_bytes(capsysbinary):
     assert err == b"world"
     with pytest.raises(OSError):
         await stdin_bytes.read()
+
+
+async def test_stdin_bytes_peek(monkeypatch):
+    class Stdin:
+        buffer = io.BufferedReader(io.BytesIO(b"hello"))
+
+    monkeypatch.setattr("sys.stdin", Stdin())
+
+    assert await stdin_bytes.peek(1)
