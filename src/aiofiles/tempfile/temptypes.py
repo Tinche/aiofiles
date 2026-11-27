@@ -46,6 +46,15 @@ class AsyncSpooledTemporaryFile(AsyncBase):
 
     async def writelines(self, iterable):
         """Implementation to anticipate rollover"""
+        if not self._file._rolled and self._file._max_size:
+            iterable = iter(iterable)
+            for line in iterable:
+                await self.write(line)
+                if self._file._rolled:
+                    break
+            else:
+                return None
+
         if self._file._rolled:
             cb = partial(self._file.writelines, iterable)
             return await self._loop.run_in_executor(self._executor, cb)
